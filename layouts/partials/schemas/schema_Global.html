@@ -42,6 +42,10 @@
     {{ partial "schemas/schema_LocalBusiness_Store.html" . }}
   {{ end }}
 
+  {{ if or (in .Params.contenttypes "Movie") }}
+    {{ partial "schemas/schema_Movie.html" . }}
+  {{ end }}
+
   {{ if or (in .Params.contenttypes "Person") }}
     {{ partial "schemas/schema_Person.html" . }}
   {{ end }}
@@ -66,6 +70,10 @@
     {{ partial "schemas/schema_SpeakableSpecification.html" . }}
   {{ end }}
 
+  {{ if or (in .Params.contenttypes "TVSeries") }}
+    {{ partial "schemas/schema_TVSeries.html" . }}
+  {{ end }}
+
   {{ if or (in .Params.contenttypes "VideoObject") }}
     {{ partial "schemas/schema_VideoObject.html" . }}
   {{ end }}
@@ -74,7 +82,7 @@
     {{ partial "schemas/schema_ViewAction.html" . }}
   {{ end }}
 
-  {{ if or (in .Params.contenttypes "Website") }}
+  {{ if or (in .Params.contenttypes "WebSite") }}
     {{ partial "schemas/schema_WebSite.html" . }}
   {{ end }}
 

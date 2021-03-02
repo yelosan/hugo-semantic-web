@@ -1,119 +1,54 @@
-{{ $baseUrl := .Site.BaseURL }}
-{{ $location := index .Site.Data.location .Site.Params.primarylocation }}
+{{- /*
+  ******* Use this in the frontpage only. *******
+
+  add "translationOfWork": ""
+  add "translator": ""
+*/ -}}
 <script type="application/ld+json">
 [
-	{
-		"@context": "http://schema.org",
-		"@type": "Webpage",
-		"specialty": "{{ .Site.Params.description }}",
-		"mainContentOfPage": {
-			"@context": "http://schema.org/",
-			"@type": "WebPageElement",
-			"cssSelector": ".body-content"
-		},
-		"primaryImageOfPage": "{{ .Site.Params.imageurl | absURL }}"
-	},
-	{
-		"@context": "http://schema.org",
-		"@type": "WebSite",
-		"@id": "{{ .Site.BaseURL }}",
-		"additionalType": ["CreativeWork", "Person"],
-		"url": "{{ .Site.BaseURL }}",
-		"name": "{{ .Site.Title }}",
-		"alternateName": "{{ .Site.Title }}",
-		"headline": "{{ .Site.Params.description }}",
-		"image": "{{ .Site.Params.imageurl | absURL }}",
-		"inLanguage": "{{ .Site.LanguageCode }}",
-		"author": "{{ .Site.Params.author }}",
-		"description": "{{ .Site.Params.description }}",
-		"disambiguatingDescription": "{{ .Site.Params.description }}",
-		"isFamilyFriendly": "http://schema.org/True",
-		"contentRating": "NR",
-		"sourceOrganization": "{{ .Site.Title }}",
-		"publisher": {
-		  "@type": "Organization",
-		  "name": "{{ .Site.Title }}",
-		  "logo": {
-		    "@type": "ImageObject",
-		    "url": "{{ .Site.Params.logourl | absURL }}",
-		    "height": 60,
-		    "width": 107
-		  }
-		},
-		"mainEntity": {
-			"@context": "http://schema.org",
-			"@type": "localBusiness",
-			"name": "{{ .Site.Title }}",
-			"image":"{{ $location.thumbnail | absURL }}",
-			"priceRange":"{{ .Site.Params.pricerange }}",
-			"telephone":"{{ .Site.Params.phone }}",
-			"address": {
-				"@type": "PostalAddress",
-				"streetAddress": "{{ $location.address.street }}",
-				"addressLocality": "{{ $location.address.city }}",
-				"addressRegion": "{{ $location.address.region }}",
-				"addressCountry": "{{ $location.address.country }}",
-				"postalCode": "{{ $location.address.postalcode }}"
-			},
-			"aggregateRating": {
-				"@type": "AggregateRating",
-				"ratingValue": "4.5",
-				"reviewCount": "50"
-			}
-		},
-		"potentialAction": {
-			"@type": "SearchAction",
-			"target": "{{ .Site.BaseURL }}?search={search_term}",
-			"query-input": "required name=search_term"
-		},
-		"keywords":[
-			{{ range $i, $e := .Site.Params.keywords }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}
-		],
-		"hasPart": [
-			{
-				"@context": "http://schema.org/",
-				"@type": "WPHeader",
-				"@id": "#header",
-				"headline": "{{ .Site.Params.description }}",
-				"cssSelector": "#header",
-				"potentialAction": [{{ range $i, $e := .Site.Menus.actions }}{{ if $i }}, {{ end }}
-					{
-						"@type": "Action",
-						"name": "{{ $e.Title }}",
-						"target": "{{ $e.URL | absURL }}"
-					}
-					{{- end -}}
-				],
-				"@graph": 
-				[{{ range $i, $e := .Site.Menus.main }}{{ if $i }}, {{ end }}
-					{
-						"@context": "https://schema.org",
-						"@type":"SiteNavigationElement",
-						"@id":"#header",
-						"name": "{{ $e.Title }}",
-						"url": "{{ $e.URL | absURL }}"
-					}
-					{{- end -}}
-				]
-			},
-			{
-				"@context": "http://schema.org/",
-				"@type": "WPSidebar",
-				"cssSelector": "#sidebar",
-				"citation": [
-				{{ range $i, $e := .Site.Menus.main }}{{ if $i }}, {{ end }}"{{ $e.URL | absURL }}"{{ end }}
-				]
-			},
-			{
-				"@context": "http://schema.org/",
-				"@type": "WPFooter",
-				"cssSelector": ".footer",
-				"@id": "#footer",
-				"copyrightHolder":"{{ .Site.Title }}",
-				"publisher": "{{ .Site.Title }}",
-				"copyrightYear":"{{ now.Format "2006"}}"
-			}
-		]
-	}
+  {
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "@id": "{{ $.Site.BaseURL }}",
+    "additionalType": ["CreativeWork", "Person"],
+    "name": "{{ $.Site.Title }}",
+    "description": "{{ $.Site.Params.description }}",
+    "image": [ {{ range $i, $e := $.Site.Params.images }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
+    "url": "{{ $.Site.BaseURL }}",
+    "author": "{{ $.Site.Params.author }}",
+    {{ with $.Site.Params.issn }}"issn": "{{ $.Site.Params.issn }}",{{ end }}
+    "copyrightHolder": {
+      "@type": "Person",
+      "givenName": "{{ $.Site.Params.siteowner.givenname1 }} {{ $.Site.Params.siteowner.givenname2 }}",
+      "additionalName": "{{ $.Site.Params.siteowner.middlename }}",
+      "familyName": "{{ $.Site.Params.siteowner.familyname }}",
+      "gender": "{{ $.Site.Params.gender }}",
+      "knowsLanguage": [ {{ range $i, $e := $.Site.Params.knowslanguages }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
+      "nationality": "{{ $.Site.Params.nationality }}",
+      "alternateName": [ {{ range $i, $e := $.Site.Params.alternatenames }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
+      "url": "{{ $.Site.Params.ownerhomepage | safeHTML }}"
+    },
+    "copyrightNotice": "{{ $.Site.Params.copyrightnotice }}",
+    "copyrightYear": "{{ $.Site.Params.copyrightyear }}",
+    "creativeWorkStatus": "Published",
+    "creditText": "{{ $.Site.Params.author }} {{ $.Site.Params.ownerhomepage }}",
+    "datePublished": "{{ $.Site.Params.copyrightyear }}",
+    "acquireLicensePage": "{{ $.Site.Params.license }}",
+    "license": "{{ $.Site.Params.license }}",
+    "usageInfo": "{{ $.Site.Params.license }}",
+    {{ with $.Site.Params.awards }}"award": [ {{ range $i, $e := $.Site.Params.awards }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],{{ end }}
+    "inLanguage": "{{ $.Site.LanguageCode }}",
+    "keywords": [ {{ range $i, $e := $.Site.Params.keywords }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
+    "publisher": {
+      "@type": "Organization",
+      "name": "{{ $.Site.Title }}",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ $.Site.Params.logourl | absURL }}",
+        "height": 60,
+        "width": 107
+      }
+    }
+  }
 ]
 </script>
