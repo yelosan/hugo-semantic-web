@@ -27,83 +27,90 @@
      - place it before the TOML ("+++") / YAML ("---") / JSON ("}")closing tag
      - convert to YAML or JSON if needed
 
-+++
-# Author and Images are common HUGO defaults. Included here in case you are not using it in your theme.
-contenttypes = ["CriticReview"]
-#author = "custom author if needed"
-#images = ["", ""]
-#license = "link to custom license if different from website license"
+  +++
+  # Author and Images are common HUGO defaults. Included here in case you are not using it in your theme.
+  contenttypes = ["CriticReview"]
+  #author = "custom author"
+  #images = [""]
+  #license = "link to custom license if different"
 
-[semweb]
-type = "Book, Movie, or TVSeries"
+  [semweb]
+  type = "Book, Movie, or TVSeries"
 
-[semweb.review]
-snippet = "Max 200 characters"
-rating = "From 1.00 to 10.00"
+  [semweb.review]
+  snippet = "*******MAX 200 CHARACTERS*******"
+  rating = "1.00-10.00"
 
-# If different from our website
-#[semweb.publisher]
-#name = "publisher name"
-#sameas = "publisher official URL"
+  # If different from our website
+  #[semweb.publisher]
+  #name = "publisher"
+  #sameas = ["Wikipedia", "Goodreads", "IMDB", "official website"]
 
-# If different from default author
-#[semweb.author]
-#sameas = "official link of custom author"
+  # If different from default author
+  #[semweb.author]
+  #sameas = ["Wikipedia", "Goodreads", "IMDB", "official website"]
 
-[semweb.product]
-name = "Product Title"
-#alternatename = "if applicable"
-sameas = "link to IMDB, Wikipedia, or official website"
-countryoforigin = "self-explanatory"
-description = "synopsis"
-datepublished = "YYYY-MM-DD"
-categories = ["genre1", "genre2"]
+  [semweb.product]
+  name = "Product Title"
+  #alternatenames = [""]
+  sameas = ["Wikipedia", "Goodreads", "IMDB", "official website"]
+  countryoforigin = ""
+  description = "synopsis"
+  datepublished = "YYYY-MM-DD"
+  categories = ["genre1"]
 
-# For TVSeries
-#[semweb.product.season]
-#name = "Season Title or Generic"
-#totalepisodes = "20"
-#start = "YYYY-MM-DD"
-#end = "YYYY-MM-DD"
+  # For TVSeries
+  #[semweb.product.season]
+  #name = "Season Title or Generic"
+  #totalepisodes = "20"
+  #start = "YYYY-MM-DD"
+  #end = "YYYY-MM-DD"
 
-# For TVSeries and if reviewing an episode
-#[semweb.product.season.episode]
-#epnumber = "1"
-#name = "Episode Title or Generic"
-#datepublished = "YYYY-MM-DD"
+  # For TVSeries and if reviewing an episode
+  #[semweb.product.season.episode]
+  #epnumber = "1"
+  #name = "Episode Title or Generic"
+  #datepublished = "YYYY-MM-DD"
 
-# For adaptations
-#[semweb.product.isbasedon]
-#name = "Title of Original Work"
-#sameas = "link to IMDB, Wikipedia, or official website"
+  # For adaptations
+  #[semweb.product.isbasedon]
+  #name = "Title of Original Work"
+  #alternatenames = [""]
+  #sameas = ["Wikipedia", "Goodreads", "IMDB", "official website"]
 
-#[semweb.product.isbasedon.author]
-#name = "Author of Original Work"
-#sameas = "link to IMDB, Wikipedia, or official website"
+  #[semweb.product.isbasedon.author]
+  #name = "Author of Original Work"
+  #alternatenames = [""]
+  #sameas = ["Wikipedia", "Goodreads", "IMDB", "official website"]
 
-# Duplicate for more Actor entries
-[[semweb.actor]]
-name = "Actor name"
-sameas = "link to IMDB, Wikipedia, or official website"
+  # Duplicate for more Actor entries
+  [[semweb.actor]]
+  name = "Actor"
+  #alternatenames = [""]
+  sameas = ["Wikipedia", "Goodreads", "IMDB", "official website"]
 
-# Duplicate for more Character entries
-[[semweb.character]]
-name = "Character name"
+  # Duplicate for more Character entries
+  [[semweb.character]]
+  name = "Character"
+  #alternatenames = [""]
+  #sameas = ["Wikipedia", "Goodreads", "IMDB", "official website"]
 
-# Duplicate for more Director entries
-[[semweb.director]]
-name = "Director name"
-sameas = "link to IMDB, Wikipedia, or official website"
+  # Duplicate for more Director entries
+  [[semweb.director]]
+  name = "Director"
+  #alternatenames = [""]
+  sameas = ["Wikipedia", "Goodreads", "IMDB", "official website"]
 
-# Video URLs can be any, YouTube provided as a guide only
-[semweb.video]
-name = "Title of Trailer"
-description = "short description of trailer"
-uploaddate = "YYYY-MM-DD"
-thumbnailurl = "https://img.youtube.com/vi/CHANGE_THIS/hqdefault.jpg"
-contenturl = "https://www.youtube.com/watch?v=CHANGE_THIS"
-embedurl = "https://www.youtube-nocookie.com/embed/CHANGE_THIS"
-+++
+  # Video URLs can be any, YouTube provided as a guide only
+  [semweb.video]
+  name = "Trailer Title"
+  description = "Official trailer"
+  uploaddate = "YYYY-MM-DD"
+  thumbnailurl = "https://img.youtube.com/vi/CHANGE_THIS/hqdefault.jpg"
+  contenturl = "https://www.youtube.com/watch?v=CHANGE_THIS"
+  embedurl = "https://www.youtube-nocookie.com/embed/CHANGE_THIS"
+
+  +++
   ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
   HOW TO USE
   ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -135,26 +142,31 @@ embedurl = "https://www.youtube-nocookie.com/embed/CHANGE_THIS"
       .Param "license"
 
     Product
-      .Params.images
+      $.Params.images
       .Params.semweb.type
       .Params.semweb.product.name
-      .Params.semweb.product.alternatename
+      .Params.semweb.product.alternatenames
       .Params.semweb.product.sameas
       .Params.semweb.product.countryoforigin
       .Params.semweb.product.description
       .Params.semweb.actor
       .Params.semweb.actor.name
+      .Params.semweb.actor.alternatenames
       .Params.semweb.actor.sameas
       .Params.semweb.character
       .Params.semweb.character.name
+      .Params.semweb.character.alternatenames
       .Params.semweb.director
       .Params.semweb.director.name
+      .Params.semweb.director.alternatenames
       .Params.semweb.director.sameas
       .Params.semweb.product.isbasedon
       .Params.semweb.product.isbasedon.name
+      .Params.semweb.product.isbasedon.alternatenames
       .Params.semweb.product.isbasedon.sameas
       .Params.semweb.product.isbasedon.author
       .Params.semweb.product.isbasedon.author.name
+      .Params.semweb.product.isbasedon.author.alternatenames
       .Params.semweb.product.isbasedon.author.sameas
       .Params.semweb.product.datepublished
       .Params.semweb.product.categories
@@ -203,7 +215,17 @@ embedurl = "https://www.youtube-nocookie.com/embed/CHANGE_THIS"
     * https://schema.org/Movie
     * https://schema.org/TVSeries
     * https://schema.org/Book
+*/ -}}
 
+{{- /*
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  THEME VARIATIONS
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+  Generic:
+    - "image": [ {{ range $n, $v := $.Params.images }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],
+  Future Imperfect Slim:
+    - "image": [ {{ range $n, $v := $.Params.images }}{{ if $n }}, {{ end }}"{{ .src }}"{{ end }} ],
 */ -}}
 <script type="application/ld+json">
   {
@@ -214,9 +236,9 @@ embedurl = "https://www.youtube-nocookie.com/embed/CHANGE_THIS"
     "itemReviewed": {
       "@type": "{{ .Params.semweb.type }}",
       "name": "{{ .Params.semweb.product.name }}",
-      {{ with .Params.semweb.product.alternatename }}"alternateName": "{{ . }}",{{ end }}
-      "sameAs": "{{ .Params.semweb.product.sameas }}",
-      "image": [ {{ range $n, $v := .Params.images }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],
+      {{ with .Params.semweb.product.alternatenames }}"alternateName": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
+      "sameAs": [ {{ range $n, $v := .Params.semweb.product.sameas }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],
+      "image": [ {{ range $n, $v := $.Params.images }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],
       "countryOfOrigin": "{{ .Params.semweb.product.countryoforigin }}",
       "description": "{{ .Params.semweb.product.description }}",
       {{- if .Params.semweb.actor }}
@@ -224,7 +246,8 @@ embedurl = "https://www.youtube-nocookie.com/embed/CHANGE_THIS"
       {{- range $n, $v := $.Params.semweb.actor }}{{ if $n -}},{{- end }}
         {
           "name": "{{ .name }}",
-          "sameAs": "{{ .sameas }}",
+          {{ with .alternatenames }}"alternateName": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
+          {{ with .sameas }}"sameAs": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
           "@type": "Person"
         }
       {{- end }}
@@ -235,6 +258,8 @@ embedurl = "https://www.youtube-nocookie.com/embed/CHANGE_THIS"
       {{- range $n, $v := $.Params.semweb.character }}{{ if $n -}},{{- end }}
         {
           "name": "{{ .name }}",
+          {{ with .alternatenames }}"alternateName": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
+          {{ with .sameas }}"sameAs": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
           "@type": "Person"
         }
       {{- end }}
@@ -246,7 +271,8 @@ embedurl = "https://www.youtube-nocookie.com/embed/CHANGE_THIS"
       {{- range $n, $v := $.Params.semweb.director }}{{ if $n -}},{{- end }}
         {
           "name": "{{ .name }}",
-          "sameAs": "{{ .sameas }}",
+          {{ with .alternatenames }}"alternateName": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
+          {{ with .sameas }}"sameAs": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
           "@type": "Person"
         }
       {{- end }}
@@ -274,10 +300,12 @@ embedurl = "https://www.youtube-nocookie.com/embed/CHANGE_THIS"
       {{ if .Params.semweb.product.isbasedon -}}
       "isBasedOn": {
         "name": "{{ .Params.semweb.product.isbasedon.name }}",
-        "sameAs": "{{ .Params.semweb.product.isbasedon.sameas }}",
+        {{ with .Params.semweb.product.isbasedon.alternatenames }}"alternateName": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
+        {{ with .Params.semweb.product.isbasedon.sameas }}"sameAs": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
         "author": {
           "name": "{{ .Params.semweb.product.isbasedon.author.name }}",
-          "sameAs": "{{ .Params.semweb.product.isbasedon.author.sameas }}",
+          {{ with .Params.semweb.product.isbasedon.author.alternatenames }}"alternateName": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
+          {{ with .Params.semweb.product.isbasedon.author.sameas }}"sameAs": [ {{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],{{ end }}
           "@type": "Person"
         },
         "@type": "CreativeWork"
@@ -299,12 +327,12 @@ embedurl = "https://www.youtube-nocookie.com/embed/CHANGE_THIS"
     },
     "publisher": {
       "name": "{{ .Param "semweb.publisher.name" }}",
-      "sameAs": "{{ .Param "semweb.publisher.sameas" }}",
+      "sameAs": [ {{ with .Params.semweb.publisher.sameas }}{{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }}{{ else }}{{ .Site.Params.semweb.publisher.sameas }}{{ end }} ],
       "@type": "Organization"
     },
     "author": {
       "name": "{{ .Param "author" }}",
-      "sameAs": "{{ with .Params.semweb.author.sameas }}{{ . }}{{ else }}{{ .Site.Params.ownerhomepage }}{{ end }}",
+      "sameAs": [ {{ with .Params.semweb.author.sameas }}{{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }}{{ else }}{{ .Site.Params.ownerhomepage }}{{ end }} ],
       "@type": "Person"
     },
     "inLanguage": "{{ .Language.Params.languagecodehtml }}",
