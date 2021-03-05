@@ -2,24 +2,16 @@
   {{ partial "schemas/schema_WebSite.html" . }}
 {{- else if .IsPage -}}
 
-  {{- if or (in .Params.contenttypes "AggregateRating") -}}
-    {{ partial "schemas/schema_AggregateRating.html" . }}
-  {{- end -}}
-
-  {{- if or (eq .Type "article") (in .Params.contenttypes "Article") -}}
+  {{- if or (in .Params.contenttypes "Article") -}}
     {{ partial "schemas/schema_Article.html" . }}
   {{- end -}}
 
-  {{- if or (eq .Type "blog") (in .Params.contenttypes "BlogPosting") -}}
+  {{- if or (in .Params.contenttypes "BlogPosting") -}}
     {{ partial "schemas/schema_BlogPosting.html" . }}
   {{- end -}}
 
   {{- if or (in .Params.contenttypes "BreadcrumbList") -}}
     {{ partial "schemas/schema_BreadcrumbList.html" . }}
-  {{- end -}}
-
-  {{- if or (in .Params.contenttypes "Course") -}}
-    {{ partial "schemas/schema_Course.html" . }}
   {{- end -}}
 
   {{- if or (in .Params.contenttypes "CriticReview") -}}
@@ -32,18 +24,6 @@
 
   {{- if or (in .Params.contenttypes "LocalBusiness") -}}
     {{ partial "schemas/schema_LocalBusiness.html" . }}
-  {{- end -}}
-
-  {{- if or (in .Params.contenttypes "LocalBusiness_Legal") -}}
-    {{ partial "schemas/schema_LocalBusiness_Legal.html" . }}
-  {{- end -}}
-
-  {{- if or (in .Params.contenttypes "LocalBusiness_Notary") -}}
-    {{ partial "schemas/schema_LocalBusiness_Notary.html" . }}
-  {{- end -}}
-
-  {{- if or (in .Params.contenttypes "LocalBusiness_Store") -}}
-    {{ partial "schemas/schema_LocalBusiness_Store.html" . }}
   {{- end -}}
 
   {{- if or (in .Params.contenttypes "Person") -}}
@@ -66,24 +46,12 @@
     {{ partial "schemas/schema_SiteNavigationElement.html" . }}
   {{- end -}}
 
-  {{- if or (in .Params.contenttypes "SpeakableSpecification") -}}
-    {{ partial "schemas/schema_SpeakableSpecification.html" . }}
-  {{- end -}}
-
   {{- if or (in .Params.contenttypes "VideoObject") -}}
     {{ partial "schemas/schema_VideoObject.html" . }}
   {{- end -}}
 
-  {{- if or (in .Params.contenttypes "ViewAction") -}}
-    {{ partial "schemas/schema_ViewAction.html" . }}
-  {{- end -}}
-
   {{- if or (in .Params.contenttypes "WebSite") -}}
     {{ partial "schemas/schema_WebSite.html" . }}
-  {{- end -}}
-
-  {{- if or (in .Params.contenttypes "WPHeader") -}}
-    {{ partial "schemas/schema_WPHeader.html" . }}
   {{- end -}}
 
 {{- end }}
