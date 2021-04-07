@@ -1,3 +1,6 @@
+{{- /* mainEntityOfPage vs sameAs vs url vs about
+  https://schema.org/mainEntityOfPage
+*/ -}}
 <script type="application/ld+json">
 {
   "@context":"http://schema.org",
@@ -6,9 +9,14 @@
   "dateModified": "{{ .Lastmod.UTC.Format "2006-01-02T15:04:05Z" | safeHTML }}",
   "headline":"{{ .Title }}",
   "image": [ {{ range $n, $v := $.Params.images }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],
+  "mainEntityOfPage": [ {{ range $n, $v := .AllTranslations }}{{ if $n }}, {{ end }}"{{ .Permalink }}"{{ end }} ],
   "publisher": {
     "name": "{{ .Param "semweb.publisher.name" }}",
     "sameAs": [ {{ with .Params.semweb.publisher.sameas }}{{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }}{{ else }}{{ .Site.Params.semweb.publisher.sameas }}{{ end }} ],
+    "logo": {
+      "url": "{{ .Site.Params.logourl | absURL }}",
+      "@type":"ImageObject"
+    },
     "@type": "Organization"
   },
   "author": {
