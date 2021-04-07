@@ -1,42 +1,26 @@
-<!-- Source: Mashable Post -->
-
 <script type="application/ld+json">
 {
-    "@context":"http://schema.org",
-    "@type":"Article",
-    "headline":"{{ .Title }}",
-    "url":"{{ .Permalink }}",
-    "keywords":[ {{ if .Keywords }}
-    {{ range $i, $e := .Keywords }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}
-    {{ else }}
-    {{ range $i, $e := .Site.Params.keywords }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}{{ end }}
-    ],
-    "image":{
-        "@type":"ImageObject", {{ with .Resources.Match "icon" }}{{ range . }}
-        "url": "{{ .Permalink }}", {{ end }}{{ end }}
-        "width":"1200",
-        "height":"627"
-    },
-    "mainEntityOfPage":"True",
-    "publisher":{
-        "@type":"Organization",
-        "name":"{{ .Site.Params.name }}",
-        "url":"{{ .Site.BaseURL }}",
-        "logo":{
-            "@type":"ImageObject",
-            "url":"{{ .Site.Params.logourl | absURL }}",
-            "width":"357",
-            "height":"60"
-        }
-    },
-    "dateCreated":"{{ .Date.UTC.Format "2006-01-02T15:04:05Z" | safeHTML }}",
-    "datePublished":"{{ .PublishDate.UTC.Format "2006-01-02T15:04:05Z" | safeHTML }}",
-    {{ if isset .Params "author" }}
-    {{ $author := index .Site.Data.team .Params.author }}
-    "author":"{{ $author.name }}",
-    "creator":"{{ $author.name }}",
-    {{ end }}
-    "dateModified":"{{ .Lastmod.UTC.Format "2006-01-02T15:04:05Z" | safeHTML }}",
-    "articleSection":"TechArticle"
+  "@context":"http://schema.org",
+  "@type":"Article",
+  "datePublished": "{{ .PublishDate.UTC.Format "2006-01-02T15:04:05Z" | safeHTML }}",
+  "dateModified": "{{ .Lastmod.UTC.Format "2006-01-02T15:04:05Z" | safeHTML }}",
+  "headline":"{{ .Title }}",
+  "image": [ {{ range $n, $v := $.Params.images }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],
+  "publisher": {
+    "name": "{{ .Param "semweb.publisher.name" }}",
+    "sameAs": [ {{ with .Params.semweb.publisher.sameas }}{{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }}{{ else }}{{ .Site.Params.semweb.publisher.sameas }}{{ end }} ],
+    "@type": "Organization"
+  },
+  "author": {
+    "name": "{{ .Param "author" }}",
+    "sameAs": [ {{ with .Params.semweb.author.sameas }}{{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }}{{ else }}{{ .Site.Params.ownerhomepage }}{{ end }} ],
+    "@type": "Person"
+  },
+  "inLanguage": "{{ .Language.Params.languagecodehtml }}",
+  "url": [ {{ range $n, $v := .AllTranslations }}{{ if $n }}, {{ end }}"{{ .Permalink }}"{{ end }} ],
+  "keywords": [ {{ range $n, $v := .Params.keywords }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],
+  "acquireLicensePage": "{{ .Param "license" }}",
+  "license": "{{ .Param "license" }}",
+  "usageInfo": "{{ .Param "license" }}"
 }
 </script>
