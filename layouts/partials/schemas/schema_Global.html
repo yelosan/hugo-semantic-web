@@ -30,6 +30,10 @@
     {{ partial "schemas/schema_Person.html" . }}
   {{- end -}}
 
+  {{- if or (in .Params.contenttypes "Photograph") -}}
+    {{ partial "schemas/schema_Photograph.html" . }}
+  {{- end -}}
+
   {{- if or (in .Params.contenttypes "QuestionAnswers") -}}
     {{ partial "schemas/schema_Question_Answers.html" . }}
   {{- end -}}
