@@ -38,9 +38,9 @@
   # If different from default author
   #author = ""
   #sameas = [""]
-  name = "NAME of the image"
+  #name = "NAME of the image"
   about = "Subject of the image"
-  caption = "some caption"
+  #caption = "some caption"
   url = "https://"
   #contentlocation = ""
   #contentreferencetime = "YYYY-MM-DD"
@@ -101,14 +101,14 @@
     "image": [
     {{- range $n, $v := $.Params.semweb.image }}{{ if $n -}},{{ end }}
       {
-        "name": "{{ .name }}",
+        {{ with .name }}"name": "{{ . }}",{{ end }}
         "author": {
           "name": {{ with .author }}"{{ . }}"{{ else }}{{ $.Site.Params.author }}{{ end }},
           "sameAs": [ {{ with .Params.semweb.author.sameas }}{{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }}{{ else }}{{ $.Site.Params.ownerhomepage }}{{ end }} ],
           "@type": "Person"
         },
         "about": "{{ .about }}",
-        "caption": "{{ .caption }}",
+        {{ with .caption }}"caption": "{{ . }}",{{ end }}
         "contentURL": "{{ .url }}",
         {{ with .contentlocation }}"contentLocation": "{{ . }}",{{ end }}
         {{ with .contentreferencetime }}"contentReferenceTime": "{{ . }}",{{ end }}
