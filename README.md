@@ -1,17 +1,17 @@
-## Structured Data for [Hugo](https://gohugo.io)
+# Structured Data for [Hugo](https://gohugo.io)
 Collection of structured data snippets in Google preferred JSON-LD format, with support for Hugo.
 
 This uses the [Hugo pipelines](https://gohugo.io/themes/theme-components/) introduced in [Hugo 0.42](https://gohugo.io/news/0.42-relnotes/)
 
-### Usage
+## Usage
 Start by adding this theme to your website in the config file:
 
-#### TOML:
+### TOML:
 ```toml
 theme = ["hugo-structured-data", "my-theme"]
 ```
 
-#### YAML:
+### YAML:
 ```yaml
 theme:
 - your-own-theme
@@ -27,7 +27,7 @@ Add this snippet to the `<head>` of your baseof.html
 
 Add `contenttypes` to the parameters of the pages you would like to include the schemes in.
 
-#### TOML:
+### TOML:
 ```toml
 +++
 title = "Some person"
@@ -36,7 +36,7 @@ contenttypes = ["Person"]
 +++
 ```
 
-#### YAML:
+### YAML:
 ```yaml
 ---
 title: "Some person"
@@ -47,7 +47,7 @@ contenttypes: ["Person"]
 
 Or another example
 
-#### TOML:
+### TOML:
 ```toml
 +++
 title = "This is a blog and article"
@@ -56,7 +56,7 @@ contenttypes = ["BlogPosting, "Article"]
 +++
 ```
 
-#### YAML:
+### YAML:
 ```yaml
 ---
 title: "This is a blog and article"
@@ -67,7 +67,7 @@ contenttypes: ["BlogPosting, "Article"]
 
 Other available properties are:
 
-#### TOML:
+### TOML:
 ```toml
 +++
 type = "blog"
@@ -79,7 +79,7 @@ contenttypes = ["BlogPosting"]
 +++
 ```
 
-#### YAML:
+### YAML:
 ```yaml
 ---
 type: blog
@@ -95,7 +95,7 @@ In this case the author of the file will be `notmartijn` instead of the default 
 
 To add, change or remove locations or authors look in the data folder.
 
-### Attributions
+## Attributions
 Based on / forked from:
 * [HugoStructuredData](https://github.com/Baseflow/HugoStructuredData) by [Baseflow](https://github.com/Baseflow)
 * [Structured-Data-JSON-LD](https://github.com/JayHoltslander/Structured-Data-JSON-LD) by [JayHoltslander](https://github.com/JayHoltslander)
