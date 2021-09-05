@@ -21,3 +21,9 @@ params:
     instagram: "YourOnly.One"
     youtube: ""
     linkedin: ""
+
+#module:
+#  hugoVersion:
+#    #extended: true
+#    min: 0.88.0
+#    #max: ''
