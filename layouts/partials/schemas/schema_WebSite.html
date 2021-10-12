@@ -43,7 +43,7 @@
     .Site.Params.keywords
     .Site.Params.logourl
     .Site.Params.images
-    .Site.Params.author
+    $.Param "author.name"
     .Site.Params.issn
     .Site.Params.siteowner.given_name
     .Site.Params.siteowner.middle_name
@@ -52,7 +52,7 @@
     .Site.Params.knowslanguages
     .Site.Params.nationality
     .Site.Params.alternatenames
-    .Site.Params.ownerhomepage
+    $.Param "author.homepage"
     .Site.Params.copyrightnotice
     .Site.Params.copyrightyear
     .Site.Params.license
@@ -77,7 +77,7 @@
     "description": "{{ .Site.Params.description }}",
     "image": [ {{ range $i, $e := .Site.Params.images }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
     "url": "{{ .Site.BaseURL }}",
-    "author": "{{ .Site.Params.author }}",
+    "author": "{{ $.Param "author.name" }}",
     {{ with .Site.Params.issn }}"issn": "{{ . }}",{{ end }}
     "copyrightHolder": {
       "givenName": "{{ .Site.Params.siteowner.given_name }}",
@@ -93,7 +93,7 @@
     "copyrightNotice": "{{ .Site.Params.copyrightnotice }}",
     "copyrightYear": "{{ .Site.Params.copyrightyear }}",
     "creativeWorkStatus": "Published",
-    "creditText": "{{ .Site.Params.author }} {{ .Site.Params.ownerhomepage }}",
+    "creditText": "{{ $.Param "author.name" }} {{ $.Param "author.homepage" }}",
     "datePublished": "{{ .Site.Params.copyrightyear }}",
     "acquireLicensePage": "{{ .Site.Params.license }}",
     "license": "{{ .Site.Params.license }}",
