@@ -1,0 +1,86 @@
+{{- /*
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  BGN: SEMANTIC WEB
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+  ****************************
+  ** Syntax: JSON-LD        **
+  ** Vocab: schema.org      **
+  **                        **
+  ** Schema: Organization   **
+  ****************************
+
+  Special uses:
+    - Site logo: https://developers.google.com/search/docs/advanced/structured-data/logo
+
+  Links:
+    - https://www.w3.org/standards/semanticweb/
+    - https://schema.org/Organization
+
+  History:
+    - v1.0.0: 2021-10-16T06:00:00 - initial release
+
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  END: SEMANTIC WEB
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/ -}}
+{{- /*
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  BGN: HOW TO USE
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+  * Used in: .IsHome
+  * Usage: automatic
+
+  * Important: This was designed to only support one organization per project.
+    Support for multiple organizations might be added in the future.
+
+  * Required:
+    - If you are using /data/orgs/filename.toml, add this in your config.toml or params.toml file:
+      [org]
+        name = "filename of the org you want to use"
+
+    - If you are not using /data/orgs/filename.toml, then add these in your config.toml or params.toml file:
+      [org]
+        name = ""                                                           # required (template)
+        descriptionshort = ""                                               # required (template)
+        descriptionlong = ""
+        logo = ""                                                           # required (google)
+        url = ""                                                            # required (google)
+        #email = ""
+
+        [[brand]]
+          name = ""
+          url = ""                                                          # optional
+
+        [[founder]]
+          name = ""
+          url = ""                                                          # optional
+
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  END: HOW TO USE
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/ -}}
+{{- $orgs := or (index .Site.Data.orgs .Site.Params.org.name) (.Site.Params.org) -}}
+{
+  "@context": "https://schema.org",
+  "logo": "{{ $orgs.logo }}",
+  "url": "{{ $orgs.url }}",
+  {{ with $orgs.brand }}"brand": [
+    { {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+      {{ with .url }}"url": "{{ . }}",{{ end }}
+      "name": "{{ .name }}"
+    }{{ end }}
+  ],{{ end }}
+  {{ with $orgs.email }}"email": "{{ . }}",{{ end }}
+  {{ with $orgs.founder }}"founder": [
+    { {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+      {{ with .url }}"url": "{{ . }}",{{ end }}
+      "name": "{{ .name }}",
+      "@type": "Person"
+    }{{ end }}
+  ],{{ end }}
+  "name": "{{ $orgs.name }}",
+  "description": "{{ $orgs.descriptionshort }}",
+  "@type": "Organization"
+}
