@@ -1,115 +1,70 @@
 {{- /*
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-  SEMANTIC WEB
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-  ****************************
-  ** Syntax: JSON-LD        **
-  ** Vocab: schema.org      **
-  **                        **
-  ** Schema: WebSite        **
-  ****************************
+	****************************
+	** Syntax: JSON-LD        **
+	** Vocab: schema.org      **
+	**                        **
+	** Schema: WebSite        **
+	****************************
 
-  Links:
-    - https://www.w3.org/standards/semanticweb/
-    - https://schema.org/WebSite
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-  SEMANTIC WEB
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-*/ -}}
+	Links:
+		- https://www.w3.org/standards/semanticweb/
+		- https://schema.org/WebSite
 
-{{- /*
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-  HOW TO USE
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-  1. Loads automatically in the frontpage.
-  2. It can be called manually elsewhere but is not advisable.
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-  HOW TO USE
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-*/ -}}
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: HOW TO USE
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-{{- /*
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-  HUGO Params used
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	* Usage: automatic
 
-    .Site.BaseURL
-    .Site.Title
-    .Language.Params.languagecodehtml
+	* Important: This was designed to only support one organization per project.
+		Support for multiple organizations may be added in the future.
 
-    .Site.Params.description
-    .Site.Params.keywords
-    .Site.Params.logourl
-    .Site.Params.images
-    $.Param "author.name"
-    .Site.Params.issn
-    .Site.Params.siteowner.given_name
-    .Site.Params.siteowner.middle_name
-    .Site.Params.siteowner.family_name
-    .Site.Params.gender
-    .Site.Params.knowslanguages
-    .Site.Params.nationality
-    .Site.Params.alternatenames
-    $.Param "author.homepage"
-    .Site.Params.copyrightnotice
-    .Site.Params.copyrightyear
-    .Site.Params.license
-    .Site.Params.awards
+	* Place the following in /data/orgs/FILENAME.md
 
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-  HUGO Params used
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-*/ -}}
+	* Then in your [hugo|params|config].[toml|yaml|json] file, add the following:
+		[semweb]
+		org = "FILENAME"
 
-{{- /*
-  add "translationOfWork": ""
-  add "translator": ""
-*/ -}}
-<script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "WebSite",
-    "@id": "{{ .Site.BaseURL }}",
-    "additionalType": ["CreativeWork", "Person"],
-    "name": "{{ .Site.Title }}",
-    "description": "{{ .Site.Params.description }}",
-    "image": [ {{ range $i, $e := .Site.Params.images }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
-    "url": "{{ .Site.BaseURL }}",
-    "author": "{{ $.Param "author.name" }}",
-    {{ with .Site.Params.issn }}"issn": "{{ . }}",{{ end }}
-    "copyrightHolder": {
-      "givenName": "{{ .Site.Params.siteowner.given_name }}",
-      "additionalName": "{{ .Site.Params.siteowner.middle_name }}",
-      "familyName": "{{ .Site.Params.siteowner.family_name }}",
-      "gender": "{{ .Site.Params.gender }}",
-      "knowsLanguage": [ {{ range $i, $e := .Site.Params.knowslanguages }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
-      "nationality": "{{ .Site.Params.nationality }}",
-      "alternateName": [ {{ range $i, $e := .Site.Params.alternatenames }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
-      "url": "{{ .Site.Params.ownerhomepage | safeHTML }}",
-      "@type": "Person"
-    },
-    "copyrightNotice": "{{ .Site.Params.copyrightnotice }}",
-    "copyrightYear": "{{ .Site.Params.copyrightyear }}",
-    "creativeWorkStatus": "Published",
-    "creditText": "{{ $.Param "author.name" }} {{ $.Param "author.homepage" }}",
-    "datePublished": "{{ .Site.Params.copyrightyear }}",
-    "acquireLicensePage": "{{ .Site.Params.license }}",
-    "license": "{{ .Site.Params.license }}",
-    "usageInfo": "{{ .Site.Params.license }}",
-    {{ with .Site.Params.awards }}"award": [ {{ range $i, $e := .Site.Params.awards }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],{{ end }}
-    "inLanguage": "{{ .Language.Params.languagecodehtml }}",
-    "keywords": [ {{ range $i, $e := .Site.Params.keywords }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
-    "publisher": {
-      "name": "{{ .Site.Title }}",
-      "logo": {
-        "url": "{{ .Site.Params.logourl | absURL }}",
-        "height": 60,
-        "width": 107,
-        "@type": "ImageObject"
-      },
-      "@type": "Organization"
-    }
-  }
-</script>
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: HOW TO USE
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/}}
+		{
+			"@type": "WebSite",
+			"@id": "{{ .Site.Params.semweb.id }}#website",
+			"name": "{{ .Site.Params.semweb.name }}",
+			"description": "{{ .Site.Params.description }}",
+			"url": "{{ .Site.Params.semweb.url }}",
+			{{ with .Site.Params.semweb.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			"inLanguage": "{{ .Language.Params.languagecodehtml }}",
+			{{ with .Site.Params.semweb.issn }}"issn": "{{ . }}",{{ end }}
+			"author": {
+				"@id": "{{ .Site.Params.semweb.creator }}"
+			},
+			"creator": {
+				"@id": "{{ .Site.Params.semweb.creator }}"
+			},
+			"publisher": {
+				"@id": "{{ .Site.Params.semweb.publisher }}"
+			},
+			"copyrightHolder": {
+				"@id": "{{ .Site.Params.semweb.copyrightholder }}"
+			},
+			"creativeWorkStatus": "Published",
+			"datePublished": "{{ .Site.Params.semweb.datefirstpublished }}",
+			"copyrightYear": "{{ .Site.Params.semweb.copyrightyear }}",
+			"copyrightNotice": "{{ .Site.Params.semweb.copyrightnotice }}",
+			"creditText": "{{ $.Param "semweb.credittext" }}",
+			"license": "{{ .Site.Params.semweb.license }}",
+			{{ with .Site.Params.semweb.acquirelicensepage }}"acquireLicensePage": "{{ . }}",{{ end }}
+			{{ with .Site.Params.semweb.acquirelicensepage }}"usageInfo": "{{ . }}",{{ end }}
+			"keywords": [ {{ range $i, $e := .Site.Params.keywords }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ]
+		}

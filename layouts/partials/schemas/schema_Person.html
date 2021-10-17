@@ -1,64 +1,91 @@
-{{ if isset .Params "author" }}
-{{ $author := index .Site.Data.team .Params.author }}
-{{ $location := index .Site.Data.location .Site.Params.primarylocation }}
-<script type="application/ld+json">
-{
-"@context": "http://www.schema.org",
-"@type": "Person",
-"@id": "{{ .Permalink }}",
-"name": "{{ $author.name }}",
-"alternateName": "{{ $author.name }}",
-{{ if $author.nationality }}"nationality": "{{ $author.nationality }}",{{ end }}
-{{ if $author.address }}
-"birthPlace" : {
-	"@type": "Place",
-    "address": {
-  		"@type": "PostalAddress",
-		"addressLocality": "{{ $author.address.city }}",
-		"addressRegion": "{{ $author.address.region }}",
-        "addressCountry": "{{ $author.address.country }}"
-	}
-},{{ end }}
-"affiliation": [
-	{
-		"@type": "Organization",
-		"name": "{{ .Site.Params.name }}",
-		"sameAs": [ {{ partial "schemas/schema_Social.html" .Site.Params }}
-		]
-  	}
-],
-{{ if $author.education }}
-"alumniOf": [
-	{
-	 "@type": "CollegeOrUniversity",
-	 "name": "{{ $author.education.university }}",
-	 "sameAs": "{{ $author.education.url }}"
-	}
-],
-{{ end }}
-{{ if $author.gender }}"gender": "{{ $author.gender }}",{{ end }}
-{{ if $author.jobfunction }}"Description": "{{ $author.jobfunction }}",{{ end }}
-{{ if $author.description }}"disambiguatingDescription": "{{ $author.description }},{{ end }}
-{{ if $author.jobtitle }}"jobTitle": "{{ $author.jobtitle }}",{{ end }}
-"worksFor": [
-	{
-		"@type": "Organization",
-		"name": "{{ .Site.Params.name }}",
-		"sameAs": [ {{ partial "schemas/schema_Social.html" .Site.Params }}
-		]
-	}
-],
-"url": "{{ .Site.BaseURL }}",
-"image": "{{ $author.thumbnail | absURL }}",
-{{ if $author.address }}
-"address": {
-	"@type": "PostalAddress",
-	"addressLocality": "{{ $author.address.city }}",
-	"addressRegion": "{{ $author.address.region }}",
-	"addressCountry": "{{ $author.address.country }}"
-},{{ end }}
-"sameAs": [ {{ partial "schemas/schema_Social.html" $author }}
-	]
-}
-</script>
-{{ end }}
+{{- /*
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+	****************************
+	** Syntax: JSON-LD        **
+	** Vocab: schema.org      **
+	**                        **
+	** Schema: Person         **
+	****************************
+
+	Links:
+		- https://www.w3.org/standards/semanticweb/
+		- https://schema.org/Person
+
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: HOW TO USE
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+	* Usage: automatic
+
+	* Important: This was designed to only support one organization per project.
+		Support for multiple organizations may be added in the future.
+
+	* Place the following in /data/orgs/FILENAME.md
+
+	* Then in your [hugo|params|config].[toml|yaml|json] file, add the following:
+		[semweb]
+		org = "FILENAME"
+
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: HOW TO USE
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/}}
+{{- $person := index .Site.Data.persons (.Param "semweb.person") -}}
+{{- $personphotoid := "" }}
+		{
+			"@type": "Person",
+			"@id": "{{ $person.id }}",
+			"name": "{{ $person.name }}",
+			{{ with $person.additionalname }}"additionalName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			"description": "{{ $person.descriptionlong }}",
+			"mainEntityOfPage": "{{ $person.mainentityofpage }}",
+			"url": "{{ $person.homepage }}",
+			{{ with $person.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			"image": [
+				{ {{ range $i, $v := $person.image }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .url }}{{ if eq .photo true }}#photo{{ $personphotoid = .url }}{{ end }}",
+					{{ with .caption }}"caption": "{{ . }}",{{ end }}
+					"url": "{{ .url }}",
+					"@type": "ImageObject"
+				}{{ end }}
+			],
+			{{ with $person.affiliation }}"affiliation": [
+				{
+					"@id": "{{ . }}",
+					{{ with $person.name }}"name": "{{ . }}",{{ end }}
+					{{ with $person.url }}"url": "{{ . }}",{{ end }}
+					"@type": "Organization"
+				}
+			],{{ end }}
+			{{ with $person.worksfor }}"worksFor": [
+				{
+					"@id": "{{ . }}",
+					{{ with $person.name }}"name": "{{ . }}",{{ end }}
+					{{ with $person.url }}"url"; "{{ . }}",{{ end }}
+					"@type": "Organization"
+				}
+			],{{ end }}
+			{{- /*
+			{{ with $person.brand }}"brand": [
+				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}",
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					"@type": "Brand"
+				}{{ end }}
+			],{{ end }}
+			*/}}
+			{{ with $person.nationality }}"nationality": [
+				{
+					"name": "{{ . }}",
+					"@type": "Country"
+				}
+			]{{ end }}
+		}

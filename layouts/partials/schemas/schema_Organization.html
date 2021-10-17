@@ -1,86 +1,126 @@
 {{- /*
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-  BGN: SEMANTIC WEB
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-  ****************************
-  ** Syntax: JSON-LD        **
-  ** Vocab: schema.org      **
-  **                        **
-  ** Schema: Organization   **
-  ****************************
+	****************************
+	** Syntax: JSON-LD        **
+	** Vocab: schema.org      **
+	**                        **
+	** Schema: Organization   **
+	****************************
 
-  Special uses:
-    - Site logo: https://developers.google.com/search/docs/advanced/structured-data/logo
+	Special uses:
+		- Site logo: https://developers.google.com/search/docs/advanced/structured-data/logo
 
-  Links:
-    - https://www.w3.org/standards/semanticweb/
-    - https://schema.org/Organization
+	Links:
+		- https://www.w3.org/standards/semanticweb/
+		- https://schema.org/Organization
 
-  History:
-    - v1.0.0: 2021-10-16T06:00:00 - initial release
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-  END: SEMANTIC WEB
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-*/ -}}
-{{- /*
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-  BGN: HOW TO USE
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: HOW TO USE
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-  * Used in: .IsHome
-  * Usage: automatic
+	* Usage: automatic
 
-  * Important: This was designed to only support one organization per project.
-    Support for multiple organizations might be added in the future.
+	* Important: This was designed to only support one organization per project.
+		Support for multiple organizations may be added in the future.
 
-  * Required:
-    - If you are using /data/orgs/filename.toml, add this in your config.toml or params.toml file:
-      [org]
-        name = "filename of the org you want to use"
+	* Place the following in /data/orgs/FILENAME.md
+		id = ""																														# format: URL/#fragment-identifier
+		name = ""																													# required
+		legalname = ""																										# required
+		description = ""																									# required
+		url = ""																													# required (Google)
+		#sameas = [""]																											# optional (template)
+		#foundingdate = ""																									# optional; YYYY-MM-DD
 
-    - If you are not using /data/orgs/filename.toml, then add these in your config.toml or params.toml file:
-      [org]
-        name = ""                                                           # required (template)
-        descriptionshort = ""                                               # required (template)
-        descriptionlong = ""
-        logo = ""                                                           # required (google)
-        url = ""                                                            # required (google)
-        #email = ""
+		[[image]]
+		id = ""																														# format: URL/
+		caption = ""																											# required
+		url = ""																													# required
+		logo = false																											# default: false; set to true if organization logo
 
-        [[brand]]
-          name = ""
-          url = ""                                                          # optional
+		[[founder]]
+		id = ""																														# format: URL/#fragment-identifier
+		#name = ""																													# optional if ID is pointing to Person-type
+		#url = ""																													# optional
 
-        [[founder]]
-          name = ""
-          url = ""                                                          # optional
+	* Then in your [hugo|params|config].[toml|yaml|json] file, add the following:
+		[semweb]
+		org = "FILENAME"
 
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-  END: HOW TO USE
-  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-*/ -}}
-{{- $orgs := or (index .Site.Data.orgs .Site.Params.org.name) (.Site.Params.org) -}}
-{
-  "@context": "https://schema.org",
-  "logo": "{{ $orgs.logo }}",
-  "url": "{{ $orgs.url }}",
-  {{ with $orgs.brand }}"brand": [
-    { {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
-      {{ with .url }}"url": "{{ . }}",{{ end }}
-      "name": "{{ .name }}"
-    }{{ end }}
-  ],{{ end }}
-  {{ with $orgs.email }}"email": "{{ . }}",{{ end }}
-  {{ with $orgs.founder }}"founder": [
-    { {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
-      {{ with .url }}"url": "{{ . }}",{{ end }}
-      "name": "{{ .name }}",
-      "@type": "Person"
-    }{{ end }}
-  ],{{ end }}
-  "name": "{{ $orgs.name }}",
-  "description": "{{ $orgs.descriptionshort }}",
-  "@type": "Organization"
-}
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: HOW TO USE
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/}}
+{{- $org := index .Site.Data.orgs .Site.Params.semweb.org -}}
+{{- $orglogoid := "" }}
+		{
+			"@type": "Organization",
+			"@id": "{{ $org.id }}",
+			"name": "{{ $org.name }}",
+			"legalName": "{{ $org.legalname }}",
+			"description": "{{ $org.description }}",
+			"url": "{{ $org.url }}",
+			{{ with $org.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			"image": [
+				{ {{ range $i, $v := $org.image }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .url }}{{ if eq .logo true | default false }}#logo{{ $orglogoid = .url }}{{ end }}",
+					{{ with .caption }}"caption": "{{ . }}",{{ end }}
+					"url": "{{ .url }}",
+					"@type": "ImageObject"
+				}{{ end }}
+			],
+			{{ with $orglogoid }}"logo": {
+				"@id": "{{ . }}#logo"
+			},{{ end }}
+			{{- /*
+			{{ with $org.brand }}"brand": [
+				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}",
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					"@type": "Brand"
+				}{{ end }}
+			],{{ end }}
+			*/}}
+			{{- /*
+			"founder": [ {{ range $personskey, $personsmap := .Site.Data.persons }}
+				{{- range $personkey, $personvalue := . -}}
+				{{ with and (eq $personkey "role") (eq $personsmap.role "founder") }}
+				{
+					"@id": "{{ $personsmap.homepage }}#founder",
+					"name": "{{ $personsmap.name }}",
+					{{ with $personsmap.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+					"url": "{{ $personsmap.homepage }}",
+					"@type": "Person"
+				}
+				{{- end }}
+				{{- end -}}
+			{{ end }}
+			],
+			"founder": [ {{ range $p1, $p2 := $.Site.Data.persons }}{{ if eq $p2.role "founder" }}
+				{
+					"@id": "{{ .homepage }}#founder",
+					"name": "{{ .name }}",
+					{{ with .sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+					"url": "{{ .homepage }}",
+					"@type": "Person"
+				}{{ end }}{{ end }}
+			],
+			*/}}
+			{{ with $org.founder }}"founder": [
+				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}",
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					"@type": "Person"
+				}{{ end }}
+			],{{ end }}
+			{{ with $org.foundingdate }}"foundingDate": "{{ . }}"{{ end }}
+		}

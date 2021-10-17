@@ -325,11 +325,6 @@
       "datePublished": "{{ .Params.semweb.product.datepublished }}",
       "genre": [ {{ range $n, $v := .Params.semweb.product.categories }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ]
     },
-    "publisher": {
-      "name": "{{ .Param "semweb.publisher.name" }}",
-      "sameAs": [ {{ with .Params.semweb.publisher.sameas }}{{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }}{{ else }}{{ .Site.Params.semweb.publisher.sameas }}{{ end }} ],
-      "@type": "Organization"
-    },
     "author": {
       "name": "{{ $.Param "author.name" }}",
       "sameAs": [ {{ with .Params.semweb.author.sameas }}{{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }}{{ else }}{{ .Site.Params.ownerhomepage }}{{ end }} ],

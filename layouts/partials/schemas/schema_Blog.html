@@ -1,0 +1,114 @@
+{{- /*
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  SEMANTIC WEB
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+  ****************************
+  ** Syntax: JSON-LD        **
+  ** Vocab: schema.org      **
+  **                        **
+  ** Schema: WebSite        **
+  ****************************
+
+  Links:
+    - https://www.w3.org/standards/semanticweb/
+    - https://schema.org/WebSite
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  SEMANTIC WEB
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/ -}}
+
+{{- /*
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  HOW TO USE
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+  1. Loads automatically in the frontpage.
+  2. It can be called manually elsewhere but is not advisable.
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  HOW TO USE
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/ -}}
+
+{{- /*
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  HUGO Params used
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+    .Site.BaseURL
+    .Site.Title
+    .Language.Params.languagecodehtml
+
+    .Site.Params.description
+    .Site.Params.keywords
+    .Site.Params.logourl
+    .Site.Params.images
+    $.Param "author.name"
+    .Site.Params.issn
+    .Site.Params.siteowner.given_name
+    .Site.Params.siteowner.middle_name
+    .Site.Params.siteowner.family_name
+    .Site.Params.gender
+    .Site.Params.knowslanguages
+    .Site.Params.nationality
+    .Site.Params.alternatenames
+    $.Param "author.homepage"
+    .Site.Params.copyrightnotice
+    .Site.Params.copyrightyear
+    .Site.Params.license
+    .Site.Params.awards
+
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  HUGO Params used
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/ -}}
+
+{{- /*
+  add "translationOfWork": ""
+  add "translator": ""
+*/ -}}
+
+{
+  "@context": "http://schema.org",
+  "@type": "Blog",
+  "@id": "{{ .Site.BaseURL }}",
+  "additionalType": ["CreativeWork", "Person"],
+  "name": "{{ .Site.Title }}",
+  "description": "{{ .Site.Params.description }}",
+  "image": [ {{ range $i, $e := .Site.Params.images }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
+  "url": "{{ .Site.BaseURL }}",
+  "author": "{{ $.Param "author.name" }}",
+  {{ with .Site.Params.issn }}"issn": "{{ . }}",{{ end }}
+  "copyrightHolder": {
+    "givenName": "{{ .Site.Params.siteowner.given_name }}",
+    "additionalName": "{{ .Site.Params.siteowner.middle_name }}",
+    "familyName": "{{ .Site.Params.siteowner.family_name }}",
+    "gender": "{{ .Site.Params.gender }}",
+    "knowsLanguage": [ {{ range $i, $e := .Site.Params.knowslanguages }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
+    "nationality": "{{ .Site.Params.nationality }}",
+    "alternateName": [ {{ range $i, $e := .Site.Params.alternatenames }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
+    "url": "{{ .Site.Params.ownerhomepage | safeHTML }}",
+    "@type": "Person"
+  },
+  "copyrightNotice": "{{ .Site.Params.copyrightnotice }}",
+  "copyrightYear": "{{ .Site.Params.copyrightyear }}",
+  "creativeWorkStatus": "Published",
+  "creditText": "{{ $.Param "author.name" }} {{ $.Param "author.homepage" }}",
+  "datePublished": "{{ .Site.Params.copyrightyear }}",
+  "acquireLicensePage": "{{ .Site.Params.license }}",
+  "license": "{{ .Site.Params.license }}",
+  "usageInfo": "{{ .Site.Params.license }}",
+  {{ with .Site.Params.awards }}"award": [ {{ range $i, $e := .Site.Params.awards }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],{{ end }}
+  "inLanguage": "{{ .Language.Params.languagecodehtml }}",
+  "keywords": [ {{ range $i, $e := .Site.Params.keywords }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ],
+  "publisher": {
+    "name": "{{ .Site.Title }}",
+    "logo": {
+      "url": "{{ .Site.Params.logourl | absURL }}",
+      "height": 60,
+      "width": 107,
+      "@type": "ImageObject"
+    },
+    "@type": "Organization"
+  }
+}
