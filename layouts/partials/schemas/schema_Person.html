@@ -57,20 +57,20 @@
 				}{{ end }}
 			],
 			{{ with $person.affiliation }}"affiliation": [
-				{
-					"@id": "{{ . }}",
-					{{ with $person.name }}"name": "{{ . }}",{{ end }}
-					{{ with $person.url }}"url": "{{ . }}",{{ end }}
+				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}",
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					{{ with .url }}"url": "{{ . }}",{{ end }}
 					"@type": "Organization"
-				}
+				}{{ end }}
 			],{{ end }}
 			{{ with $person.worksfor }}"worksFor": [
-				{
-					"@id": "{{ . }}",
-					{{ with $person.name }}"name": "{{ . }}",{{ end }}
-					{{ with $person.url }}"url"; "{{ . }}",{{ end }}
+				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}",
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					{{ with .url }}"url": "{{ . }}",{{ end }}
 					"@type": "Organization"
-				}
+				}{{ end }}
 			],{{ end }}
 			{{- /*
 			{{ with $person.brand }}"brand": [
