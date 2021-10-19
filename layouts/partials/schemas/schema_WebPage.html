@@ -1,0 +1,64 @@
+{{- /*
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+	****************************
+	** Syntax: JSON-LD        **
+	** Vocab: schema.org      **
+	**                        **
+	** Schema: WebPage        **
+	****************************
+
+	Links:
+		- https://www.w3.org/standards/semanticweb/
+		- https://schema.org/WebPage
+
+	About SemWeb:
+	  - https://im.youronly.one/techmagus/
+
+	How-To:
+	  - https://github.com/
+
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/}}
+{{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
+{{- $iso8601d := "2006-01-02" -}}
+{{- $datepublished := .Site.Params.semweb.datefirstpublished -}}
+{{- $datepublished = dateFormat $iso8601d $datepublished | safeHTML -}}
+{{- $datemodified := .Lastmod.Format $iso8601 | safeHTML }}
+		{
+			"@type": "WebPage",
+			"@id": "{{ .Permalink }}#webpage",
+
+			{{- /* Properties from WebPage */}}
+			{{- /* {{ with $breadcrumb }}"breadcrumb": "{{ . }}",{{ end }} */}}
+			"mainContentOfPage": "{{ .Permalink }}",
+			{{ with and (.IsPage) (.Params.images) }}"primaryImageOfPage": {
+				"url": "{{ range first 1 .}}{{ . | absURL }}{{ end }}",
+				"@type": "ImageObject"
+			},{{ end }}
+			{{- /* {{ with $relatedLink }}"relatedLink": "{{ . }}",{{ end }} */}}
+
+			{{- /* Properties from CreativeWork */}}
+			{{ if .IsPage }}"hasPart": {
+				"@id": "{{ .Permalink }}",
+				"@type": "Article"
+			},{{ end }}
+			"inLanguage": "{{ .Language.Params.languagecodehtml }}",
+			"isPartOf": {
+				"@id": "{{ .Site.BaseURL }}#website",
+				"@type": "WebSite"
+			},
+			{{ if .IsPage }}"mainEntity": {
+				"@id": "{{ .Permalink }}",
+				"@type": "Article"
+			},{{ end }}
+
+			{{- /* Properties from Thing */}}
+			"description": "{{ .Site.Params.description }}",
+			"name": "{{ .Title }}",
+			"url": "{{ .Permalink }}"
+		}
