@@ -14,57 +14,55 @@
 		- https://www.w3.org/standards/semanticweb/
 		- https://schema.org/WebSite
 
+	About SemWeb:
+	  - https://im.youronly.one/techmagus/
+
+	How-To:
+	  - https://github.com/
+
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 	END: SEMANTIC WEB
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-	BGN: HOW TO USE
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-
-	* Usage: automatic
-
-	* Important: This was designed to only support one organization per project.
-		Support for multiple organizations may be added in the future.
-
-	* Place the following in /data/orgs/FILENAME.md
-
-	* Then in your [hugo|params|config].[toml|yaml|json] file, add the following:
-		[semweb]
-		org = "FILENAME"
-
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-	END: HOW TO USE
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
+{{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
+{{- $iso8601d := "2006-01-02" -}}
+{{- $dateFirstPublished := .Site.Params.semweb.dateFirstPublished -}}
+{{- $dateFirstPublished = dateFormat $iso8601d $dateFirstPublished | safeHTML -}}
+{{- $dateModified := .Lastmod.Format $iso8601 | safeHTML }}
 		{
 			"@type": "WebSite",
-			"@id": "{{ .Site.Params.semweb.id }}#website",
-			"name": "{{ .Site.Params.semweb.name }}",
-			"description": "{{ .Site.Params.description }}",
-			"url": "{{ .Site.Params.semweb.url }}",
-			{{ with .Site.Params.semweb.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-			"inLanguage": "{{ .Language.Params.languagecodehtml }}",
+			"@id": "{{ .Site.BaseURL }}#website",
+
+			{{- /* Properties from WebSite */}}
 			{{ with .Site.Params.semweb.issn }}"issn": "{{ . }}",{{ end }}
-			"author": {
-				"@id": "{{ .Site.Params.semweb.creator }}"
-			},
-			"creator": {
-				"@id": "{{ .Site.Params.semweb.creator }}"
-			},
-			"publisher": {
-				"@id": "{{ .Site.Params.semweb.publisher }}"
-			},
-			"copyrightHolder": {
-				"@id": "{{ .Site.Params.semweb.copyrightholder }}"
-			},
+
+			{{- /* Properties from CreativeWork */ -}}
+			{{ with .Site.Params.semweb.acquireLicensePage }}"acquireLicensePage": "{{ . }}",{{ end }}
+			{{ with .Site.Params.semweb.creator }}"creator": {
+				"@id": "{{ . }}"
+			},{{ end }}
+			{{ with .Site.Params.semweb.copyrightHolder }}"copyrightHolder": {
+				"@id": "{{ . }}"
+			},{{ end }}
+			{{ with .Site.Params.semweb.copyrightNotice }}"copyrightNotice": "{{ . }}",{{ end }}
+			{{ with .Site.Params.semweb.copyrightYear }}"copyrightYear": "{{ . }}",{{ end }}
 			"creativeWorkStatus": "Published",
-			"datePublished": "{{ .Site.Params.semweb.datefirstpublished }}",
-			"copyrightYear": "{{ .Site.Params.semweb.copyrightyear }}",
-			"copyrightNotice": "{{ .Site.Params.semweb.copyrightnotice }}",
-			"creditText": "{{ $.Param "semweb.credittext" }}",
-			"license": "{{ .Site.Params.semweb.license }}",
-			{{ with .Site.Params.semweb.acquirelicensepage }}"acquireLicensePage": "{{ . }}",{{ end }}
-			{{ with .Site.Params.semweb.acquirelicensepage }}"usageInfo": "{{ . }}",{{ end }}
-			"keywords": [ {{ range $i, $e := .Site.Params.keywords }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }} ]
+			{{ with .Site.Params.semweb.creditText }}"creditText": "{{ . }}",{{ end }}
+			{{ with $dateFirstPublished }}"dateCreated": "{{ . }}",{{ end }}
+			"dateModified": "{{ $dateModified }}",
+			{{ with $dateFirstPublished }}"datePublished": "{{ . }}",{{ end }}
+			"inLanguage": "{{ .Language.Params.languagecodehtml }}",
+			{{ with .Site.Params.keywords }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}
+			{{ with .Site.Params.semweb.license }}"license": "{{ . }}",{{ end }}
+			{{ with .Site.Params.semweb.publisher }}"publisher": {
+				"@id": "{{ . }}#organization"
+			},{{ end }}
+			{{- /* {{ with .Site.Params.semweb.thumbnailUrl }}"thumbnailUrl": "{{ . }}",{{ end }} */}}
+			{{ with .Site.Params.semweb.acquireLicensePage }}"usageInfo": "{{ . }}",{{ end }}
+
+			{{- /* Properties from Thing */ -}}
+			"description": "{{ .Site.Params.description }}",
+			"name": "{{ .Site.Title }}",
+			{{ with .Site.Params.semweb.sameAs }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			"url": "{{ .Site.BaseURL }}"
 		}

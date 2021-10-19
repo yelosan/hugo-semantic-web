@@ -2,28 +2,17 @@
 {
 	"@context": "https://schema.org",
 	"@graph": [
-		{{- partial "schemas/schema_Organization.html" . | safeJS -}}
-		{{ print ", " | safeJS }}
+	  {{- if .Site.Params.semweb.org }}
+	  {{- partial "schemas/schema_Organization.html" . | safeJS -}}
+		{{ print ", " | safeJS -}}
+		{{ end }}
 		{{- partial "schemas/schema_WebSite.html" . | safeJS -}}
 		{{ print ", " | safeJS }}
+		{{- partial "schemas/schema_WebPage.html" . | safeJS -}}
+	  {{- if .Site.Params.semweb.person }}
+		{{- print ", " | safeJS }}
 		{{- partial "schemas/schema_Person.html" . | safeJS }}
+		{{ end }}
 	]
 }
 </script>
-
-{{- /*
-<script type="application/ld+json">
-[
-	{{ if .IsHome -}}
-		{{ partial "schemas/schema_Organization.html" . | safeJS -}}
-		{{ if eq .Site.Params.sitetype "blog" -}}
-			{{ print ", " | safeJS }}
-			{{- partial "schemas/schema_Blog.html" . | safeJS }}
-		{{ else -}}
-			{{ print ", " | safeJS }}
-			{{- partial "schemas/schema_WebSite.html" . | safeJS }}
-		{{- end }}
-	{{- end }}
-]
-</script>
-*/ -}}

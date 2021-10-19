@@ -14,78 +14,76 @@
 		- https://www.w3.org/standards/semanticweb/
 		- https://schema.org/Person
 
+	About SemWeb:
+	  - https://im.youronly.one/techmagus/
+
+	How-To:
+	  - https://github.com/
+
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 	END: SEMANTIC WEB
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-	BGN: HOW TO USE
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-
-	* Usage: automatic
-
-	* Important: This was designed to only support one organization per project.
-		Support for multiple organizations may be added in the future.
-
-	* Place the following in /data/orgs/FILENAME.md
-
-	* Then in your [hugo|params|config].[toml|yaml|json] file, add the following:
-		[semweb]
-		org = "FILENAME"
-
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-	END: HOW TO USE
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
-{{- $person := index .Site.Data.persons (.Param "semweb.person") -}}
-{{- $personphotoid := "" }}
+{{- $person := index .Site.Data.persons (.Param "semweb.person") }}
 		{
 			"@type": "Person",
 			"@id": "{{ $person.id }}",
-			"name": "{{ $person.name }}",
-			{{ with $person.additionalname }}"additionalName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-			"description": "{{ $person.descriptionlong }}",
-			"mainEntityOfPage": "{{ $person.mainentityofpage }}",
-			"url": "{{ $person.homepage }}",
-			{{ with $person.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+
+			{{- /* Properties from Person */}}
+			{{ with $person.additionalName }}"additionalName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $person.affiliation }}"affiliation": [
+				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}#organization",
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					"@type": "Organization"
+				}{{ end }}
+			],{{ end }}
+			{{ with $person.brand }}"brand": [
+				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}#website",
+					{{ with .logo }}"logo": "{{ . }}",{{ end }}
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					"@type": ["Brand"{{ with .isWebsite }}, "WebSite"{{ end }}]
+				}{{ end }}
+			],{{ end }}
+			{{ with $person.email }}"email": "{{ . }}",{{ end }}
+			{{ with $person.jobTitle }}"jobTitle": "{{ . }}",{{ end }}
+			{{ with $person.knowsLanguage }}"knowsLanguage": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $person.nationality }}"nationality": {
+				"name": "{{ . }}",
+				"@type": "Country"
+			},{{ end }}
+			{{ with $person.spouse }}"spouse": {
+				"@id": "{{ .id }}",
+				{{ with .name }}"name": "{{ . }}",{{ end }}
+				{{ with .url }}"url": "{{ . }}",{{ end }}
+				"@type": "Person"
+			},{{ end }}
+			{{ with $person.taxID }}"taxID": "{{ . }}",{{ end }}
+			{{ with $person.vatID }}"vatID": "{{ . }}",{{ end }}
+			{{ with $person.worksFor }}"worksFor": [
+				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}#organization",
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					"@type": "Organization"
+				}{{ end }}
+			],{{ end }}
+
+			{{- /* Properties from Thing */}}
+			"description": "{{ $person.description }}",
 			"image": [
 				{ {{ range $i, $v := $person.image }}{{ if $i -}}, { {{ end }}
-					"@id": "{{ .url }}{{ if eq .photo true }}#photo{{ $personphotoid = .url }}{{ end }}",
+					"@id": "{{ .url }}{{ if eq .isPhoto true | default false }}#photo{{ end }}",
 					{{ with .caption }}"caption": "{{ . }}",{{ end }}
 					"url": "{{ .url }}",
 					"@type": "ImageObject"
 				}{{ end }}
 			],
-			{{ with $person.affiliation }}"affiliation": [
-				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
-					"@id": "{{ .id }}",
-					{{ with .name }}"name": "{{ . }}",{{ end }}
-					{{ with .url }}"url": "{{ . }}",{{ end }}
-					"@type": "Organization"
-				}{{ end }}
-			],{{ end }}
-			{{ with $person.worksfor }}"worksFor": [
-				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
-					"@id": "{{ .id }}",
-					{{ with .name }}"name": "{{ . }}",{{ end }}
-					{{ with .url }}"url": "{{ . }}",{{ end }}
-					"@type": "Organization"
-				}{{ end }}
-			],{{ end }}
-			{{- /*
-			{{ with $person.brand }}"brand": [
-				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
-					"@id": "{{ .id }}",
-					{{ with .url }}"url": "{{ . }}",{{ end }}
-					{{ with .name }}"name": "{{ . }}",{{ end }}
-					"@type": "Brand"
-				}{{ end }}
-			],{{ end }}
-			*/}}
-			{{ with $person.nationality }}"nationality": [
-				{
-					"name": "{{ . }}",
-					"@type": "Country"
-				}
-			]{{ end }}
+			{{ with $person.mainEntityOfPage }}"mainEntityOfPage": "{{ . }}",{{ end }}
+			"name": "{{ $person.name }}",
+			{{ with $person.sameAs }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			"url": "{{ $person.url }}"
 		}
