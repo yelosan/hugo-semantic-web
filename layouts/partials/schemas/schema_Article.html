@@ -1,25 +1,129 @@
-{{- /* mainEntityOfPage vs sameAs vs url vs about
-  https://schema.org/mainEntityOfPage
-*/ -}}
-<script type="application/ld+json">
-{
-  "@context":"http://schema.org",
-  "@type":"Article",
-  "datePublished": "{{ .PublishDate.UTC.Format "2006-01-02T15:04:05Z" | safeHTML }}",
-  "dateModified": "{{ .Lastmod.UTC.Format "2006-01-02T15:04:05Z" | safeHTML }}",
-  "headline":"{{ .Title }}",
-  "image": [ {{ range $n, $v := $.Params.images }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],
-  "mainEntityOfPage": [ {{ range $n, $v := .AllTranslations }}{{ if $n }}, {{ end }}"{{ .Permalink }}"{{ end }} ],
-  "author": {
-    "name": "{{ .Param "author" }}",
-    "sameAs": [ {{ with .Params.semweb.author.sameas }}{{ range $n, $v := . }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }}{{ else }}{{ .Site.Params.ownerhomepage }}{{ end }} ],
-    "@type": "Person"
-  },
-  "inLanguage": "{{ .Language.Params.languagecodehtml }}",
-  "url": [ {{ range $n, $v := .AllTranslations }}{{ if $n }}, {{ end }}"{{ .Permalink }}"{{ end }} ],
-  "keywords": [ {{ range $n, $v := .Params.keywords }}{{ if $n }}, {{ end }}"{{ $v }}"{{ end }} ],
-  "acquireLicensePage": "{{ .Param "license" }}",
-  "license": "{{ .Param "license" }}",
-  "usageInfo": "{{ .Param "license" }}"
-}
-</script>
+{{- /*
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+	****************************
+	** Syntax: JSON-LD        **
+	** Vocab: schema.org      **
+	**                        **
+	** Schema: Article        **
+	****************************
+
+	Links:
+		- https://www.w3.org/standards/semanticweb/
+		- https://schema.org/Article
+
+	About SemWeb:
+		- https://im.youronly.one/techmagus/
+
+	How-To:
+		- https://github.com/
+
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/}}
+{{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
+{{- $iso8601d := "2006-01-02" -}}
+{{- $datePublished := or (.PublishDate) (.Date) -}}
+{{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
+{{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
+{{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
+{{- $person := .Site.Data.persons }}
+		{
+			"@type": ["Article", "BlogPosting"],
+			"@id": "{{ .Permalink }}#article",
+
+			{{- /* Properties from Article */}}
+			"articleBody": "{{ .Content | plainify }}",
+			"articleSection": [{{ range $i, $v := .Params.categories }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],
+			"wordCount": "{{ .Content | plainify | countwords }}",
+
+			{{- /* Properties from CreativeWork */}}
+			{{- /* "acquireLicensePage": "", */}}
+			{{ if or (.Param "author") ($person) }}"author": [
+				{ {{ range $i, $v := index (or ($.Params.author) ($person)) }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}",
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					"@type": "Person"
+				}{{ end }}
+			],{{ end }}
+			{{- /* "citation": [
+				{
+					"@id": "",
+					"url": "",
+					"@type": "CreativeWork"
+				}
+			], */}}
+			{{- /* "contributor": [
+				{
+					"@id": "",
+					"url": "",
+					"@atype": "Person"
+				}
+			], */}}
+			{{ if or (.Param "author") ($person) }}"copyrightHolder": [
+				{ {{ range $i, $v := index (or ($.Params.author) ($person)) }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}",
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					"@type": "Person"
+				}{{ end }}
+			],{{ end }}
+			{{- /* "copyrightNotice": "", */}}
+			"copyrightYear": "{{ $dateModifiedYear }}",
+			"creativeWorkStatus": "Published",
+			{{ if or (.Param "author") ($person) }}"creator": [
+				{ {{ range $i, $v := index (or ($.Params.author) ($person)) }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}",
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					"@type": "Person"
+				}{{ end }}
+			],{{ end }}
+			{{- /* "creditText": "", */}}
+			"dateCreated": "{{ $dateFirstPublished }}",
+			"dateModified": "{{ $dateModified }}",
+			"datePublished": "{{ $dateFirstPublished }}",
+			{{- /* "discussionUrl": "", */}}
+			{{- /* "expires": "", */}}
+			{{- /* "hasPart": "", */}}
+			"headline": "{{ .Title }}",
+			"inLanguage": "{{ .Language.Params.languagecodehtml }}",
+			{{- /* "isBasedOn": "", */}}
+			"isPartOf": {
+				"@id": "{{ .Permalink }}#webpage",
+				"@type": "WebPage"
+			},
+			{{ with .Param "keywords" }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}
+			{{ with .Params.license }}"license": "{{ . }}",{{ end }}
+			{{ with .Site.Params.semweb.publisher }}"publisher": {
+				"@id": "{{ . }}#organization"
+			},{{ end }}
+			{{- /* "sponsor": "", */}}
+			{{- /* "thumbnailUrl": "", */}}
+			{{- /* "translationOfWork": "", */}}
+			{{- /* "translator": "", */}}
+			{{- /* "usageInfo": "", */}}
+			{{- /* "workTranslation": "", */}}
+
+			{{- /* Properties from CreativeWork */}}
+			{{- /* "alternateName": "", */}}
+			{{ with .Summary }}"description": "{{ . | plainify }}",{{ end }}
+			"image": [
+				{ {{ range $i, $v := .Params.images }}{{ if $i -}}, { {{ end }}
+					"url": "{{ . }}",
+					"@type": "ImageObject"
+				}{{ end }}
+			],
+			"mainEntityOfPage": {
+				"@id": "{{ .Permalink }}#webpage",
+				"@type": "Article"
+			},
+			"name": "{{ .Title }}",
+			{{- /* "sameAs": "", */}}
+			{{- /* "subjectOf": "", */}}
+			"url": "{{ .Permalink }}"
+		}

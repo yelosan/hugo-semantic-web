@@ -9,6 +9,10 @@
 		{{- partial "schemas/schema_WebSite.html" . | safeJS -}}
 		{{ print ", " | safeJS }}
 		{{- partial "schemas/schema_WebPage.html" . | safeJS -}}
+	  {{- if .IsPage }}
+		{{- print ", " | safeJS }}
+		{{- partial "schemas/schema_Article.html" . | safeJS -}}
+		{{ end }}
 	  {{- if .Site.Params.semweb.person }}
 		{{- print ", " | safeJS }}
 		{{- partial "schemas/schema_Person.html" . | safeJS }}

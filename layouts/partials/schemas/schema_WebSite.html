@@ -26,9 +26,10 @@
 */}}
 {{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
 {{- $iso8601d := "2006-01-02" -}}
-{{- $dateFirstPublished := .Site.Params.semweb.dateFirstPublished -}}
-{{- $dateFirstPublished = dateFormat $iso8601d $dateFirstPublished | safeHTML -}}
-{{- $dateModified := .Lastmod.Format $iso8601 | safeHTML }}
+{{- $datePublished := .Site.Params.semweb.dateFirstPublished -}}
+{{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
+{{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
+{{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML }}
 		{
 			"@type": "WebSite",
 			"@id": "{{ .Site.BaseURL }}#website",
@@ -45,7 +46,7 @@
 				"@id": "{{ . }}"
 			},{{ end }}
 			{{ with .Site.Params.semweb.copyrightNotice }}"copyrightNotice": "{{ . }}",{{ end }}
-			{{ with .Site.Params.semweb.copyrightYear }}"copyrightYear": "{{ . }}",{{ end }}
+			"copyrightYear": "{{ $dateModifiedYear }}",
 			"creativeWorkStatus": "Published",
 			{{ with .Site.Params.semweb.creditText }}"creditText": "{{ . }}",{{ end }}
 			{{ with $dateFirstPublished }}"dateCreated": "{{ . }}",{{ end }}

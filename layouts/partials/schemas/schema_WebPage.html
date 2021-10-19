@@ -26,9 +26,11 @@
 */}}
 {{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
 {{- $iso8601d := "2006-01-02" -}}
-{{- $datepublished := .Site.Params.semweb.datefirstpublished -}}
-{{- $datepublished = dateFormat $iso8601d $datepublished | safeHTML -}}
-{{- $datemodified := .Lastmod.Format $iso8601 | safeHTML }}
+{{- $datePublished := or (.PublishDate) (.Date) -}}
+{{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
+{{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
+{{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
+{{- $person := .Site.Data.persons }}
 		{
 			"@type": "WebPage",
 			"@id": "{{ .Permalink }}#webpage",
@@ -43,17 +45,32 @@
 			{{- /* {{ with $relatedLink }}"relatedLink": "{{ . }}",{{ end }} */}}
 
 			{{- /* Properties from CreativeWork */}}
+			{{ if or (.Param "author") ($person) }}"author": [
+				{ {{ range $i, $v := index (or ($.Params.author) ($person)) }}{{ if $i -}}, { {{ end }}
+					"@id": "{{ .id }}",
+					{{ with .name }}"name": "{{ . }}",{{ end }}
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					"@type": "Person"
+				}{{ end }}
+			],{{ end }}
 			{{ if .IsPage }}"hasPart": {
-				"@id": "{{ .Permalink }}",
+				"@id": "{{ .Permalink }}#article",
 				"@type": "Article"
 			},{{ end }}
+			"headline": "{{ .Title }}",
+			"image": [
+				{ {{ range $i, $v := .Params.images }}{{ if $i -}}, { {{ end }}
+					"url": "{{ . }}",
+					"@type": "ImageObject"
+				}{{ end }}
+			],
 			"inLanguage": "{{ .Language.Params.languagecodehtml }}",
 			"isPartOf": {
 				"@id": "{{ .Site.BaseURL }}#website",
 				"@type": "WebSite"
 			},
 			{{ if .IsPage }}"mainEntity": {
-				"@id": "{{ .Permalink }}",
+				"@id": "{{ .Permalink }}#article",
 				"@type": "Article"
 			},{{ end }}
 

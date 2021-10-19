@@ -1,14 +1,4 @@
-{{- if .IsHome -}}
-  
-{{- else if .IsPage -}}
-
-  {{- if or (in .Params.contenttypes "Article") -}}
-    {{ partial "schemas/schema_Article.html" . }}
-  {{- end -}}
-
-  {{- if or (in .Params.contenttypes "BlogPosting") -}}
-    {{ partial "schemas/schema_BlogPosting.html" . }}
-  {{- end -}}
+{{- if .IsPage -}}
 
   {{- if or (in .Params.contenttypes "CriticReview") -}}
     {{ partial "schemas/schema_CriticReview.html" . }}
