@@ -30,7 +30,9 @@
 {{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
 {{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
 {{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
-{{- $person := .Site.Data.persons }}
+{{- $person := .Site.Data.persons -}}
+{{- $authors := .Site.Data.persons -}}
+{{- $siteAuthor := index $authors ($.Param "semweb.person") }}
 		{
 			"@type": "WebPage",
 			"@id": "{{ .Permalink }}#webpage",
@@ -45,13 +47,17 @@
 			{{- /* {{ with $relatedLink }}"relatedLink": "{{ . }}",{{ end }} */}}
 
 			{{- /* Properties from CreativeWork */}}
-			{{ if or (.Param "author") ($person) }}"author": [
-				{ {{ range $i, $v := index (or ($.Params.author) ($person)) }}{{ if $i -}}, { {{ end }}
-					"@id": "{{ .id }}",
-					{{ with .name }}"name": "{{ . }}",{{ end }}
-					{{ with .url }}"url": "{{ . }}",{{ end }}
+			{{ with $.Param "author.person" }}{{ $author := index $authors . }}"author": [
+				{
+					"@id": "{{ ($.Param "author.id") | default $author.id }}",
+					"name": "{{ ($.Param "author.name") | default $author.name }}",
+					"url": "{{ ($.Param "author.url") | default $author.url }}",
 					"@type": "Person"
-				}{{ end }}
+				}
+			],{{ else }}"author": [
+				{
+					"@id": "{{ $siteAuthor.id }}",
+				}
 			],{{ end }}
 			{{ if .IsPage }}"hasPart": {
 				"@id": "{{ .Permalink }}#article",
