@@ -24,13 +24,6 @@
 	END: SEMANTIC WEB
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
-{{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
-{{- $iso8601d := "2006-01-02" -}}
-{{- $datePublished := or (.PublishDate) (.Date) -}}
-{{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
-{{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
-{{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
-{{- $person := .Site.Data.persons -}}
 {{- $authors := .Site.Data.persons -}}
 {{- $siteAuthor := index $authors ($.Param "semweb.person") }}
 		{
@@ -40,7 +33,7 @@
 			{{- /* Properties from WebPage */}}
 			{{- /* {{ with $breadcrumb }}"breadcrumb": "{{ . }}",{{ end }} */}}
 			"mainContentOfPage": "{{ .Permalink }}",
-			{{ with and (.IsPage) (.Params.images) }}"primaryImageOfPage": {
+			{{ with and (eq .Kind "page") (.Params.images) }}"primaryImageOfPage": {
 				"url": "{{ range first 1 .}}{{ . | absURL }}{{ end }}",
 				"@type": "ImageObject"
 			},{{ end }}
@@ -49,39 +42,36 @@
 			{{- /* Properties from CreativeWork */}}
 			{{ with $.Param "author.person" }}{{ $author := index $authors . }}"author": [
 				{
-					"@id": "{{ ($.Param "author.id") | default $author.id }}",
-					"name": "{{ ($.Param "author.name") | default $author.name }}",
-					"url": "{{ ($.Param "author.url") | default $author.url }}",
-					"@type": "Person"
+					"@id": "{{ ($.Param "author.id") | default $author.id }}"{{ with or ($.Param "author.name") ($.Param "author.url") }},{{ end }}
+					{{ with ($.Param "author.name") }}"name": "{{ . }}",{{ end }}
+					{{ with ($.Param "author.url") }}"url": "{{ . }}",{{ end }}
+					{{ with or ($.Param "author.name") ($.Param "author.url") }}"@type": "Person"{{ end }}
 				}
 			],{{ else }}"author": [
 				{
-					"@id": "{{ $siteAuthor.id }}",
+					"@id": "{{ $siteAuthor.id }}"
 				}
 			],{{ end }}
-			{{ if .IsPage }}"hasPart": {
-				"@id": "{{ .Permalink }}#article",
-				"@type": "Article"
+			{{ if eq .Kind "page" }}"hasPart": {
+				"@id": "{{ .Permalink }}#article"
 			},{{ end }}
-			"headline": "{{ .Title }}",
-			"image": [
-				{ {{ range $i, $v := .Params.images }}{{ if $i -}}, { {{ end }}
+			"headline": "{{ .LinkTitle }}",
+			{{ if eq .Kind "page" }}"image": [ {{ range $i, $v := .Params.images }}{{ if $i }}, {{ end }}
+				{ 
 					"url": "{{ . }}",
 					"@type": "ImageObject"
 				}{{ end }}
-			],
-			"inLanguage": "{{ .Language.Params.languagecodehtml }}",
+			],{{ end }}
+			"inLanguage": "{{ or (.Language.Params.languagecodehtml) (.Language.Lang) }}",
 			"isPartOf": {
-				"@id": "{{ .Site.BaseURL }}#website",
-				"@type": "WebSite"
+				"@id": "{{ .Site.BaseURL }}#website"
 			},
-			{{ if .IsPage }}"mainEntity": {
-				"@id": "{{ .Permalink }}#article",
-				"@type": "Article"
+			{{ if eq .Kind "page" }}"mainEntity": {
+				"@id": "{{ .Permalink }}#article"
 			},{{ end }}
 
 			{{- /* Properties from Thing */}}
-			"description": "{{ .Site.Params.description }}",
-			"name": "{{ .Title }}",
+			{{ with or (.Description) (.Summary) (.Site.Params.description) }}"description": "{{ . | plainify }}",{{ end }}
+			"name": "{{ .LinkTitle }}",
 			"url": "{{ .Permalink }}"
 		}

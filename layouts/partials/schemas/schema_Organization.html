@@ -34,29 +34,30 @@
 			"@id": "{{ $org.id }}#organization",
 
 			{{- /* Properties from Organization */ -}}
-			{{ with $org.brand }}"brand": [
-				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+			{{ with $org.brand }}"brand": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+				{ 
 					"@id": "{{ .id }}#website",
 					{{ with .logo }}"logo": "{{ . }}",{{ end }}
 					{{ with .name }}"name": "{{ . }}",{{ end }}
 					{{ with .url }}"url": "{{ . }}",{{ end }}
-					"@type": ["Brand"{{ with .isWebsite }}, "WebSite"{{ end }}]
+					"@type": ["Brand"{{ with .iswebsite }}, "WebSite"{{ end }}]
 				}{{ end }}
 			],{{ end }}
-			{{ with $org.founder }}"founder": [
-				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
-					"@id": "{{ .id }}",
+			{{ with $org.founder }}"founder": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+				{ 
+					"@id": "{{ .id }}"{{ with or (.name) (.url) }},{{ end }}
 					{{ with .name }}"name": "{{ . }}",{{ end }}
 					{{ with .sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 					{{ with .url }}"url": "{{ . }}",{{ end }}
-					"@type": "Person"
+					{{ with or (.name) (.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ end }}
-			{{ with $org.foundingDate }}"foundingDate": "{{ . }}",{{ end }}
-			"legalName": "{{ $org.legalName }}",
-			"image": [ {{- /* 'image' is from Thing, however we need to place it before 'logo' so we can use $orglogoid */}}
-				{ {{ range $i, $v := $org.image }}{{ if $i -}}, { {{ end }}
-					"@id": "{{ .url }}{{ if eq .isLogo true | default false }}#logo{{ $orgLogoID = .url }}{{ end }}",
+			{{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
+			"legalName": "{{ $org.legalname }}",
+			{{- /* 'image' is from Thing, however we need to place it before 'logo' so we can use $orgLogoID */}}
+			"image": [ {{ range $i, $v := $org.image }}{{ if $i }}, {{ end }}
+				{ 
+					"@id": "{{ .url }}{{ if eq .islogo true | default false }}#logo{{ $orgLogoID = .url }}{{ end }}",
 					{{ with .caption }}"caption": "{{ . }}",{{ end }}
 					"url": "{{ .url }}",
 					"@type": "ImageObject"
@@ -66,11 +67,11 @@
 				"@id": "{{ $orgLogoID }}#logo"
 			},
 			{{ with $org.slogan }}"slogan": "{{ . }}",{{ end }}
-			{{ with $org.taxID }}"taxID": "{{ . }}",{{ end }}
-			{{ with $org.vatID }}"vatID": "{{ . }}",{{ end }}
+			{{ with $org.taxid }}"taxID": "{{ . }}",{{ end }}
+			{{ with $org.vatid }}"vatID": "{{ . }}",{{ end }}
 
 			{{- /* Properties from Thing */ -}}
-			{{ with $org.alternateName }}"alternateName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $org.alternatename }}"alternateName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			"description": "{{ $org.description }}",
 			"name": "{{ $org.name }}",
 			{{ with $org.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}

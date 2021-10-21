@@ -30,30 +30,33 @@
 {{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
 {{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
 {{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
-{{- $person := .Site.Data.persons -}}
+{{- $dateExpiry := "" -}}
+{{- if not .ExpiryDate.IsZero }}{{$dateExpiry = .ExpiryDate.Format $iso8601d | safeHTML }}{{ end -}}
 {{- $authors := .Site.Data.persons -}}
 {{- $siteAuthor := index $authors ($.Param "semweb.person") }}
 		{
-			"@type": ["Article", "BlogPosting"],
+			"@type": ["Article"{{ with $.Param "semweb.isblog" }}, "BlogPosting"{{ end }}],
 			"@id": "{{ .Permalink }}#article",
 
 			{{- /* Properties from Article */}}
-			"articleBody": "{{ .Content | plainify }}",
+			{{- /* note: Disabled since Google is ignoring it anyway
+			"articleBody": "{{ .Plain }}",
+			*/}}
 			"articleSection": [{{ range $i, $v := .Params.categories }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],
-			"wordCount": "{{ .Content | plainify | countwords }}",
+			"wordCount": "{{ .Plain | countwords }}",
 
 			{{- /* Properties from CreativeWork */}}
 			{{- /* "acquireLicensePage": "", */}}
 			{{ with $.Param "author.person" }}{{ $author := index $authors . }}"author": [
 				{
-					"@id": "{{ ($.Param "author.id") | default $author.id }}",
-					"name": "{{ ($.Param "author.name") | default $author.name }}",
-					"url": "{{ ($.Param "author.url") | default $author.url }}",
-					"@type": "Person"
+					"@id": "{{ ($.Param "author.id") | default $author.id }}"{{ with or ($.Param "author.name") ($.Param "author.url") }},{{ end }}
+					{{ with ($.Param "author.name") }}"name": "{{ . }}",{{ end }}
+					{{ with ($.Param "author.url") }}"url": "{{ . }}",{{ end }}
+					{{ with or ($.Param "author.name") ($.Param "author.url") }}"@type": "Person"{{ end }}
 				}
 			],{{ else }}"author": [
 				{
-					"@id": "{{ $siteAuthor.id }}",
+					"@id": "{{ $siteAuthor.id }}"
 				}
 			],{{ end }}
 			{{- /* "citation": [
@@ -72,14 +75,14 @@
 			], */}}
 			{{ with $.Param "author.person" }}{{ $author := index $authors . }}"copyrightHolder": [
 				{
-					"@id": "{{ ($.Param "author.id") | default $author.id }}",
-					"name": "{{ ($.Param "author.name") | default $author.name }}",
-					"url": "{{ ($.Param "author.url") | default $author.url }}",
-					"@type": "Person"
+					"@id": "{{ ($.Param "author.id") | default $author.id }}"{{ with or ($.Param "author.name") ($.Param "author.url") }},{{ end }}
+					{{ with ($.Param "author.name") }}"name": "{{ . }}",{{ end }}
+					{{ with ($.Param "author.url") }}"url": "{{ . }}",{{ end }}
+					{{ with or ($.Param "author.name") ($.Param "author.url") }}"@type": "Person"{{ end }}
 				}
 			],{{ else }}"author": [
 				{
-					"@id": "{{ $siteAuthor.id }}",
+					"@id": "{{ $siteAuthor.id }}"
 				}
 			],{{ end }}
 			{{- /* "copyrightNotice": "", */}}
@@ -87,14 +90,14 @@
 			"creativeWorkStatus": "Published",
 			{{ with $.Param "author.person" }}{{ $author := index $authors . }}"creator": [
 				{
-					"@id": "{{ ($.Param "author.id") | default $author.id }}",
-					"name": "{{ ($.Param "author.name") | default $author.name }}",
-					"url": "{{ ($.Param "author.url") | default $author.url }}",
-					"@type": "Person"
+					"@id": "{{ ($.Param "author.id") | default $author.id }}"{{ with or ($.Param "author.name") ($.Param "author.url") }},{{ end }}
+					{{ with ($.Param "author.name") }}"name": "{{ . }}",{{ end }}
+					{{ with ($.Param "author.url") }}"url": "{{ . }}",{{ end }}
+					{{ with or ($.Param "author.name") ($.Param "author.url") }}"@type": "Person"{{ end }}
 				}
 			],{{ else }}"author": [
 				{
-					"@id": "{{ $siteAuthor.id }}",
+					"@id": "{{ $siteAuthor.id }}"
 				}
 			],{{ end }}
 			{{- /* "creditText": "", */}}
@@ -102,17 +105,16 @@
 			"dateModified": "{{ $dateModified }}",
 			"datePublished": "{{ $dateFirstPublished }}",
 			{{- /* "discussionUrl": "", */}}
-			{{- /* "expires": "", */}}
+			{{ with $dateExpiry }}"expires": "{{ . }}",{{ end }}
 			{{- /* "hasPart": "", */}}
-			"headline": "{{ .Title }}",
-			"inLanguage": "{{ .Language.Params.languagecodehtml }}",
+			"headline": "{{ .LinkTitle }}",
+			"inLanguage": "{{ or (.Language.Params.languagecodehtml) (.Language.Lang) }}",
 			{{- /* "isBasedOn": "", */}}
 			"isPartOf": {
-				"@id": "{{ .Permalink }}#webpage",
-				"@type": "WebPage"
+				"@id": "{{ .Permalink }}#webpage"
 			},
-			{{ with .Param "keywords" }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}
-			{{ with .Params.license }}"license": "{{ . }}",{{ end }}
+			{{ with .Keywords }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}
+			{{ with or (.Param "license") (.Site.Params.semweb.license) }}"license": "{{ . }}",{{ end }}
 			{{ with .Site.Params.semweb.publisher }}"publisher": {
 				"@id": "{{ . }}#organization"
 			},{{ end }}
@@ -125,18 +127,17 @@
 
 			{{- /* Properties from CreativeWork */}}
 			{{- /* "alternateName": "", */}}
-			{{ with .Summary }}"description": "{{ . | plainify }}",{{ end }}
-			"image": [
-				{ {{ range $i, $v := .Params.images }}{{ if $i -}}, { {{ end }}
+			{{ with or (.Description) (.Summary) }}"description": "{{ . | plainify }}",{{ end }}
+			"image": [ {{ range $i, $v := .Params.images }}{{ if $i }}, {{ end }}
+				{ 
 					"url": "{{ . }}",
 					"@type": "ImageObject"
 				}{{ end }}
 			],
 			"mainEntityOfPage": {
-				"@id": "{{ .Permalink }}#webpage",
-				"@type": "Article"
+				"@id": "{{ .Permalink }}#webpage"
 			},
-			"name": "{{ .Title }}",
+			"name": "{{ .LinkTitle }}",
 			{{- /* "sameAs": "", */}}
 			{{- /* "subjectOf": "", */}}
 			"url": "{{ .Permalink }}"

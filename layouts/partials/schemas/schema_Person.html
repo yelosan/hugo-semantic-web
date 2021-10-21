@@ -30,60 +30,52 @@
 			"@id": "{{ $person.id }}",
 
 			{{- /* Properties from Person */}}
-			{{ with $person.additionalName }}"additionalName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-			{{ with $person.affiliation }}"affiliation": [
-				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
-					"@id": "{{ .id }}#organization",
+			{{ with $person.additionalname }}"additionalName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $person.affiliation }}"affiliation": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+				{ 
+					"@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
 					{{ with .name }}"name": "{{ . }}",{{ end }}
 					{{ with .url }}"url": "{{ . }}",{{ end }}
-					"@type": "Organization"
+					{{ with or (.name) (.url) }}"@type": "Organization"{{ end }}
 				}{{ end }}
 			],{{ end }}
-			{{ with $person.brand }}"brand": [
-				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
+			{{ with $person.brand }}"brand": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+				{ 
 					"@id": "{{ .id }}#website",
 					{{ with .logo }}"logo": "{{ . }}",{{ end }}
-					{{ with .url }}"url": "{{ . }}",{{ end }}
 					{{ with .name }}"name": "{{ . }}",{{ end }}
-					"@type": ["Brand"{{ with .isWebsite }}, "WebSite"{{ end }}]
+					{{ with .url }}"url": "{{ . }}",{{ end }}
+					"@type": ["Brand"{{ with .iswebsite }}, "WebSite"{{ end }}]
 				}{{ end }}
 			],{{ end }}
-			{{ with $person.email }}"email": "{{ . }}",{{ end }}
-			{{ with $person.jobTitle }}"jobTitle": "{{ . }}",{{ end }}
-			{{ with $person.knowsLanguage }}"knowsLanguage": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-			{{ with $person.nationality }}"nationality": {
-				"name": "{{ . }}",
-				"@type": "Country"
-			},{{ end }}
 			{{ with $person.spouse }}"spouse": {
 				"@id": "{{ .id }}",
 				{{ with .name }}"name": "{{ . }}",{{ end }}
-				{{ with .url }}"url": "{{ . }}",{{ end }}
-				"@type": "Person"
+				{{ with .url }}"url": "{{ . }}"{{ end }}
 			},{{ end }}
-			{{ with $person.taxID }}"taxID": "{{ . }}",{{ end }}
-			{{ with $person.vatID }}"vatID": "{{ . }}",{{ end }}
-			{{ with $person.worksFor }}"worksFor": [
-				{ {{ range $i, $v := . }}{{ if $i -}}, { {{ end }}
-					"@id": "{{ .id }}#organization",
+			{{ with $person.taxid }}"taxID": "{{ . }}",{{ end }}
+			{{ with $person.vatid }}"vatID": "{{ . }}",{{ end }}
+			{{ with $person.worksfor }}"worksFor": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+				{ 
+					"@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
 					{{ with .name }}"name": "{{ . }}",{{ end }}
 					{{ with .url }}"url": "{{ . }}",{{ end }}
-					"@type": "Organization"
+					{{ with or (.name) (.url) }}"@type": "Organization"{{ end }}
 				}{{ end }}
 			],{{ end }}
 
 			{{- /* Properties from Thing */}}
 			"description": "{{ $person.description }}",
-			"image": [
-				{ {{ range $i, $v := $person.image }}{{ if $i -}}, { {{ end }}
-					"@id": "{{ .url }}{{ if eq .isPhoto true | default false }}#photo{{ end }}",
+			"image": [ {{ range $i, $v := $person.image }}{{ if $i }}, {{ end }}
+				{
+					"@id": "{{ .url }}{{ if eq .isphoto true | default false }}#photo{{ end }}",
 					{{ with .caption }}"caption": "{{ . }}",{{ end }}
 					"url": "{{ .url }}",
 					"@type": "ImageObject"
 				}{{ end }}
 			],
-			{{ with $person.mainEntityOfPage }}"mainEntityOfPage": "{{ . }}",{{ end }}
+			{{ with $person.mainentityofpage }}"mainEntityOfPage": "{{ . }}",{{ end }}
 			"name": "{{ $person.name }}",
-			{{ with $person.sameAs }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $person.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			"url": "{{ $person.url }}"
 		}
