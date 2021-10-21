@@ -1,99 +1,93 @@
-# Structured Data for [Hugo](https://gohugo.io)
-Collection of structured data snippets in Google preferred JSON-LD format, with support for Hugo.
-
-This uses the [Hugo pipelines](https://gohugo.io/themes/theme-components/) introduced in [Hugo 0.42](https://gohugo.io/news/0.42-relnotes/)
+# Semantic Web for Hugo
+By using JSON-LD and [Schema.org](https://schema.org) vocabulary, **Semantic Web for Hugo** adds *structured data* and *linked data* into a [Hugo](https://gohugo.io)-powered website. Through it, search engines can easily read the data and establish relationships between objects enabling them to intelligently store information about a website and use it for showing a better search result.
 
 ## Usage
-Start by adding this theme to your website in the config file:
+You can download the latest release or add this as a Hugo Module. Instructions for both methods can be found in our [wiki](https://github.com/YourOnly-One/hugo-semantic-web/wiki).
 
-### TOML:
-```toml
-theme = ["hugo-structured-data", "my-theme"]
-```
+## Features
+These are the supported types:
+* Organization ([Schema.org Type](https://schema.org/Organization))
+	* Thing > Organization
+* Person ([Schema.org Type](https://schema.org/Person))
+	* Thing > Person
+* WebContent ([Schema.org Type](https://schema.org/WebContent))
+	* Thing > CreativeWork > WebContent
+* WebSite ([Schema.org Type](https://schema.org/WebSite))
+	* Thing > CreativeWork > WebSite
+* WebPage ([Schema.org Type](https://schema.org/WebPage))
+	* Thing > CreativeWork > WebPage
+* Article ([Schema.org Type](https://schema.org/Article))
+	* Thing > CreativeWork > Article
+* BlogPosting ([Schema.org Type](https://schema.org/BlogPosting))
+	* Thing > CreativeWork > Article > SocialMediaPosting > BlogPosting
 
-### YAML:
-```yaml
-theme:
-- your-own-theme
-- structured-data
-- some-other-theme
-```
-Change the properties inside `themes/structured-data/config.yaml` to match you details.
+### ToDo
+The following are on the table:
 
-Add this snippet to the `<head>` of your baseof.html
-```go
-{{ partial "schemas/schema_Global.html" . }}
-```
+#### Media types
+* ImageObject ([Schema.org Type](https://schema.org/ImageObject))
+	* Thing > CreativeWork > MediaObject > ImageObject
+* Photograph ([Schema.org Type](https://schema.org/Photograph))
+	* Thing > CreativeWork > Photograph
+* VideoObject ([Schema.org Type](https://schema.org/VideoObject))
+	* Thing > CreativeWork > MediaObject > VideoObject
 
-Add `contenttypes` to the parameters of the pages you would like to include the schemes in.
+#### HowTo
+* HowTo - [Schema.org Type](https://schema.org/HowTo))
+	* Thing > CreativeWork > HowTo
+* HowToSection ([Schema.org](https://schema.org/HowToSection))
+	* Thing > CreativeWork > HowToSection
+	* Thing > Intangible > ItemList > HowToSection
+	* Thing > Intangible > ListItem > HowToSection
+* HowToTip ([Schema.org](https://schema.org/HowToTip))
+	* Thing > CreativeWork > HowToTip
+	* Thing > Intangible > ListItem > HowToTip
+* HowToStep ([Schema.org](https://schema.org/HowToStep))
+	* Thing > CreativeWork > HowToStep
+	* Thing > Intangible > ItemList > HowToStep
+	* Thing > Intangible > ListItem > HowToStep
+* ListItem ([Schema.org](https://schema.org/ListItem))
+	* Thing > Intangible > ListItem
 
-### TOML:
-```toml
-+++
-title = "Some person"
-date = "2018-03-28T21:58:30+02:00"
-contenttypes = ["Person"]
-+++
-```
+#### Reviews
+* Review ([Schema.org Type](https://schema.org/Review))
+	* Thing > CreativeWork > Review
+* CriticReview ([Schema.org Type](https://schema.org/CriticReview))
+	* Thing > CreativeWork > Review > CriticReview
+* TVSeason ([Schema.org Type](https://schema.org/TVSeason))
+	* Thing > CreativeWork > TVSeason
+	* Thing > CreativeWork > CreativeWorkSeason > TVSeason
+* TVSeries ([Schema.org Type](https://schema.org/TVSeries))
+	* Thing > CreativeWork > TVSeries
+	* Thing > CreativeWork > CreativeWorkSeries > TVSeries
+	* Thing > Intangible > Series > CreativeWorkSeries > TVSeries
+* Movie ([Schema.org Type](https://schema.org/Movie))
+	* Thing > CreativeWork > Movie
+* Book ([Schema.org Type](https://schema.org/Book))
+	* Thing > CreativeWork > Book
 
-### YAML:
-```yaml
----
-title: "Some person"
-date: 2018-03-28T21:58:30+02:00
-contenttypes: ["Person"]
----
-```
+#### Other types
+* ItemList ([Schema.org](https://schema.org/ItemList))
+	* Thing > Intangible > ItemList
+* BreadcrumbList ([Schema.org Type](https://schema.org/BreadcrumbList))
+	* Thing > Intangible > ItemList > BreadcrumbList
 
-Or another example
+### Under consideration
+#### Food and drinks
+* Menu ([Schema.org Type](https://schema.org/Menu))
+	* Thing > CreativeWork > Menu
+* MenuItem ([Schema.org Type](https://schema.org/MenuItem))
+	* Thing > Intangible > MenuItem
+* Recipe ([Schema.org](https://schema.org/Recipe))
+	* Thing > CreativeWork > HowTo > Recipe
+* NutritionInformation  ([Schema.org](https://schema.org/NutritionInformation))
+	* Thing > Intangible > StructuredValue > NutritionInformation
 
-### TOML:
-```toml
-+++
-title = "This is a blog and article"
-date =" 2018-03-28T21:58:30+02:00"
-contenttypes = ["BlogPosting, "Article"]
-+++
-```
-
-### YAML:
-```yaml
----
-title: "This is a blog and article"
-date: 2018-03-28T21:58:30+02:00
-contenttypes: ["BlogPosting, "Article"]
----
-```
-
-Other available properties are:
-
-### TOML:
-```toml
-+++
-type = "blog"
-layout = "post"
-title = "Introducing blog"
-date = "2018-06-01T15:40:55.000Z"
-author = "notmartijn"
-contenttypes = ["BlogPosting"]
-+++
-```
-
-### YAML:
-```yaml
----
-type: blog
-layout: post
-title: "Introducing blog"
-date: 2018-06-01T16:40:55+01:00
-author: notmartijn
-contenttypes: ["BlogPosting"]
----
-```
-
-In this case the author of the file will be `notmartijn` instead of the default author `martijn`.
-
-To add, change or remove locations or authors look in the data folder.
+#### FAQ types
+* FAQPage ([Schema.org](https://schema.org/FAQPage))
+	* Thing > CreativeWork > WebPage > FAQPage
+* QAPage ([Schema.org](https://schema.org/QAPage))
+	* Thing > CreativeWork > WebPage > QAPage
 
 ## Attributions
 Based on / forked from:
