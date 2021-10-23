@@ -13,7 +13,7 @@
 		{{- print ", " | safeJS }}
 		{{- partial "schemas/schema_Article.html" . | safeJS -}}
 		{{ end }}
-	  {{- if .Site.Params.semweb.person }}
+	  {{- if .Site.Params.semweb.persons }}
 		{{- print ", " | safeJS }}
 		{{- partial "schemas/schema_Person.html" . | safeJS }}
 		{{ end }}
