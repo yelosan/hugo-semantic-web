@@ -29,7 +29,9 @@
 {{- $datePublished := .Site.Params.semweb.datefirstpublished -}}
 {{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
 {{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
-{{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML }}
+{{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
+{{- $datapersons := $.Site.Data.persons -}}
+{{- $semwebpersons := $.Site.Params.semweb.persons }}
 		{
 			"@type": "WebSite",
 			"@id": "{{ .Site.BaseURL }}#website",
@@ -39,12 +41,34 @@
 
 			{{- /* Properties from CreativeWork */ -}}
 			{{ with .Site.Params.semweb.acquirelicensepage }}"acquireLicensePage": "{{ . }}",{{ end }}
-			{{ with .Site.Params.semweb.creator }}"creator": {
-				"@id": "{{ . }}"
-			},{{ end }}
-			{{ with .Site.Params.semweb.copyrightholder }}"copyrightHolder": {
-				"@id": "{{ . }}"
-			},{{ end }}
+			{{ if $semwebpersons }}"creator": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"creator": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
+				}
+			],{{ end }}
+			{{ if $semwebpersons }}"copyrightHolder": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"copyrightHolder": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
+				}
+			],{{ end }}
 			{{ with .Site.Params.semweb.copyrightnotice }}"copyrightNotice": "{{ . }}",{{ end }}
 			"copyrightYear": "{{ $dateModifiedYear }}",
 			"creativeWorkStatus": "Published",
