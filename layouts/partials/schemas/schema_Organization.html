@@ -43,8 +43,6 @@
 					"@type": ["Brand"{{ with .iswebsite }}, "WebSite"{{ end }}]
 				}{{ end }}
 			],{{ end }}
-
-
 			{{ if $org.founders }}"founder": [ {{ range $i, $orgfounder := index $org.founders }}{{ if $i }}, {{ end }}
 				{
 					"@id": "{{ $orgfounder.id }}"{{ with or ($orgfounder.name) ($orgfounder.url) }},{{ end }}
@@ -54,7 +52,6 @@
 					{{ with or ($orgfounder.name) ($orgfounder.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ end }}
-
 			{{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
 			"legalName": "{{ $org.legalname }}",
 			{{- /* 'image' is from Thing, however we need to place it before 'logo' so we can use $orgLogoID */}}
