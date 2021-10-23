@@ -30,8 +30,8 @@
 {{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
 {{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
 {{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
-{{- $datapersons := $.Site.Data.persons -}}
-{{- $semwebpersons := $.Site.Params.semweb.persons }}
+{{- $datapersons := .Site.Data.persons -}}
+{{- $semwebpersons := .Site.Params.semweb.persons }}
 		{
 			"@type": "WebSite",
 			"@id": "{{ .Site.BaseURL }}#website",

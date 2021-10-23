@@ -32,8 +32,8 @@
 {{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
 {{- $dateExpiry := "" -}}
 {{- if not .ExpiryDate.IsZero }}{{ $dateExpiry = .ExpiryDate.Format $iso8601d | safeHTML }}{{ end -}}
-{{- $datapersons := $.Site.Data.persons -}}
-{{- $semwebpersons := $.Site.Params.semweb.persons -}}
+{{- $datapersons := .Site.Data.persons -}}
+{{- $semwebpersons := .Site.Params.semweb.persons -}}
 {{- $frontmatterpersons := .Params.authors }}
 		{
 			"@type": ["Article"{{ with $.Param "semweb.isblog" }}, "BlogPosting"{{ end }}],
