@@ -34,7 +34,7 @@
 			"@id": "{{ $org.id }}#organization",
 
 			{{- /* Properties from Organization */ -}}
-			{{ with $org.brand }}"brand": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+			{{ with $org.brands }}"brand": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ .id }}#website",
 					{{ with .logo }}"logo": "{{ . }}",{{ end }}
@@ -55,7 +55,7 @@
 			{{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
 			"legalName": "{{ $org.legalname }}",
 			{{- /* 'image' is from Thing, however we need to place it before 'logo' so we can use $orgLogoID */}}
-			"image": [ {{ range $i, $v := $org.image }}{{ if $i }}, {{ end }}
+			"image": [ {{ range $i, $v := $org.images }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ .url }}{{ if eq .islogo true | default false }}#logo{{ $orgLogoID = .url }}{{ end }}",
 					{{ with .caption }}"caption": "{{ . }}",{{ end }}
@@ -63,6 +63,7 @@
 					"@type": "ImageObject"
 				}{{ end }}
 			],
+			{{ with $org.knowslanguages }}"knowsLanguage": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			"logo": {
 				"@id": "{{ $orgLogoID }}#logo"
 			},
@@ -71,7 +72,7 @@
 			{{ with $org.vatid }}"vatID": "{{ . }}",{{ end }}
 
 			{{- /* Properties from Thing */ -}}
-			{{ with $org.alternatename }}"alternateName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $org.alternatenames }}"alternateName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			"description": "{{ $org.description }}",
 			"name": "{{ $org.name }}",
 			{{ with $org.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}

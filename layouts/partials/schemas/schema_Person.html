@@ -33,8 +33,8 @@
 			"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}",
 
 			{{- /* Properties from Person */}}
-			{{ with or ($semwebperson.additionalname) ($dataperson.additionalname) }}"additionalName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-			{{ with or ($semwebperson.affiliation) ($dataperson.affiliation) }}"affiliation": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+			{{ with or ($semwebperson.additionalnames) ($dataperson.additionalnames) }}"additionalName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with or ($semwebperson.affiliations) ($dataperson.affiliations) }}"affiliation": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
 					{{ with .name }}"name": "{{ . }}",{{ end }}
@@ -42,7 +42,7 @@
 					{{ with or (.name) (.url) }}"@type": "Organization"{{ end }}
 				}{{ end }}
 			],{{ end }}
-			{{ with or ($semwebperson.brand) ($dataperson.brand) }}"brand": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+			{{ with or ($semwebperson.brands) ($dataperson.brands) }}"brand": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ .id }}#website",
 					{{ with .logo }}"logo": "{{ . }}",{{ end }}
@@ -51,6 +51,7 @@
 					"@type": ["Brand"{{ with .iswebsite }}, "WebSite"{{ end }}]
 				}{{ end }}
 			],{{ end }}
+			{{ with or ($semwebperson.knowslanguages) ($dataperson.knowslanguages) }}"knowsLanguage": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			{{ with or ($semwebperson.spouse) ($dataperson.spouse) }}"spouse": {
 				"@id": "{{ .id }}",
 				{{ with .name }}"name": "{{ . }}",{{ end }}
@@ -59,7 +60,7 @@
 			{{ with or ($semwebperson.taxid) ($dataperson.taxid) }}"taxID": "{{ . }}",{{ end }}
 			{{ with or ($semwebperson.vatid) ($dataperson.vatid) }}"vatID": "{{ . }}",{{ end }}
 			{{ with or ($semwebperson.worksfor) ($dataperson.worksfor) }}"worksFor": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
-				{ 
+				{
 					"@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
 					{{ with .name }}"name": "{{ . }}",{{ end }}
 					{{ with .url }}"url": "{{ . }}",{{ end }}
@@ -69,7 +70,7 @@
 
 			{{- /* Properties from Thing */}}
 			{{ with or ($semwebperson.description) ($dataperson.description) }}"description": "{{ . }}",{{ end }}
-			"image": [ {{ range $i, $v := or ($semwebperson.image) ($dataperson.image) }}{{ if $i }}, {{ end }}
+			"image": [ {{ range $i, $v := or ($semwebperson.images) ($dataperson.images) }}{{ if $i }}, {{ end }}
 				{
 					"@id": "{{ .url }}{{ if eq .isphoto true | default false }}#photo{{ end }}",
 					{{ with .caption }}"caption": "{{ . }}",{{ end }}
