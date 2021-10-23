@@ -52,16 +52,16 @@
 				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
-					{{ with or ($frontmatterperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
-					{{ with or ($frontmatterperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or $frontmatterperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $frontmatterperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ else if $semwebpersons }}"author": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
-					{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
-					{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $semwebperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ else if .Param "author" }}"author": [
@@ -88,16 +88,16 @@
 				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
-					{{ with or ($frontmatterperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
-					{{ with or ($frontmatterperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or $frontmatterperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $frontmatterperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ else if $semwebpersons }}"copyrightHolder": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
-					{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
-					{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $semwebperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ else if .Param "author" }}"copyrightHolder": [
@@ -113,16 +113,16 @@
 				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
-					{{ with or ($frontmatterperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
-					{{ with or ($frontmatterperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or $frontmatterperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $frontmatterperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ else if $semwebpersons }}"creator": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
-					{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
-					{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $semwebperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ else if .Param "author" }}"creator": [
