@@ -28,7 +28,7 @@
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
 {{- $org := index .Site.Data.orgs .Site.Params.semweb.org -}}
-{{- $orgLogoID := "" }}
+{{- $orgLogoID := "" -}}
 		{
 			"@type": "Organization",
 			"@id": "{{ $org.id }}#organization",
@@ -43,15 +43,18 @@
 					"@type": ["Brand"{{ with .iswebsite }}, "WebSite"{{ end }}]
 				}{{ end }}
 			],{{ end }}
-			{{ with $org.founder }}"founder": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
-				{ 
-					"@id": "{{ .id }}"{{ with or (.name) (.url) }},{{ end }}
-					{{ with .name }}"name": "{{ . }}",{{ end }}
-					{{ with .sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-					{{ with .url }}"url": "{{ . }}",{{ end }}
-					{{ with or (.name) (.url) }}"@type": "Person"{{ end }}
+
+
+			{{ if $org.founders }}"founder": [ {{ range $i, $orgfounder := index $org.founders }}{{ if $i }}, {{ end }}
+				{
+					"@id": "{{ $orgfounder.id }}"{{ with or ($orgfounder.name) ($orgfounder.url) }},{{ end }}
+					{{ with $orgfounder.name }}"name": "{{ . }}",{{ end }}
+					{{ with $orgfounder.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+					{{ with $orgfounder.url }}"url": "{{ . }}",{{ end }}
+					{{ with or ($orgfounder.name) ($orgfounder.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ end }}
+
 			{{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
 			"legalName": "{{ $org.legalname }}",
 			{{- /* 'image' is from Thing, however we need to place it before 'logo' so we can use $orgLogoID */}}
