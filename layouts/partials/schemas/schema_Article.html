@@ -32,8 +32,9 @@
 {{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
 {{- $dateExpiry := "" -}}
 {{- if not .ExpiryDate.IsZero }}{{$dateExpiry = .ExpiryDate.Format $iso8601d | safeHTML }}{{ end -}}
-{{- $authors := .Site.Data.persons -}}
-{{- $siteAuthor := index $authors ($.Param "semweb.person") }}
+{{- $datapersons := $.Site.Data.persons -}}
+{{- $semwebpersons := $.Site.Params.semweb.persons -}}
+{{- $frontmatterpersons := .Params.authors }}
 		{
 			"@type": ["Article"{{ with $.Param "semweb.isblog" }}, "BlogPosting"{{ end }}],
 			"@id": "{{ .Permalink }}#article",
@@ -47,16 +48,26 @@
 
 			{{- /* Properties from CreativeWork */}}
 			{{- /* "acquireLicensePage": "", */}}
-			{{ with $.Param "author.person" }}{{ $author := index $authors . }}"author": [
+			{{ if $frontmatterpersons }}"author": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
-					"@id": "{{ ($.Param "author.id") | default $author.id }}"{{ with or ($.Param "author.name") ($.Param "author.url") }},{{ end }}
-					{{ with ($.Param "author.name") }}"name": "{{ . }}",{{ end }}
-					{{ with ($.Param "author.url") }}"url": "{{ . }}",{{ end }}
-					{{ with or ($.Param "author.name") ($.Param "author.url") }}"@type": "Person"{{ end }}
-				}
-			],{{ else }}"author": [
+					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
+					{{ with or ($frontmatterperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
+					{{ with or ($frontmatterperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if $semwebpersons }}"author": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
 				{
-					"@id": "{{ $siteAuthor.id }}"
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"author": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
 				}
 			],{{ end }}
 			{{- /* "citation": [
@@ -73,31 +84,51 @@
 					"@atype": "Person"
 				}
 			], */}}
-			{{ with $.Param "author.person" }}{{ $author := index $authors . }}"copyrightHolder": [
+			{{ if $frontmatterpersons }}"copyrightHolder": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
-					"@id": "{{ ($.Param "author.id") | default $author.id }}"{{ with or ($.Param "author.name") ($.Param "author.url") }},{{ end }}
-					{{ with ($.Param "author.name") }}"name": "{{ . }}",{{ end }}
-					{{ with ($.Param "author.url") }}"url": "{{ . }}",{{ end }}
-					{{ with or ($.Param "author.name") ($.Param "author.url") }}"@type": "Person"{{ end }}
-				}
-			],{{ else }}"author": [
+					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
+					{{ with or ($frontmatterperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
+					{{ with or ($frontmatterperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if $semwebpersons }}"copyrightHolder": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
 				{
-					"@id": "{{ $siteAuthor.id }}"
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"copyrightHolder": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
 				}
 			],{{ end }}
 			{{- /* "copyrightNotice": "", */}}
 			"copyrightYear": "{{ $dateModifiedYear }}",
 			"creativeWorkStatus": "Published",
-			{{ with $.Param "author.person" }}{{ $author := index $authors . }}"creator": [
+			{{ if $frontmatterpersons }}"creator": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
-					"@id": "{{ ($.Param "author.id") | default $author.id }}"{{ with or ($.Param "author.name") ($.Param "author.url") }},{{ end }}
-					{{ with ($.Param "author.name") }}"name": "{{ . }}",{{ end }}
-					{{ with ($.Param "author.url") }}"url": "{{ . }}",{{ end }}
-					{{ with or ($.Param "author.name") ($.Param "author.url") }}"@type": "Person"{{ end }}
-				}
-			],{{ else }}"author": [
+					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
+					{{ with or ($frontmatterperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
+					{{ with or ($frontmatterperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if $semwebpersons }}"creator": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
 				{
-					"@id": "{{ $siteAuthor.id }}"
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"creator": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
 				}
 			],{{ end }}
 			{{- /* "creditText": "", */}}
