@@ -31,7 +31,7 @@
 {{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
 {{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
 {{- $dateExpiry := "" -}}
-{{- if not .ExpiryDate.IsZero }}{{$dateExpiry = .ExpiryDate.Format $iso8601d | safeHTML }}{{ end -}}
+{{- if not .ExpiryDate.IsZero }}{{ $dateExpiry = .ExpiryDate.Format $iso8601d | safeHTML }}{{ end -}}
 {{- $datapersons := $.Site.Data.persons -}}
 {{- $semwebpersons := $.Site.Params.semweb.persons -}}
 {{- $frontmatterpersons := .Params.authors }}
