@@ -34,7 +34,7 @@
 			{{- /* Properties from WebPage */}}
 			{{- /* {{ with $breadcrumb }}"breadcrumb": "{{ . }}",{{ end }} */}}
 			"mainContentOfPage": "{{ .Permalink }}",
-			{{ with and (eq .Kind "page") (.Params.images) }}"primaryImageOfPage": {
+			{{ with and (.IsPage) (.Params.images) }}"primaryImageOfPage": {
 				"url": "{{ range first 1 .}}{{ . | absURL }}{{ end }}",
 				"@type": "ImageObject"
 			},{{ end }}
@@ -63,11 +63,11 @@
 					"name": "{{ .Param "author" }}"
 				}
 			],{{ end }}
-			{{ if eq .Kind "page" }}"hasPart": {
+			{{ if .IsPage }}"hasPart": {
 				"@id": "{{ .Permalink }}#article"
 			},{{ end }}
 			"headline": "{{ or (.LinkTitle) (.Site.Title) }}",
-			{{ if eq .Kind "page" }}"image": [ {{ range $i, $v := .Params.images }}{{ if $i }}, {{ end }}
+			{{ if .IsPage }}"image": [ {{ range $i, $v := .Params.images }}{{ if $i }}, {{ end }}
 				{ 
 					"url": "{{ . }}",
 					"@type": "ImageObject"
@@ -77,7 +77,7 @@
 			"isPartOf": {
 				"@id": "{{ .Site.BaseURL }}#website"
 			},
-			{{ if eq .Kind "page" }}"mainEntity": {
+			{{ if .IsPage }}"mainEntity": {
 				"@id": "{{ .Permalink }}#article"
 			},{{ end }}
 
