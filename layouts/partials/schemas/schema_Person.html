@@ -68,7 +68,7 @@
 			],{{ end }}
 
 			{{- /* Properties from Thing */}}
-			"description": "{{ ($semwebperson.description) ($dataperson.description) }}",
+			{{ with or ($semwebperson.description) ($dataperson.description) }}"description": "{{ . }}",{{ end }}
 			"image": [ {{ range $i, $v := or ($semwebperson.image) ($dataperson.image) }}{{ if $i }}, {{ end }}
 				{
 					"@id": "{{ .url }}{{ if eq .isphoto true | default false }}#photo{{ end }}",
