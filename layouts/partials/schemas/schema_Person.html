@@ -80,5 +80,5 @@
 			{{ with or ($semwebperson.mainentityofpage) ($dataperson.mainentityofpage) }}"mainEntityOfPage": "{{ . }}",{{ end }}
 			{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
 			{{ with or ($semwebperson.sameas) ($dataperson.sameas) }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-			{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+			{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}"{{ end }}
 		}{{ end }}
