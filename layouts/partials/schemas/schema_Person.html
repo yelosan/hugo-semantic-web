@@ -24,14 +24,17 @@
 	END: SEMANTIC WEB
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
-{{- $person := index .Site.Data.persons (.Param "semweb.person") }}
+{{- $datapersons := $.Site.Data.persons -}}
+{{- $semwebpersons := $.Site.Params.semweb.persons -}}
+{{- $frontmatterpersons := .Params.authors -}}
+		{{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
 		{
 			"@type": "Person",
-			"@id": "{{ $person.id }}",
+			"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}",
 
 			{{- /* Properties from Person */}}
-			{{ with $person.additionalname }}"additionalName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-			{{ with $person.affiliation }}"affiliation": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+			{{ with $dataperson.additionalname }}"additionalName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $dataperson.affiliation }}"affiliation": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
 					{{ with .name }}"name": "{{ . }}",{{ end }}
@@ -39,7 +42,7 @@
 					{{ with or (.name) (.url) }}"@type": "Organization"{{ end }}
 				}{{ end }}
 			],{{ end }}
-			{{ with $person.brand }}"brand": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+			{{ with $dataperson.brand }}"brand": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ .id }}#website",
 					{{ with .logo }}"logo": "{{ . }}",{{ end }}
@@ -48,14 +51,14 @@
 					"@type": ["Brand"{{ with .iswebsite }}, "WebSite"{{ end }}]
 				}{{ end }}
 			],{{ end }}
-			{{ with $person.spouse }}"spouse": {
+			{{ with $dataperson.spouse }}"spouse": {
 				"@id": "{{ .id }}",
 				{{ with .name }}"name": "{{ . }}",{{ end }}
 				{{ with .url }}"url": "{{ . }}"{{ end }}
 			},{{ end }}
-			{{ with $person.taxid }}"taxID": "{{ . }}",{{ end }}
-			{{ with $person.vatid }}"vatID": "{{ . }}",{{ end }}
-			{{ with $person.worksfor }}"worksFor": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+			{{ with $dataperson.taxid }}"taxID": "{{ . }}",{{ end }}
+			{{ with $dataperson.vatid }}"vatID": "{{ . }}",{{ end }}
+			{{ with $dataperson.worksfor }}"worksFor": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
 					{{ with .name }}"name": "{{ . }}",{{ end }}
@@ -65,8 +68,8 @@
 			],{{ end }}
 
 			{{- /* Properties from Thing */}}
-			"description": "{{ $person.description }}",
-			"image": [ {{ range $i, $v := $person.image }}{{ if $i }}, {{ end }}
+			"description": "{{ $dataperson.description }}",
+			"image": [ {{ range $i, $v := $dataperson.image }}{{ if $i }}, {{ end }}
 				{
 					"@id": "{{ .url }}{{ if eq .isphoto true | default false }}#photo{{ end }}",
 					{{ with .caption }}"caption": "{{ . }}",{{ end }}
@@ -74,8 +77,8 @@
 					"@type": "ImageObject"
 				}{{ end }}
 			],
-			{{ with $person.mainentityofpage }}"mainEntityOfPage": "{{ . }}",{{ end }}
-			"name": "{{ $person.name }}",
-			{{ with $person.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-			"url": "{{ $person.url }}"
-		}
+			{{ with $dataperson.mainentityofpage }}"mainEntityOfPage": "{{ . }}",{{ end }}
+			{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
+			{{ with or ($semwebperson.sameas) ($dataperson.sameas) }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}",{{ end }}
+		}{{ end }}
