@@ -37,7 +37,7 @@
 {{- $frontmatterpersons := .Params.authors }}
 		{
 			"@type": "WebContent",
-			"@id": "{{ .Site.BaseURL }}#webcontent",
+			"@id": "{{ .Site.BaseURL }}/#webcontent",
 
 			{{- /* Properties from CreativeWork */}}
 			{{- /* {{ with .Site.Params.semweb.acquirelicensepage }}"acquireLicensePage": "{{ . }}",{{ end }} */}}
@@ -96,7 +96,7 @@
 			{{ with $dateExpiry }}"expires": "{{ . }}",{{ end }}
 			"hasPart": [
 				{
-					"@id": "{{ .Site.BaseURL }}#website"
+					"@id": "{{ .Site.BaseURL }}/#website"
 				},
 				{
 					"@id": "{{ .Permalink }}#webpage"

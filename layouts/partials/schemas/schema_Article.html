@@ -146,7 +146,7 @@
 					"@id": "{{ .Permalink }}#webpage"
 				},
 				{
-					"@id": "{{ .Permalink }}#webcontent"
+					"@id": "{{ .Site.BaseURL }}/#webcontent"
 				}
 			],
 			{{ with .Keywords }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}

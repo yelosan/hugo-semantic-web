@@ -34,7 +34,7 @@
 {{- $semwebpersons := .Site.Params.semweb.persons }}
 		{
 			"@type": "WebSite",
-			"@id": "{{ .Site.BaseURL }}#website",
+			"@id": "{{ .Site.BaseURL }}/#website",
 
 			{{- /* Properties from WebSite */}}
 			{{ with .Site.Params.semweb.issn }}"issn": "{{ . }}",{{ end }}
@@ -81,7 +81,7 @@
 			},
 			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
 			"isPartOf": {
-				"@id": "{{ .Site.BaseURL }}#webcontent"
+				"@id": "{{ .Site.BaseURL }}/#webcontent"
 			},
 			{{ with .Site.Params.keywords }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}
 			{{ with .Site.Params.semweb.license }}"license": "{{ . }}",{{ end }}

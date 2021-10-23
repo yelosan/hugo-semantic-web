@@ -76,10 +76,10 @@
 			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
 			"isPartOf": [
 				{
-					"@id": "{{ .Site.BaseURL }}#website"
+					"@id": "{{ .Site.BaseURL }}/#website"
 				},
 				{
-					"@id": "{{ .Site.BaseURL }}#webcontent"
+					"@id": "{{ .Site.BaseURL }}/#webcontent"
 				}
 			],
 			{{ if .IsPage }}"mainEntity": {
