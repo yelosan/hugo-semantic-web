@@ -39,8 +39,8 @@
 			"@type": "WebContent",
 			"@id": "{{ .Site.BaseURL }}#webcontent",
 
-			{{- /* Properties from CreativeWork */ -}}
-			{{ with .Site.Params.semweb.acquirelicensepage }}"acquireLicensePage": "{{ . }}",{{ end }}
+			{{- /* Properties from CreativeWork */}}
+			{{- /* {{ with .Site.Params.semweb.acquirelicensepage }}"acquireLicensePage": "{{ . }}",{{ end }} */}}
 			{{ if $frontmatterpersons }}"author": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
@@ -85,10 +85,10 @@
 					"name": "{{ .Param "author" }}"
 				}
 			],{{ end }}
-			{{ with .Site.Params.semweb.copyrightnotice }}"copyrightNotice": "{{ . }}",{{ end }}
+			{{- /* {{ with .Site.Params.semweb.copyrightnotice }}"copyrightNotice": "{{ . }}",{{ end }} */}}
 			"copyrightYear": "{{ $dateModifiedYear }}",
 			"creativeWorkStatus": "Published",
-			{{ with .Site.Params.semweb.credittext }}"creditText": "{{ . }}",{{ end }}
+			{{- /* {{ with .Site.Params.semweb.credittext }}"creditText": "{{ . }}",{{ end }} */}}
 			"dateCreated": "{{ $dateFirstPublished }}",
 			"dateModified": "{{ $dateModified }}",
 			"datePublished": "{{ $dateFirstPublished }}",
@@ -116,14 +116,14 @@
 			{{- /* {{ with .Site.Params.semweb.thumbnailurl }}"thumbnailUrl": "{{ . }}",{{ end }} */}}
 			{{- /* "translationOfWork": "", */}}
 			{{- /* "translator": "", */}}
-			{{ with .Site.Params.semweb.acquirelicensepage }}"usageInfo": "{{ . }}",{{ end }}
+			{{- /* {{ with .Site.Params.semweb.acquirelicensepage }}"usageInfo": "{{ . }}",{{ end }} */}}
 			{{- /* "workTranslation": "", */}}
 
 			{{- /* Properties from Thing */ -}}
 			{{- /* "alternateName": "", */}}
 			{{ with or (.Description) (.Summary) (.Site.Params.description) }}"description": "{{ . | plainify }}",{{ end }}
 			"name": "{{ or (.LinkTitle) (.Site.Title) }}",
-			{{ with .Site.Params.semweb.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{- /* {{ with .Site.Params.semweb.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }} */}}
 			{{- /* "subjectOf": "", */}}
 			"url": "{{ .Site.BaseURL }}"
 		}
