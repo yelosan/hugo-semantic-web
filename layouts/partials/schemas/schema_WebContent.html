@@ -1,0 +1,129 @@
+{{- /*
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+	****************************
+	** Syntax: JSON-LD        **
+	** Vocab: schema.org      **
+	**                        **
+	** Schema: WebContent     **
+	****************************
+
+	Links:
+		- https://www.w3.org/standards/semanticweb/
+		- https://schema.org/WebContent
+
+	About SemWeb:
+	  - https://im.youronly.one/techmagus/
+
+	How-To:
+	  - https://github.com/
+
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/}}
+{{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
+{{- $iso8601d := "2006-01-02" -}}
+{{- $datePublished := or (.PublishDate) (.Date) (.Site.Params.semweb.datefirstpublished) -}}
+{{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
+{{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
+{{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
+{{- $dateExpiry := "" -}}
+{{- if not .ExpiryDate.IsZero }}{{ $dateExpiry = .ExpiryDate.Format $iso8601d | safeHTML }}{{ end -}}
+{{- $datapersons := $.Site.Data.persons -}}
+{{- $semwebpersons := $.Site.Params.semweb.persons -}}
+{{- $frontmatterpersons := .Params.authors }}
+		{
+			"@type": "WebContent",
+			"@id": "{{ .Site.BaseURL }}#webcontent",
+
+			{{- /* Properties from CreativeWork */ -}}
+			{{ with .Site.Params.semweb.acquirelicensepage }}"acquireLicensePage": "{{ . }}",{{ end }}
+			{{ if $frontmatterpersons }}"author": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
+					{{ with or $frontmatterperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $frontmatterperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if $semwebpersons }}"author": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with or $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $semwebperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"author": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
+				}
+			],{{ end }}
+			{{ if $frontmatterpersons }}"copyrightHolder": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
+					{{ with or $frontmatterperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $frontmatterperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if $semwebpersons }}"copyrightHolder": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with or $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $semwebperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"copyrightHolder": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
+				}
+			],{{ end }}
+			{{ with .Site.Params.semweb.copyrightnotice }}"copyrightNotice": "{{ . }}",{{ end }}
+			"copyrightYear": "{{ $dateModifiedYear }}",
+			"creativeWorkStatus": "Published",
+			{{ with .Site.Params.semweb.credittext }}"creditText": "{{ . }}",{{ end }}
+			"dateCreated": "{{ $dateFirstPublished }}",
+			"dateModified": "{{ $dateModified }}",
+			"datePublished": "{{ $dateFirstPublished }}",
+			{{- /* "discussionUrl": "", */}}
+			{{ with $dateExpiry }}"expires": "{{ . }}",{{ end }}
+			"hasPart": [
+				{
+					"@id": "{{ .Site.BaseURL }}#website"
+				},
+				{
+					"@id": "{{ .Permalink }}#webpage"
+				}{{ if .IsPage }},
+				{
+					"@id": "{{ .Permalink }}#article"
+				}{{ end }}
+			],
+			"inLanguage": "{{ or (.Language.Params.languagecodehtml) (.Language.Lang) }}",
+			"headline": "{{ or (.LinkTitle) (.Site.Title) }}",
+			{{ with or (.Keywords) (.Site.Params.keywords) }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}
+			{{ with or (.Param "license") (.Site.Params.semweb.license) }}"license": "{{ . }}",{{ end }}
+			{{ with .Site.Params.semweb.publisher }}"publisher": {
+				"@id": "{{ . }}#organization"
+			},{{ end }}
+			{{- /* "sponsor": "", */}}
+			{{- /* {{ with .Site.Params.semweb.thumbnailurl }}"thumbnailUrl": "{{ . }}",{{ end }} */}}
+			{{- /* "translationOfWork": "", */}}
+			{{- /* "translator": "", */}}
+			{{ with .Site.Params.semweb.acquirelicensepage }}"usageInfo": "{{ . }}",{{ end }}
+			{{- /* "workTranslation": "", */}}
+
+			{{- /* Properties from Thing */ -}}
+			{{- /* "alternateName": "", */}}
+			{{ with or (.Description) (.Summary) (.Site.Params.description) }}"description": "{{ . | plainify }}",{{ end }}
+			"name": "{{ or (.LinkTitle) (.Site.Title) }}",
+			{{ with .Site.Params.semweb.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{- /* "subjectOf": "", */}}
+			"url": "{{ .Site.BaseURL }}"
+		}

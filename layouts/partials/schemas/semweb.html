@@ -6,6 +6,8 @@
 	  {{- partial "schemas/schema_Organization.html" . | safeJS -}}
 		{{ print ", " | safeJS -}}
 		{{ end }}
+		{{- partial "schemas/schema_WebContent.html" . | safeJS -}}
+		{{ print ", " | safeJS }}
 		{{- partial "schemas/schema_WebSite.html" . | safeJS -}}
 		{{ print ", " | safeJS }}
 		{{- partial "schemas/schema_WebPage.html" . | safeJS -}}
