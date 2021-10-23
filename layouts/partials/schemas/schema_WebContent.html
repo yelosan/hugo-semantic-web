@@ -105,7 +105,7 @@
 					"@id": "{{ .Permalink }}#article"
 				}{{ end }}
 			],
-			"inLanguage": "{{ or (.Language.Params.languagecodehtml) (.Language.Lang) }}",
+			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
 			"headline": "{{ or (.LinkTitle) (.Site.Title) }}",
 			{{ with or (.Keywords) (.Site.Params.keywords) }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}
 			{{ with or (.Param "license") (.Site.Params.semweb.license) }}"license": "{{ . }}",{{ end }}

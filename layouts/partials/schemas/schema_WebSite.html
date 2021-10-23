@@ -79,7 +79,7 @@
 			"hasPart": {
 				"@id": "{{ .Permalink }}#webpage"
 			},
-			"inLanguage": "{{ or (.Language.Params.languagecodehtml) (.Language.Lang) }}",
+			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
 			"isPartOf": {
 				"@id": "{{ .Site.BaseURL }}#webcontent"
 			},

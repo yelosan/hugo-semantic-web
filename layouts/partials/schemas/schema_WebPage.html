@@ -73,10 +73,15 @@
 					"@type": "ImageObject"
 				}{{ end }}
 			],{{ end }}
-			"inLanguage": "{{ or (.Language.Params.languagecodehtml) (.Language.Lang) }}",
-			"isPartOf": {
-				"@id": "{{ .Site.BaseURL }}#website"
-			},
+			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
+			"isPartOf": [
+				{
+					"@id": "{{ .Site.BaseURL }}#website"
+				},
+				{
+					"@id": "{{ .Site.BaseURL }}#webcontent"
+				}
+			],
 			{{ if .IsPage }}"mainEntity": {
 				"@id": "{{ .Permalink }}#article"
 			},{{ end }}

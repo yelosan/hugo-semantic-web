@@ -139,11 +139,16 @@
 			{{ with $dateExpiry }}"expires": "{{ . }}",{{ end }}
 			{{- /* "hasPart": "", */}}
 			"headline": "{{ .LinkTitle }}",
-			"inLanguage": "{{ or (.Language.Params.languagecodehtml) (.Language.Lang) }}",
+			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
 			{{- /* "isBasedOn": "", */}}
-			"isPartOf": {
-				"@id": "{{ .Permalink }}#webpage"
-			},
+			"isPartOf": [
+				{
+					"@id": "{{ .Permalink }}#webpage"
+				},
+				{
+					"@id": "{{ .Permalink }}#webcontent"
+				}
+			],
 			{{ with .Keywords }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}
 			{{ with or (.Param "license") (.Site.Params.semweb.license) }}"license": "{{ . }}",{{ end }}
 			{{ with .Site.Params.semweb.publisher }}"publisher": {
