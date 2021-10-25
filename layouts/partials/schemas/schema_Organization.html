@@ -46,18 +46,19 @@
 				{
 					"@id": "{{ $orgfounder.id }}"{{ with or ($orgfounder.name) ($orgfounder.url) }},{{ end }}
 					{{ with $orgfounder.name }}"name": "{{ . }}",{{ end }}
-					{{ with $orgfounder.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+					{{ with $orgfounder.sameas }}"sameAs": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 					{{ with $orgfounder.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($orgfounder.name) ($orgfounder.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ end }}
 			{{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
 			"legalName": "{{ $org.legalname }}",
-			{{ with $org.knowslanguages }}"knowsLanguage": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $org.knowslanguages }}"knowsLanguage": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			"logo": [ {{ range $i, $image := $org.images }}{{ with .islogo | default false }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ $.Site.BaseURL }}#logo",
 					{{ with $image.caption }}"caption": "{{ . }}",{{ end }}
+					"contentUrl": "{{ $image.url }}",
 					"url": "{{ $image.url }}",
 					"@type": "ImageObject"
 				}{{ end }}{{ end }}
@@ -67,19 +68,20 @@
 			{{ with $org.vatid }}"vatID": "{{ . }}",{{ end }}
 
 			{{- /* Properties from Thing */ -}}
-			{{ with $org.alternatenames }}"alternateName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $org.alternatenames }}"alternateName": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			"description": "{{ $org.description }}",
 			"image": [ {{ range $i, $image := $org.images }}{{ if $i }}, {{ end }}
 				{ 
 					{{ with .islogo | default false }}"@id": "{{ $.Site.BaseURL }}#logo"
 					{{- else }}"@id": "{{ .url }}",
 					{{ with .caption }}"caption": "{{ . }}",{{ end }}
+					"contentUrl": "{{ .url }}",
 					"url": "{{ .url }}",
 					"@type": "ImageObject"
 					{{- end }}
 				}{{ end }}
 			],
 			"name": "{{ $org.name }}",
-			{{ with $org.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $org.sameas }}"sameAs": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			"url": "{{ $org.url }}"
 		}
