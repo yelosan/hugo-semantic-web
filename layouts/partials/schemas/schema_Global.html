@@ -4,8 +4,4 @@
     {{ partial "schemas/schema_CriticReview.html" . }}
   {{- end -}}
 
-  {{- if or (in .Params.contenttypes "Photograph") -}}
-    {{ partial "schemas/schema_Photograph.html" . }}
-  {{- end -}}
-
 {{- end }}
