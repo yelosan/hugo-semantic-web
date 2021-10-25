@@ -19,6 +19,7 @@
 		{{- print ", " | safeJS }}
 		{{- partial "schemas/schema_Person.html" . | safeJS }}
 		{{ end }}
-	]
+	],
+	"name": "{{ .Title }}"
 }
 </script>
