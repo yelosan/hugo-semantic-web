@@ -33,7 +33,7 @@
 			"@id": "{{ $org.id }}#organization",
 
 			{{- /* Properties from Organization */}}
-			{{ with $org.brands }}"brand": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
+			{{ with $org.brands }}"brand": [ {{ range $i, $brand := . }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ .id }}#website",
 					{{ with .logo }}"logo": "{{ . }}",{{ end }}
@@ -46,15 +46,15 @@
 				{
 					"@id": "{{ $orgfounder.id }}"{{ with or ($orgfounder.name) ($orgfounder.url) }},{{ end }}
 					{{ with $orgfounder.name }}"name": "{{ . }}",{{ end }}
-					{{ with $orgfounder.sameas }}"sameAs": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+					{{ with $orgfounder.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }}],{{ end }}
 					{{ with $orgfounder.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($orgfounder.name) ($orgfounder.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ end }}
 			{{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
 			"legalName": "{{ $org.legalname }}",
-			{{ with $org.knowslanguages }}"knowsLanguage": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-			"logo": [ {{ range $i, $image := $org.images }}{{ with .islogo | default false }}{{ if $i }}, {{ end }}
+			{{ with $org.knowslanguages }}"knowsLanguage": [ {{ range $i, $knowslanguage := . }}{{ if $i }}, {{ end }}"{{ $knowslanguage }}"{{ end }}],{{ end }}
+			"logo": [ {{ $countislogo := 0 }}{{ range $i, $image := $org.images }}{{ with .islogo }}{{ $countislogo = add $countislogo 1 }}{{ if gt $countislogo 1 }}, {{ end }}
 				{ 
 					"@id": "{{ $.Site.BaseURL }}#logo",
 					{{ with $image.caption }}"caption": "{{ . }}",{{ end }}
@@ -68,7 +68,7 @@
 			{{ with $org.vatid }}"vatID": "{{ . }}",{{ end }}
 
 			{{- /* Properties from Thing */ -}}
-			{{ with $org.alternatenames }}"alternateName": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $org.alternatenames }}"alternateName": [ {{ range $i, $alternatename := . }}{{ if $i }}, {{ end }}"{{ $alternatename }}"{{ end }}],{{ end }}
 			"description": "{{ $org.description }}",
 			"image": [ {{ range $i, $image := $org.images }}{{ if $i }}, {{ end }}
 				{ 
@@ -82,6 +82,6 @@
 				}{{ end }}
 			],
 			"name": "{{ $org.name }}",
-			{{ with $org.sameas }}"sameAs": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with $org.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }}],{{ end }}
 			"url": "{{ $org.url }}"
 		}
