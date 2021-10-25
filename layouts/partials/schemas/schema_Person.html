@@ -33,7 +33,7 @@
 			"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}",
 
 			{{- /* Properties from Person */}}
-			{{ with or ($semwebperson.additionalnames) ($dataperson.additionalnames) }}"additionalName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with or ($semwebperson.additionalnames) ($dataperson.additionalnames) }}"additionalName": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			{{ with or ($semwebperson.affiliations) ($dataperson.affiliations) }}"affiliation": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
@@ -51,7 +51,8 @@
 					"@type": ["Brand"{{ with .iswebsite }}, "WebSite"{{ end }}]
 				}{{ end }}
 			],{{ end }}
-			{{ with or ($semwebperson.knowslanguages) ($dataperson.knowslanguages) }}"knowsLanguage": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with or ($semwebperson.jobtitles) ($dataperson.jobtitles) }}"jobTitle": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with or ($semwebperson.knowslanguages) ($dataperson.knowslanguages) }}"knowsLanguage": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			{{ with or ($semwebperson.spouse) ($dataperson.spouse) }}"spouse": {
 				"@id": "{{ .id }}",
 				{{ with .name }}"name": "{{ . }}",{{ end }}
@@ -72,14 +73,15 @@
 			{{ with or ($semwebperson.description) ($dataperson.description) }}"description": "{{ . }}",{{ end }}
 			"image": [ {{ range $i, $v := or ($semwebperson.images) ($dataperson.images) }}{{ if $i }}, {{ end }}
 				{
-					"@id": "{{ .url }}{{ if eq .isphoto true | default false }}#photo{{ end }}",
+					"@id": "{{ .url }}{{ with .isphoto | default false }}#photo{{ end }}",
 					{{ with .caption }}"caption": "{{ . }}",{{ end }}
+					"contentUrl": "{{ .url }}",
 					"url": "{{ .url }}",
 					"@type": "ImageObject"
 				}{{ end }}
 			],
 			{{ with or ($semwebperson.mainentityofpage) ($dataperson.mainentityofpage) }}"mainEntityOfPage": "{{ . }}",{{ end }}
 			{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
-			{{ with or ($semwebperson.sameas) ($dataperson.sameas) }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with or ($semwebperson.sameas) ($dataperson.sameas) }}"sameAs": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}"{{ end }}
 		}{{ end }}
