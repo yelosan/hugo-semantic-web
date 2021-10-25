@@ -34,27 +34,13 @@
 {{- $semwebpersons := .Site.Params.semweb.persons }}
 		{
 			"@type": "WebSite",
-			"@id": "{{ .Site.BaseURL }}/#website",
+			"@id": "{{ .Site.BaseURL }}#website",
 
 			{{- /* Properties from WebSite */}}
 			{{ with .Site.Params.semweb.issn }}"issn": "{{ . }}",{{ end }}
 
 			{{- /* Properties from CreativeWork */ -}}
 			{{ with .Site.Params.semweb.acquirelicensepage }}"acquireLicensePage": "{{ . }}",{{ end }}
-			{{ if $semwebpersons }}"creator": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
-				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
-				{
-					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
-					{{ with or $semwebperson.name }}"name": "{{ . }}",{{ end }}
-					{{ with or $semwebperson.url }}"url": "{{ . }}",{{ end }}
-					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
-				}{{ end }}
-			],{{ else if .Param "author" }}"creator": [
-				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
-				{
-					"name": "{{ .Param "author" }}"
-				}
-			],{{ end }}
 			{{ if $semwebpersons }}"copyrightHolder": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
 				{
@@ -72,6 +58,20 @@
 			{{ with .Site.Params.semweb.copyrightnotice }}"copyrightNotice": "{{ . }}",{{ end }}
 			"copyrightYear": "{{ $dateModifiedYear }}",
 			"creativeWorkStatus": "Published",
+			{{ if $semwebpersons }}"creator": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with or $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with or $semwebperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"creator": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
+				}
+			],{{ end }}
 			{{ with .Site.Params.semweb.credittext }}"creditText": "{{ . }}",{{ end }}
 			{{ with $dateFirstPublished }}"dateCreated": "{{ . }}",{{ end }}
 			"dateModified": "{{ $dateModified }}",
@@ -81,9 +81,9 @@
 			},
 			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
 			"isPartOf": {
-				"@id": "{{ .Site.BaseURL }}/#webcontent"
+				"@id": "{{ .Site.BaseURL }}#webcontent"
 			},
-			{{ with .Site.Params.keywords }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}
+			{{ with .Site.Params.keywords }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }}],{{ end }}
 			{{ with .Site.Params.semweb.license }}"license": "{{ . }}",{{ end }}
 			{{ with .Site.Params.semweb.publisher }}"publisher": {
 				"@id": "{{ . }}#organization"
@@ -94,6 +94,6 @@
 			{{- /* Properties from Thing */ -}}
 			"description": "{{ .Site.Params.description }}",
 			"name": "{{ .Site.Title }}",
-			{{ with .Site.Params.semweb.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
+			{{ with .Site.Params.semweb.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }}],{{ end }}
 			"url": "{{ .Site.BaseURL }}"
 		}
