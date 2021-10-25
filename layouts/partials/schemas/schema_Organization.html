@@ -27,13 +27,12 @@
 	END: SEMANTIC WEB
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
-{{- $org := index .Site.Data.orgs .Site.Params.semweb.org -}}
-{{- $orgLogoID := "" -}}
+{{- $org := index .Site.Data.orgs .Site.Params.semweb.org }}
 		{
 			"@type": "Organization",
 			"@id": "{{ $org.id }}#organization",
 
-			{{- /* Properties from Organization */ -}}
+			{{- /* Properties from Organization */}}
 			{{ with $org.brands }}"brand": [ {{ range $i, $v := . }}{{ if $i }}, {{ end }}
 				{ 
 					"@id": "{{ .id }}#website",
@@ -54,19 +53,15 @@
 			],{{ end }}
 			{{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
 			"legalName": "{{ $org.legalname }}",
-			{{- /* 'image' is from Thing, however we need to place it before 'logo' so we can use $orgLogoID */}}
-			"image": [ {{ range $i, $v := $org.images }}{{ if $i }}, {{ end }}
-				{ 
-					"@id": "{{ .url }}{{ if eq .islogo true | default false }}#logo{{ $orgLogoID = .url }}{{ end }}",
-					{{ with .caption }}"caption": "{{ . }}",{{ end }}
-					"url": "{{ .url }}",
-					"@type": "ImageObject"
-				}{{ end }}
-			],
 			{{ with $org.knowslanguages }}"knowsLanguage": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
-			"logo": {
-				"@id": "{{ $orgLogoID }}#logo"
-			},
+			"logo": [ {{ range $i, $image := $org.images }}{{ with .islogo | default false }}{{ if $i }}, {{ end }}
+				{ 
+					"@id": "{{ $.Site.BaseURL }}#logo",
+					{{ with $image.caption }}"caption": "{{ . }}",{{ end }}
+					"url": "{{ $image.url }}",
+					"@type": "ImageObject"
+				}{{ end }}{{ end }}
+			],
 			{{ with $org.slogan }}"slogan": "{{ . }}",{{ end }}
 			{{ with $org.taxid }}"taxID": "{{ . }}",{{ end }}
 			{{ with $org.vatid }}"vatID": "{{ . }}",{{ end }}
@@ -74,6 +69,16 @@
 			{{- /* Properties from Thing */ -}}
 			{{ with $org.alternatenames }}"alternateName": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			"description": "{{ $org.description }}",
+			"image": [ {{ range $i, $image := $org.images }}{{ if $i }}, {{ end }}
+				{ 
+					{{ with .islogo | default false }}"@id": "{{ $.Site.BaseURL }}#logo"
+					{{- else }}"@id": "{{ .url }}",
+					{{ with .caption }}"caption": "{{ . }}",{{ end }}
+					"url": "{{ .url }}",
+					"@type": "ImageObject"
+					{{- end }}
+				}{{ end }}
+			],
 			"name": "{{ $org.name }}",
 			{{ with $org.sameas }}"sameAs": [{{ range $i, $v := . }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],{{ end }}
 			"url": "{{ $org.url }}"
