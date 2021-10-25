@@ -43,11 +43,11 @@
 			{{- /* note: Disabled since Google is ignoring it anyway
 			"articleBody": "{{ .Plain }}",
 			*/}}
-			"articleSection": [{{ range $i, $v := .Params.categories }}{{ if $i }}, {{ end }}"{{ $v }}"{{ end }}],
+			"articleSection": [ {{ range $i, $articlesection := .Params.categories }}{{ if $i }}, {{ end }}"{{ $articlesection }}"{{ end }}],
 			"wordCount": "{{ .Plain | countwords }}",
 
 			{{- /* Properties from CreativeWork */}}
-			{{- /* "acquireLicensePage": "", */}}
+			{{ with .Param "semweb.acquirelicensepage" }}"acquireLicensePage": "{{ . }}",{{ end }}
 			{{ if $frontmatterpersons }}"author": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
@@ -146,10 +146,10 @@
 					"@id": "{{ .Permalink }}#webpage"
 				},
 				{
-					"@id": "{{ .Site.BaseURL }}/#webcontent"
+					"@id": "{{ .Site.BaseURL }}#webcontent"
 				}
 			],
-			{{ with .Keywords }}"keywords": [{{ range $i, $e := . }}{{ if $i }}, {{ end }}"{{ $e }}"{{ end }}],{{ end }}
+			{{ with .Keywords }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }}],{{ end }}
 			{{ with or (.Param "license") (.Site.Params.semweb.license) }}"license": "{{ . }}",{{ end }}
 			{{ with .Site.Params.semweb.publisher }}"publisher": {
 				"@id": "{{ . }}#organization"
@@ -158,14 +158,14 @@
 			{{- /* "thumbnailUrl": "", */}}
 			{{- /* "translationOfWork": "", */}}
 			{{- /* "translator": "", */}}
-			{{- /* "usageInfo": "", */}}
+			{{ with .Param "semweb.acquirelicensepage" }}"usageInfo": "{{ . }}",{{ end }}
 			{{- /* "workTranslation": "", */}}
 
-			{{- /* Properties from CreativeWork */}}
-			{{- /* "alternateName": "", */}}
+			{{- /* Properties from Thing */}}
 			{{ with or (.Description) (.Summary) }}"description": "{{ . | plainify }}",{{ end }}
-			"image": [ {{ range $i, $v := .Params.images }}{{ if $i }}, {{ end }}
+			"image": [ {{ range $i, $image := .Param "images" }}{{ if $i }}, {{ end }}
 				{ 
+					"@id": "{{ . }}",
 					"url": "{{ . }}",
 					"@type": "ImageObject"
 				}{{ end }}
@@ -174,7 +174,5 @@
 				"@id": "{{ .Permalink }}#webpage"
 			},
 			"name": "{{ .LinkTitle }}",
-			{{- /* "sameAs": "", */}}
-			{{- /* "subjectOf": "", */}}
 			"url": "{{ .Permalink }}"
 		}
