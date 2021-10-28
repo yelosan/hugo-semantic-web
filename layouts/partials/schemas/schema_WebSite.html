@@ -45,8 +45,8 @@
 				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
-					{{ with or $semwebperson.name }}"name": "{{ . }}",{{ end }}
-					{{ with or $semwebperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $semwebperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ else if .Param "author" }}"copyrightHolder": [
@@ -62,8 +62,8 @@
 				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
-					{{ with or $semwebperson.name }}"name": "{{ . }}",{{ end }}
-					{{ with or $semwebperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $semwebperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
 			],{{ else if .Param "author" }}"creator": [
@@ -83,8 +83,8 @@
 			"isPartOf": {
 				"@id": "{{ .Site.BaseURL }}#webcontent"
 			},
-			{{ with .Site.Params.keywords }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }}],{{ end }}
-			{{ with .Site.Params.semweb.license }}"license": "{{ . }}",{{ end }}
+			{{ with .Site.Params.keywords }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }} ],{{ end }}
+			{{ with or (.Site.Params.semweb.license) (.Site.Params.license) }}"license": "{{ . }}",{{ end }}
 			{{ with .Site.Params.semweb.publisher }}"publisher": {
 				"@id": "{{ . }}#organization"
 			},{{ end }}
@@ -94,6 +94,6 @@
 			{{- /* Properties from Thing */ -}}
 			"description": "{{ .Site.Params.description }}",
 			"name": "{{ .Site.Title }}",
-			{{ with .Site.Params.semweb.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }}],{{ end }}
+			{{ with .Site.Params.semweb.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
 			"url": "{{ .Site.BaseURL }}"
 		}
