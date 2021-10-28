@@ -38,5 +38,7 @@
 				{
 					"@id": "{{ .Permalink }}#article"
 				}{{ end }}
-			]
+			],
+			"name": "{{ or (.LinkTitle) (.Site.Title) }}",
+			"url": "{{ .Site.BaseURL }}"
 		}
