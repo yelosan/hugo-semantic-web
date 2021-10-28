@@ -28,7 +28,6 @@
 {{- $iso8601d := "2006-01-02" -}}
 {{- $vidID := .Get "id" -}}
 {{- $acquireLicensePage := .Get "acquirelicensepage" -}}
-{{- $thumbnailURL := .Get "thumbnailurl" -}}
 {{- $title := .Get "title" -}}
 {{- $url := .Get "src" -}}
 {{- $caption := .Get "caption" -}}
@@ -57,15 +56,13 @@
 	*/}}
 	{{ with $caption }}"caption": "{{ . | plainify }}",{{ end }}
 	{{ with (.Get "director") }}"director": "{{ . }}",{{ end }}
-	{{ with (.Get "embeddedtextcaption") }}"embeddedTextCaption": "{{ . }}",{{ end }}
 	{{ with (.Get "musicby") }}"musicBy": "{{ . }}",{{ end }}
-	{{ with $thumbnailURL }}"thumbnail": {
-		"@id": "{{ . }}#thumbnail",
-		"contentUrl": "{{ . }}",
-		"url": "{{ . }}",
+	"thumbnail": {
+		"@id": "https://img.youtube.com/vi/{{ $vidID }}/hqdefault.jpg#thumbnail",
+		"contentUrl": "https://img.youtube.com/vi/{{ $vidID }}/hqdefault.jpg",
+		"url": "https://img.youtube.com/vi/{{ $vidID }}/hqdefault.jpg",
 		"@type": "ImageObject"
-	},{{ end }}
-	{{ with (.Get "transcript") }}"transcript": "{{ . | plainify }}",{{ end }}
+	},
 	{{ with (.Get "vidframesize") }}"videoFrameSize": "{{ . }}",{{ end }}
 	{{ with (.Get "vidquality") }}"videoQuality": "{{ . }}",{{ end }}
 
@@ -105,7 +102,7 @@
 	{{ with $datePublished }}"datePublished": "{{ . }}",{{ end }}
 	{{ with (.Get "inlanguage") }}"inLanguage": "{{ . }}",{{ end }}
 	{{- /* Disabled: not possible with shortcodes
-	{{ with (.Get "keywords") }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }}],{{ end }}
+	{{ with (.Get "keywords") }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }} ],{{ end }}
 	*/}}
 	"license": "{{ .Get "licenseurl" }}",
 	{{- /* note: similar to copyrightHolder
@@ -114,7 +111,7 @@
 	{{- /* note: similar to copyrightHolder
 	{{ with (.Get "sourceorganization") }}"sourceOrganization": "{{ . }}",{{ end }}
 	*/}}
-	{{ with $thumbnailURL }}"thumbnailUrl": "{{ . }}",{{ end }}
+	"thumbnailUrl": "https://img.youtube.com/vi/{{ $vidID }}/hqdefault.jpg",
 	{{ with $acquireLicensePage }}"usageInfo": "{{ . }}",{{ end }}
 
 	{{- /* Properties from Thing */}}
