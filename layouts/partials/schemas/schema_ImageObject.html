@@ -103,7 +103,7 @@
 	{{ with $datePublished }}"datePublished": "{{ . }}",{{ end }}
 	{{ with (.Get "inlanguage") }}"inLanguage": "{{ . }}",{{ end }}
 	{{- /* Disabled: not possible with shortcodes
-	{{ with (.Get "keywords") }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }}],{{ end }}
+	{{ with (.Get "keywords") }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }} ],{{ end }}
 	*/}}
 	"license": "{{ .Get "licenseurl" }}",
 	{{- /* note: similar to copyrightHolder

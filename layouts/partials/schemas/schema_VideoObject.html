@@ -32,7 +32,7 @@
 {{- $url := .Get "src" -}}
 {{- $caption := .Get "caption" -}}
 {{- $about := or $caption $title -}}
-{{- $description := or $caption -}}
+{{- $description := $caption -}}
 {{- $name := or $title $caption -}}
 {{- $attribto := or (.Get "attr") (.Get "attribto") }}
 {{- $publisher := or (.Get "publisher") $attribto -}}
