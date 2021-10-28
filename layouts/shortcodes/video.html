@@ -1,0 +1,146 @@
+{{- /* HOW TO USE
+{{< video
+  platform="youtube"
+  isplaylist=false
+  isloop=false
+
+  height=""
+  width=""
+
+  id=""
+  starttime=""
+  endtime=""
+
+  link=""
+  linkrel="noopener external nofollow"
+  thumbnailurl=""
+
+  title="formal title"
+  caption="description"
+
+  datecreated=""
+  datepublished=""
+
+  director=""
+  musicby=""
+
+  vidframesize=""
+  vidquality=""
+  vidheight=""
+  vidwidth=""
+
+  licensecode="any OR cc0 OR publicdomain OR allrightsreserved"
+  licenseurl=""
+  licensename=""
+
+  attribto=""
+  attriburl=""
+  attribrel="noopener external nofollow"
+  attribalign=""
+
+  cc0country=""
+  cc0countrycode=""
+  cc0countryurl=""
+
+  acquirelicensepage=""
+  copyrightnotice=""
+  credittext=""
+
+  inlanguage=""
+  transcript=""
+  embeddedtextcaption=""
+
+  contentloc=""
+  contentlocurl=""
+  contentlocrel="me noopner external"
+  contentreferencetime=""
+>}}
+*/ -}}
+{{- $platform := .Get "platform" -}}
+{{- $isplaylist := .Get "isplaylist" | default false -}}
+{{- $isloop := .Get "isloop" | default false -}}
+{{- $height := .Get "height" | default "90%" -}}
+{{- $width := .Get "width" | default "90%" -}}
+{{- $id := .Get "id" -}}
+{{- $starttime := .Get "starttime" -}}
+{{- $endtime := .Get "endtime" -}}
+{{- $link := .Get "link" -}}
+{{- $linkrel := .Get "linkrel" | default "noopener external nofollow" -}}
+{{- $title := .Get "title" -}}
+{{- $caption := .Get "caption" -}}
+{{- $attribalign := .Get "attribalign" | default "txt_center" -}}
+{{- $licensecode := .Get "licensecode" | default "allrightsreserved" -}}
+{{- $licenseurl := .Get "licenseurl" -}}
+{{- $licensename := .Get "licensename" | default "All Rights Reserved" -}}
+{{- $attribto := .Get "attribto" -}}
+{{- $attriburl := .Get "attriburl" -}}
+{{- $attribrel := .Get "attribrel" | default "noopener external nofollow" -}}
+{{- $cc0country := .Get "cc0country" -}}
+{{- $cc0countrycode := .Get "cc0countrycode" -}}
+{{- $cc0countryurl := .Get "cc0countryurl" -}}
+{{- $datecreated := .Get "datecreated" -}}
+  {{- $inlanguage := .Get "inlanguage" -}} {{- /* note: we need this to display $transcript */ -}}
+  {{- $transcript := .Get "transcript" -}} {{- /* note: what is the best way to display $transcript */ -}}
+{{- $director := .Get "director" -}}
+{{- $musicby := .Get "musicby" -}}
+{{- $contentloc := .Get "contentloc" -}}
+{{- $contentlocurl := .Get "contentlocurl" -}}
+{{- $contentlocrel := .Get "contentlocrel" | default "noopener external nofollow" -}}
+{{- $contentreferencetime := .Get "contentreferencetime" -}}
+{{ if eq $platform "youtube" }}
+  <figure class="figure_box txt_center">
+    <div class="responsive_embedframe">
+      <iframe id="ytplayer" src="https://www.youtube-nocookie.com/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" {{ with $width }}width="{{ . }}"{{ end }} {{ with $height }}height="{{ . }}"{{ end }} frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <figcaption class="attribution_caption {{ with $attribalign }}{{ . }}{{ end }}">
+      {{ with $title }}<p>「<b>{{ . | markdownify }}</b>」</p>{{ end }}
+      {{ with $caption }}<p><i>{{ . | markdownify }}</i></p>{{ end }}
+
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+        {{- if eq $licensecode "allrightsreserved" }}
+          {{/* ALL RIGHTS RESERVED */}}
+          <small>{{ i18n "attribution_allrightsreserved" }}{{ with $attribto }} {{ i18n "word_to" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ . | markdownify }}{{ end }}{{ with $attriburl }}</a>{{ end }}{{ i18n "punctuation_fullstop" }}</small>
+        {{ else if eq $licensecode "cc0" }}
+          {{/* CC0 DEDICATION */}}
+          <small>{{ i18n "attribution_cc0_extent" }}{{ i18n "punctuation_pause" }} <a href="{{ $attriburl }}" rel="dct:publisher {{ with $attribrel }}{{ . }}{{ end }}">{{ $attribto }}</a> {{ i18n "word_has" }} <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license noopener external nofollow">{{ i18n "attribution_cc0_waived" }}</a> {{ i18n "word_to" }} 「{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}」{{ i18n "punctuation_fullstop" }} {{ i18n "attribution_cc0_publishedfrom" }} <span property="vcard:Country" datatype="dct:ISO3166" content="{{ $cc0countrycode }}" about="{{ $cc0countryurl }}">{{ $cc0country }}</span>{{ i18n "punctuation_fullstop" }}</small>
+        {{ else }}
+          <small>
+            「{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}」{{ with $attribto }} {{ i18n "attribution_by" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ $attribto | markdownify }}{{ with $attriburl }}</a>{{ end }} {{ i18n "word_is" }}
+              {{ if ne $licensecode "publicdomain" }}
+                {{/* ANY LICENSE */}}
+                {{ i18n "attribution_licensedunder" }} <a href="{{ $licenseurl }}" rel="license noopener external nofollow">{{ if eq $licensecode "ccbysa4" }}{{ i18n "attribution_ccbysa4" }}{{ else }}{{ with $licensename }}{{ . }}{{ end }}{{ end }}</a>{{ i18n "punctuation_fullstop" }}
+              {{ else }}
+                {{/* PUBLIC DOMAIN */}}
+                <a href="https://creativecommons.org/publicdomain/mark/1.0/" rel="license noopener external nofollow">{{ i18n "attribution_publicdomain" }}</a>{{ i18n "punctuation_fullstop" }}
+              {{ end }}
+            {{ end }}
+            {{ with or $director $musicby }}<br/>
+              {{ with $director }}
+                {{ i18n "attibution_directedby" }}{{ i18n "punctuation_colon" }} {{ . }}
+                {{ with $musicby }} | {{ end }}
+              {{ end }}
+              {{ with $musicby }}
+                {{ i18n "attribution_musicby" }}{{ i18n "punctuation_colon" }} {{ . }}
+              {{ end }}
+            {{ end }}
+            {{ with or $contentloc $datecreated $contentreferencetime }}<br/>
+              {{ with $contentloc }}
+                {{ i18n "word_location" }}{{ i18n "punctuation_colon" }} {{ with $contentlocurl }}<a href="{{ . }}" rel="{{ with $contentlocrel }}{{ . }}{{ end }}">{{ end }}{{ . }}{{ with $contentlocurl }}</a>{{ end }}
+                {{ with or $datecreated $contentreferencetime }} | {{ end }}
+              {{ end }}
+              {{ with $datecreated }}
+                {{ i18n "word_date" }}{{ i18n "punctuation_colon" }} {{ . }}
+                {{ with and (ne $datecreated $contentreferencetime) ($contentreferencetime) }} | {{ end }}
+              {{ end }}
+              {{ with and (ne $datecreated $contentreferencetime) ($contentreferencetime) }}
+                {{ i18n "word_time" }}{{ i18n "punctuation_colon" }} {{ . }}
+              {{ end }}
+            {{ end }}
+          </small>
+        {{ end }}
+      </p>
+
+    </figcaption>
+  </figure>
+{{ end }}
+{{- if and (templates.Exists "partials/schemas/schema_VideoObject.html") (ne $isplaylist true) }}{{ partial "schemas/schema_VideoObject.html" . }}{{ end -}}
