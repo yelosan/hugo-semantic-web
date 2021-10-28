@@ -4,16 +4,12 @@
   isplaylist=false
   isloop=false
 
-  height=""
-  width=""
-
   id=""
   starttime=""
   endtime=""
 
   link=""
   linkrel="noopener external nofollow"
-  thumbnailurl=""
 
   title="formal title"
   caption="description"
@@ -47,8 +43,6 @@
   credittext=""
 
   inlanguage=""
-  transcript=""
-  embeddedtextcaption=""
 
   contentloc=""
   contentlocurl=""
@@ -59,8 +53,8 @@
 {{- $platform := .Get "platform" -}}
 {{- $isplaylist := .Get "isplaylist" | default false -}}
 {{- $isloop := .Get "isloop" | default false -}}
-{{- $height := .Get "height" | default "90%" -}}
-{{- $width := .Get "width" | default "90%" -}}
+  {{- $height := .Get "height" -}} {{- /* note: not used, code is responsive based on embedresponsively.com */ -}}
+  {{- $width := .Get "width" -}} {{- /* note: not used, code is responsive based on embedresponsively.com */ -}}
 {{- $id := .Get "id" -}}
 {{- $starttime := .Get "starttime" -}}
 {{- $endtime := .Get "endtime" -}}
@@ -79,8 +73,7 @@
 {{- $cc0countrycode := .Get "cc0countrycode" -}}
 {{- $cc0countryurl := .Get "cc0countryurl" -}}
 {{- $datecreated := .Get "datecreated" -}}
-  {{- $inlanguage := .Get "inlanguage" -}} {{- /* note: we need this to display $transcript */ -}}
-  {{- $transcript := .Get "transcript" -}} {{- /* note: what is the best way to display $transcript */ -}}
+{{- $inlanguage := .Get "inlanguage" -}}
 {{- $director := .Get "director" -}}
 {{- $musicby := .Get "musicby" -}}
 {{- $contentloc := .Get "contentloc" -}}
@@ -89,8 +82,8 @@
 {{- $contentreferencetime := .Get "contentreferencetime" -}}
 {{ if eq $platform "youtube" }}
   <figure class="figure_box txt_center">
-    <div class="responsive_embedframe">
-      <iframe id="ytplayer" src="https://www.youtube-nocookie.com/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" {{ with $width }}width="{{ . }}"{{ end }} {{ with $height }}height="{{ . }}"{{ end }} frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>
+    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin-bottom: 10px;">
+      <iframe id="ytplayer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube-nocookie.com/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>
     </div>
     <figcaption class="attribution_caption {{ with $attribalign }}{{ . }}{{ end }}">
       {{ with $title }}<p>「<b>{{ . | markdownify }}</b>」</p>{{ end }}
