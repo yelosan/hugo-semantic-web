@@ -25,11 +25,33 @@
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
 {{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
-{{- $iso8601d := "2006-01-02" -}}
-{{- $datePublished := .Site.Params.semweb.datefirstpublished -}}
-{{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
-{{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
-{{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
+{{- $iso8601y := "2006" -}}
+{{- $permalink := .Permalink -}}
+{{- $acquireLicensePage := or (.Site.Params.semweb.acquirelicensepage) (.Site.Params.acquirelicensepage) -}}
+{{- $copyrightYear := "" -}}
+{{- $dateCreated := .Date -}}
+{{- $datePublished := or (.Site.Params.semweb.datefirstpublished) (.Site.Params.datefirstpublished) (.PublishDate) ($dateCreated) -}}
+{{- $dateModified := .Lastmod.Format $iso8601 -}}
+{{- $dateModifiedYear := .Lastmod.Format $iso8601y -}}
+{{- $dateExpiry := "" -}}
+{{- if not .ExpiryDate.IsZero -}}
+	{{- $dateExpiry = .ExpiryDate.Format $iso8601 -}}
+{{- end -}}
+{{- if $datePublished -}}
+	{{- $datePublished = dateFormat $iso8601 $datePublished -}}
+{{- else if $dateCreated -}}
+  {{- $datePublished = $dateCreated -}}
+{{- end -}}
+{{- if $dateCreated -}}
+	{{- $copyrightYear = dateFormat $iso8601y $dateCreated -}}
+	{{- $dateCreated = dateFormat $iso8601 $dateCreated -}}
+{{- else if $datePublished -}}
+  {{- $copyrightYear = dateFormat $iso8601y $datePublished -}}
+  {{- $dateCreated = $datePublished -}}
+{{- end -}}
+{{- if ne $copyrightYear $dateModifiedYear -}}
+  {{- $copyrightYear = $dateModifiedYear -}}
+{{- end -}}
 {{- $datapersons := .Site.Data.persons -}}
 {{- $semwebpersons := .Site.Params.semweb.persons }}
 		{
@@ -40,7 +62,7 @@
 			{{ with .Site.Params.semweb.issn }}"issn": "{{ . }}",{{ end }}
 
 			{{- /* Properties from CreativeWork */ -}}
-			{{ with .Site.Params.semweb.acquirelicensepage }}"acquireLicensePage": "{{ . }}",{{ end }}
+			{{ with $acquireLicensePage }}"acquireLicensePage": "{{ . }}",{{ end }}
 			{{ if $semwebpersons }}"copyrightHolder": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
 				{
@@ -56,7 +78,7 @@
 				}
 			],{{ end }}
 			{{ with .Site.Params.semweb.copyrightnotice }}"copyrightNotice": "{{ . }}",{{ end }}
-			"copyrightYear": "{{ $dateModifiedYear }}",
+			"copyrightYear": "{{ $copyrightYear }}",
 			"creativeWorkStatus": "Published",
 			{{ if $semwebpersons }}"creator": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
@@ -73,26 +95,33 @@
 				}
 			],{{ end }}
 			{{ with .Site.Params.semweb.credittext }}"creditText": "{{ . }}",{{ end }}
-			{{ with $dateFirstPublished }}"dateCreated": "{{ . }}",{{ end }}
-			"dateModified": "{{ $dateModified }}",
-			{{ with $dateFirstPublished }}"datePublished": "{{ . }}",{{ end }}
+			"dateCreated": "{{ $dateCreated | safeHTML }}",
+			"dateModified": "{{ $dateModified | safeHTML }}",
+			"datePublished": "{{ $datePublished | safeHTML }}",
 			"hasPart": {
-				"@id": "{{ .Permalink }}#webpage"
+				"@id": "{{ $permalink }}#webpage"
 			},
 			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
 			"isPartOf": {
-				"@id": "{{ .Site.BaseURL }}#webcontent"
+				"@id": "{{ $permalink }}#webcontent"
 			},
 			{{ with .Site.Params.keywords }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }} ],{{ end }}
 			{{ with or (.Site.Params.semweb.license) (.Site.Params.license) }}"license": "{{ . }}",{{ end }}
 			{{ with .Site.Params.semweb.publisher }}"publisher": {
 				"@id": "{{ . }}#organization"
 			},{{ end }}
-			{{- /* {{ with .Site.Params.semweb.thumbnailurl }}"thumbnailUrl": "{{ . }}",{{ end }} */}}
-			{{ with .Site.Params.semweb.acquirelicensepage }}"usageInfo": "{{ . }}",{{ end }}
+			{{ with $acquireLicensePage }}"usageInfo": "{{ . }}",{{ end }}
 
 			{{- /* Properties from Thing */ -}}
 			"description": "{{ .Site.Params.description }}",
+			{{ with .Site.Params.images }}"image": [ {{ range $i, $image := . }}{{ if $i }}, {{ end }}
+				{
+					"@id": "{{ . }}#image",
+					"contentUrl": "{{ . }}",
+					"url": "{{ . }}",
+					"@type": "ImageObject"
+				}{{ end }}
+			],{{ end }}
 			"name": "{{ .Site.Title }}",
 			{{ with .Site.Params.semweb.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
 			"url": "{{ .Site.BaseURL }}"

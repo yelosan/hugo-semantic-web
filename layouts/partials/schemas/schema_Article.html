@@ -25,34 +25,53 @@
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
 {{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
-{{- $iso8601d := "2006-01-02" -}}
-{{- $datePublished := or (.PublishDate) (.Date) -}}
-{{- $dateFirstPublished := dateFormat $iso8601d $datePublished | safeHTML -}}
-{{- $dateModified := .Lastmod.Format $iso8601 | safeHTML -}}
-{{- $dateModifiedYear := .Lastmod.Format "2006" | safeHTML -}}
+{{- $iso8601y := "2006" -}}
+{{- $acquireLicensePage := or (.Param "semweb.acquirelicensepage") (.Param "acquirelicensepage") -}}
+{{- $title := .LinkTitle -}}
+{{- $permalink := .Permalink -}}
+{{- $copyrightYear := "" -}}
+{{- $dateCreated := .Date -}}
+{{- $datePublished := or (.PublishDate) ($dateCreated) -}}
+{{- $dateModified := .Lastmod.Format $iso8601 -}}
+{{- $dateModifiedYear := .Lastmod.Format $iso8601y -}}
 {{- $dateExpiry := "" -}}
-{{- if not .ExpiryDate.IsZero }}{{ $dateExpiry = .ExpiryDate.Format $iso8601d | safeHTML }}{{ end -}}
+{{- if not .ExpiryDate.IsZero -}}
+	{{- $dateExpiry = .ExpiryDate.Format $iso8601 -}}
+{{- end -}}
+{{- if $datePublished -}}
+	{{- $datePublished = dateFormat $iso8601 $datePublished -}}
+{{- else if $dateCreated -}}
+  {{- $datePublished = $dateCreated -}}
+{{- end -}}
+{{- if $dateCreated -}}
+	{{- $copyrightYear = dateFormat $iso8601y $dateCreated -}}
+	{{- $dateCreated = dateFormat $iso8601 $dateCreated -}}
+{{- else if $datePublished -}}
+  {{- $copyrightYear = dateFormat $iso8601y $datePublished -}}
+  {{- $dateCreated = $datePublished -}}
+{{- end -}}
+{{- if ne $copyrightYear $dateModifiedYear -}}
+  {{- $copyrightYear = $dateModifiedYear -}}
+{{- end -}}
 {{- $datapersons := .Site.Data.persons -}}
 {{- $semwebpersons := .Site.Params.semweb.persons -}}
 {{- $frontmatterpersons := .Params.authors }}
 		{
 			"@type": [ "Article"{{ with $.Param "semweb.isblog" }}, "BlogPosting"{{ end }} ],
-			"@id": "{{ .Permalink }}#article",
+			"@id": "{{ $permalink }}#article",
 
 			{{- /* Properties from Article */}}
-			{{- /* note: Disabled since Google is ignoring it anyway
-			"articleBody": "{{ .Plain }}",
-			*/}}
-			{{ with .Params.categories }}"articleSection": [ {{ range $i, $articlesection := . }}{{ if $i }}, {{ end }}"{{ $articlesection }}"{{ end }} ],{{ end }}
+			{{ with or (.Params.categories) (.Params.tags) }}"articleSection": [ {{ range $i, $articlesection := . }}{{ if $i }}, {{ end }}"{{ $articlesection }}"{{ end }} ],{{ end }}
 			"wordCount": "{{ .Plain | countwords }}",
 
 			{{- /* Properties from CreativeWork */}}
-			{{ with .Param "semweb.acquirelicensepage" }}"acquireLicensePage": "{{ . }}",{{ end }}
+			{{ with $acquireLicensePage }}"acquireLicensePage": "{{ . }}",{{ end }}
 			{{ if $frontmatterpersons }}"author": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
 					{{ with $frontmatterperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $frontmatterperson.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
 					{{ with $frontmatterperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
@@ -61,6 +80,7 @@
 				{
 					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
 					{{ with $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $semwebperson.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
 					{{ with $semwebperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
@@ -70,25 +90,12 @@
 					"name": "{{ .Param "author" }}"
 				}
 			],{{ end }}
-			{{- /* "citation": [
-				{
-					"@id": "",
-					"url": "",
-					"@type": "CreativeWork"
-				}
-			], */}}
-			{{- /* "contributor": [
-				{
-					"@id": "",
-					"url": "",
-					"@atype": "Person"
-				}
-			], */}}
 			{{ if $frontmatterpersons }}"copyrightHolder": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
 					{{ with $frontmatterperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $frontmatterperson.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
 					{{ with $frontmatterperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
@@ -97,6 +104,7 @@
 				{
 					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
 					{{ with $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $semwebperson.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
 					{{ with $semwebperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
@@ -106,14 +114,14 @@
 					"name": "{{ .Param "author" }}"
 				}
 			],{{ end }}
-			{{- /* "copyrightNotice": "", */}}
-			"copyrightYear": "{{ $dateModifiedYear }}",
+			"copyrightYear": "{{ $copyrightYear }}",
 			"creativeWorkStatus": "Published",
 			{{ if $frontmatterpersons }}"creator": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
 					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
 					{{ with $frontmatterperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $frontmatterperson.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
 					{{ with $frontmatterperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
@@ -122,6 +130,7 @@
 				{
 					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
 					{{ with $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $semwebperson.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
 					{{ with $semwebperson.url }}"url": "{{ . }}",{{ end }}
 					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
 				}{{ end }}
@@ -131,22 +140,18 @@
 					"name": "{{ .Param "author" }}"
 				}
 			],{{ end }}
-			{{- /* "creditText": "", */}}
-			"dateCreated": "{{ $dateFirstPublished }}",
-			"dateModified": "{{ $dateModified }}",
-			"datePublished": "{{ $dateFirstPublished }}",
-			{{- /* "discussionUrl": "", */}}
-			{{ with $dateExpiry }}"expires": "{{ . }}",{{ end }}
-			{{- /* "hasPart": "", */}}
-			"headline": "{{ .LinkTitle }}",
+			"dateCreated": "{{ $dateCreated | safeHTML }}",
+			"dateModified": "{{ $dateModified | safeHTML }}",
+			"datePublished": "{{ $datePublished | safeHTML }}",
+			{{ with $dateExpiry }}"expires": "{{ . | safeHTML }}",{{ end }}
+			"headline": "{{ $title }}",
 			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
-			{{- /* "isBasedOn": "", */}}
 			"isPartOf": [
 				{
-					"@id": "{{ .Permalink }}#webpage"
+					"@id": "{{ $permalink }}#webpage"
 				},
 				{
-					"@id": "{{ .Site.BaseURL }}#webcontent"
+					"@id": "{{ $permalink }}#webcontent"
 				}
 			],
 			{{ with .Keywords }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }} ],{{ end }}
@@ -154,14 +159,13 @@
 			{{ with .Site.Params.semweb.publisher }}"publisher": {
 				"@id": "{{ . }}#organization"
 			},{{ end }}
-			{{- /* "sponsor": "", */}}
-			{{- /* "thumbnailUrl": "", */}}
 			{{- /* "translationOfWork": "", */}}
 			{{- /* "translator": "", */}}
-			{{ with .Param "semweb.acquirelicensepage" }}"usageInfo": "{{ . }}",{{ end }}
+			{{ with $acquireLicensePage }}"usageInfo": "{{ . }}",{{ end }}
 			{{ with .Params.videos }}"video": [ {{ range $i, $video := . }}{{ if $i }}, {{ end }}
 				{
-					"@id": "{{ . }}",
+					"@id": "{{ . }}#video",
+					"contentUrl": "{{ . }}",
 					"url": "{{ . }}",
 					"@type": "VideoObject"
 				}{{ end }}
@@ -170,16 +174,25 @@
 
 			{{- /* Properties from Thing */}}
 			{{ with or (.Description) (.Summary) }}"description": "{{ . | plainify }}",{{ end }}
-			"image": [ {{ range $i, $image := .Param "images" }}{{ if $i }}, {{ end }}
-				{ 
-					"@id": "{{ . }}",
+			{{ with (.Param "images") }}"image": [ {{ range $i, $image := . }}{{ if $i }}, {{ end }}
+				{
+					"@id": "{{ . }}#image",
+					"contentUrl": "{{ . }}",
 					"url": "{{ . }}",
 					"@type": "ImageObject"
 				}{{ end }}
+			],{{ end }}
+			"mainEntityOfPage": [
+				{
+					"@id": "{{ $permalink }}#article"
+				},
+				{
+					"@id": "{{ $permalink }}#webpage"
+				},
+				{
+					"@id": "{{ $permalink }}#webcontent"
+				}
 			],
-			"mainEntityOfPage": {
-				"@id": "{{ .Permalink }}#webpage"
-			},
-			"name": "{{ .LinkTitle }}",
-			"url": "{{ .Permalink }}"
+			"name": "{{ $title }}",
+			"url": "{{ $permalink }}"
 		}
