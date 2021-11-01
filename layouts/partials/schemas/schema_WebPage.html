@@ -24,23 +24,26 @@
 	END: SEMANTIC WEB
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
+{{- $title := or (.LinkTitle) (.Site.Title) -}}
+{{- $permalink := .Permalink -}}
 {{- $datapersons := .Site.Data.persons -}}
 {{- $semwebpersons := .Site.Params.semweb.persons -}}
 {{- $frontmatterpersons := .Params.authors }}
 		{
 			"@type": "WebPage",
-			"@id": "{{ .Permalink }}#webpage",
+			"@id": "{{ $permalink }}#webpage",
 
 			{{- /* Properties from WebPage */}}
 			{{- /* {{ with $breadcrumb }}"breadcrumb": "{{ . }}",{{ end }} */}}
-			"mainContentOfPage": "{{ .Permalink }}",
+			"mainContentOfPage": "{{ $permalink }}",
 			{{ with and (.IsPage) (.Params.images) }}"primaryImageOfPage": {
-				"url": "{{ range first 1 .}}{{ . | absURL }}{{ end }}",
+				"contentUrl": "{{ index . 0 | absURL }}",
+				"url": "{{ index . 0 | absURL }}",
 				"@type": "ImageObject"
 			},{{ end }}
-			{{- /* {{ with $relatedLink }}"relatedLink": "{{ . }}",{{ end }} */}}
 
 			{{- /* Properties from CreativeWork */}}
+			{{ if .IsPage }}
 			{{ if $frontmatterpersons }}"author": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
 				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
 				{
@@ -63,25 +66,32 @@
 					"name": "{{ .Param "author" }}"
 				}
 			],{{ end }}
+			{{ end }}
 			{{ if .IsPage }}"hasPart": {
-				"@id": "{{ .Permalink }}#article"
+				"@id": "{{ $permalink }}#article"
 			},{{ end }}
-			"headline": "{{ or (.LinkTitle) (.Site.Title) }}",
+			{{ if .IsPage }}"headline": "{{ $title }}",{{ end }}
 			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
 			"isPartOf": [
 				{
 					"@id": "{{ .Site.BaseURL }}#website"
 				},
 				{
-					"@id": "{{ .Site.BaseURL }}#webcontent"
+					"@id": "{{ $permalink }}#webcontent"
 				}
 			],
-			{{ if .IsPage }}"mainEntity": {
-				"@id": "{{ .Permalink }}#article"
-			},{{ end }}
-			{{ with .Params.videos }}"video": [ {{ range $i, $video := . }}{{ if $i }}, {{ end }}
+			"mainEntity": [ {{ if .IsPage }}
 				{
-					"@id": "{{ . }}",
+					"@id": "{{ $permalink }}#article"
+				},{{ end }}
+				{
+					"@id": "{{ $permalink }}#webpage"
+				}
+			],
+			{{ with and (.IsPage) (.Params.videos) }}"video": [ {{ range $i, $video := . }}{{ if $i }}, {{ end }}
+				{
+					"@id": "{{ . }}#video",
+					"contentUrl": "{{ . }}",
 					"url": "{{ . }}",
 					"@type": "VideoObject"
 				}{{ end }}
@@ -89,13 +99,22 @@
 
 			{{- /* Properties from Thing */}}
 			{{ with or (.Description) (.Summary) (.Site.Params.description) }}"description": "{{ . | plainify }}",{{ end }}
-			"image": [ {{ range $i, $image := .Param "images" }}{{ if $i }}, {{ end }}
+			{{ with (.Param "images") }}"image": [ {{ range $i, $image := . }}{{ if $i }}, {{ end }}
 				{
-					"@id": "{{ . }}",
+					"@id": "{{ . }}#image",
+					"contentUrl": "{{ . }}",
 					"url": "{{ . }}",
 					"@type": "ImageObject"
 				}{{ end }}
+			],{{ end }}
+			"mainEntityOfPage": [
+				{
+					"@id": "{{ $permalink }}#webpage"
+				},
+				{
+					"@id": "{{ $permalink }}#webcontent"
+				}
 			],
-			"name": "{{ or (.LinkTitle) (.Site.Title) }}",
-			"url": "{{ .Permalink }}"
+			"name": "{{ $title }}",
+			"url": "{{ $permalink }}"
 		}

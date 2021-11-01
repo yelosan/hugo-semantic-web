@@ -24,21 +24,23 @@
 	END: SEMANTIC WEB
 	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
+{{- $title := or (.LinkTitle) (.Site.Title) -}}
+{{- $permalink := .Permalink }}
 		{
 			"@type": "WebContent",
-			"@id": "{{ .Site.BaseURL }}#webcontent",
+			"@id": "{{ $permalink }}#webcontent",
 
 			"hasPart": [
 				{
 					"@id": "{{ .Site.BaseURL }}#website"
 				},
 				{
-					"@id": "{{ .Permalink }}#webpage"
+					"@id": "{{ $permalink }}#webpage"
 				}{{ if .IsPage }},
 				{
-					"@id": "{{ .Permalink }}#article"
+					"@id": "{{ $permalink }}#article"
 				}{{ end }}
 			],
-			"name": "{{ or (.LinkTitle) (.Site.Title) }}",
+			"name": "{{ $title }}",
 			"url": "{{ .Site.BaseURL }}"
 		}
