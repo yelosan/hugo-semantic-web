@@ -8,11 +8,9 @@
   starttime=""
   endtime=""
 
-  link=""
-  linkrel="noopener external nofollow"
-
   title="formal title"
   caption="description"
+  inlanguage=""
 
   datecreated=""
   datepublished=""
@@ -42,8 +40,6 @@
   copyrightnotice=""
   credittext=""
 
-  inlanguage=""
-
   contentloc=""
   contentlocurl=""
   contentlocrel="me noopner external"
@@ -58,7 +54,7 @@
 {{- $id := .Get "id" -}}
 {{- $starttime := .Get "starttime" -}}
 {{- $endtime := .Get "endtime" -}}
-{{- $link := .Get "link" -}}
+{{- $link := printf "%s%s" "https://www.youtube.com/watch?v=" $id -}}
 {{- $linkrel := .Get "linkrel" | default "noopener external nofollow" -}}
 {{- $title := .Get "title" -}}
 {{- $caption := .Get "caption" -}}
