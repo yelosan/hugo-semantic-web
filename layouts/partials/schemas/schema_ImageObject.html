@@ -7,12 +7,15 @@
 	** Syntax: JSON-LD        **
 	** Vocab: schema.org      **
 	**                        **
-	** Schema: VideoObject    **
+	** Schema: ImageObject    **
 	****************************
 
 	Links:
 		- https://www.w3.org/standards/semanticweb/
-		- https://schema.org/VideoObject
+		- https://schema.org/ImageObject
+
+	Google specific:
+		- https://developers.google.com/search/docs/advanced/structured-data/image-license-metadata
 
 	About SemWeb:
 	  - https://im.youronly.one/techmagus/
@@ -26,15 +29,16 @@
 */ -}}
 {{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
 {{- $iso8601y := "2006" -}}
-{{- $vidID := .Get "id" -}}
-{{- $url := printf "%s%s" "https://www.youtube.com/watch?v=" $vidID -}}
-{{- $mainID := printf "%s#video" $url -}}
+{{- $mainID := printf "%s#image" (.Get "src") -}}
 {{- $acquireLicensePage := or (.Get "acquirelicensepage") (.Page.Param "semweb.acquirelicensepage") (.Page.Param "acquirelicensepage") -}}
+{{- $alt := .Get "alt" -}}
+{{- $thumbnailURL := .Get "thumbnailurl" -}}
 {{- $title := .Get "title" -}}
-{{- $caption := .Get "caption" -}}
-{{- $about := or $caption $title -}}
-{{- $description := $caption -}}
-{{- $name := or $title $caption -}}
+{{- $url := .Get "src" -}}
+{{- $caption := or (.Get "caption") $alt -}}
+{{- $about := or $caption $alt $title -}}
+{{- $description := or $caption $alt -}}
+{{- $name := or $title $caption $alt -}}
 {{- $attribto := or (.Get "attr") (.Get "attribto") }}
 {{- $publisher := or (.Get "publisher") $attribto -}}
 {{- $copyrightYear := "" -}}
@@ -42,7 +46,7 @@
 {{- $datePublished := .Get "datepublished" -}}
 {{- if $datePublished -}}
 	{{- $datePublished = dateFormat $iso8601 $datePublished -}}
-{{- else if $dateCreated -}}
+{{ else if $dateCreated -}}
   {{- $datePublished = dateFormat $iso8601 $dateCreated -}}
 {{- end -}}
 {{- if $dateCreated -}}
@@ -55,30 +59,25 @@
 {{- $hashArticle := printf "%s#article" (.Page.Permalink) -}}
 {{- $hashWebPage := printf "%s#webpage" (.Page.Permalink) -}}
 {{- $hashWebContent := printf "%s#webcontent" (.Page.Permalink) -}}
-{{- $thumbnailURL := printf "%s%s%s" "https://img.youtube.com/vi/" $vidID "/hqdefault.jpg" -}}
-{{- $hashPlace := printf "%s#place" ($.Get "contentlocurl") -}}
-{{- $hashThumbnail := printf "%s%s" $thumbnailURL "#thumbnail" }}
+{{- $hashThumbnail := printf "%s#thumbnail" $thumbnailURL -}}
+{{- $hashPlace := printf "%s#place" (.Get "contentlocurl") -}}
 <script type="application/ld+json">
 {
 	"@context": "https://schema.org",
-	"@type": "VideoObject",
+	"@type": "ImageObject",
 	"@id": {{ $mainID }},
 
-	{{- /* Properties from VideoObject */}}
-	{{- /* note: Has to be an array but it is not possible using shortcodes
-	"actor": "",
-	*/}}
+	{{- /* Properties from ImageObject */}}
 	{{ with $caption }}"caption": {{ . | plainify }},{{ end }}
-	{{ with (.Get "director") }}"director": {{ . }},{{ end }}
-	{{ with (.Get "musicby") }}"musicBy": {{ . }},{{ end }}
-	"thumbnail": {
+	{{ with (.Get "embeddedtextcaption") }}"embeddedTextCaption": {{ . }},{{ end }}
+	{{- /* "exifData": "", */ -}}
+	{{ with (.Get "isrepresentativeofpage") }}"representativeOfPage": {{ with . }}true{{ else }}false{{ end }},{{ end }}
+	{{ with $thumbnailURL }}"thumbnail": {
 		"@id": {{ $hashThumbnail }},
-		"contentUrl": {{ $thumbnailURL }},
-		"url": {{ $thumbnailURL }},
+		"contentUrl": {{ . }},
+		"url": {{ . }},
 		"@type": "ImageObject"
-	},
-	{{ with (.Get "vidframesize") }}"videoFrameSize": {{ . }},{{ end }}
-	{{ with (.Get "vidquality") }}"videoQuality": {{ . }},{{ end }}
+	},{{ end }}
 
 	{{- /* Properties from MediaObject */}}
 	{{ with (.Get "contentloc") }}"contentLocation": {
@@ -89,9 +88,9 @@
 	},{{ end }}
 	{{ with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
 	"contentUrl": {{ $url }},
-	{{ with (.Get "vidheight") }}"height": {{ . }},{{ end }}
-	{{ with $datePublished }}"uploadDate": {{ . }},{{ end }}
-	{{ with (.Get "vidwidth") }}"width": {{ . }},{{ end }}
+	{{- /* note: Different from html height and width; this refers to the actual dimension of the image */}}
+	{{ with (.Get "imgheight") }}"height": {{ . }},{{ end }}
+	{{ with (.Get "imgwidth") }}"width": {{ . }},{{ end }}
 
 	{{- /* Properties from CreativeWork */}}
 	"about": {{ $about }},
@@ -101,7 +100,7 @@
 			{
 				"@id": "",
 				"name": {{ . }},
-				"@type": "{{ with ($.Get "copyrightholderisorg") }}Organization{{ else }}Person{{ end }}"
+				"@type": "{{ with (.Get "copyrightholderisorg") }}Organization{{ else }}Person{{ end }}"
 			}
 		],{{ end }}
 	*/}}
@@ -109,7 +108,7 @@
 	{{ with $copyrightYear }}"copyrightYear": {{ . }},{{ end }}
 	"creativeWorkStatus": "Published",
 	{{- /* note: similar to copyrightHolder
-		"creator": "{{ $attribto }}",
+		"creator": {{ $attribto }},
 	*/}}
 	{{ with (.Get "credittext") }}"creditText": {{ . }},{{ end }}
 	{{ with $dateCreated }}"dateCreated": {{ . }},{{ end }}
@@ -127,10 +126,7 @@
 		}
 	],
 	{{ with (.Get "licenseurl") }}"license": {{ . }},{{ end }}
-	{{- /* note: similar to copyrightHolder
-		"publisher": {{ $publisher }},
-	*/}}
-	"thumbnailUrl": {{ $thumbnailURL }},
+	{{ with $thumbnailURL }}"thumbnailUrl": {{ . }},{{ end }}
 	{{ with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
 
 	{{- /* Properties from Thing */}}

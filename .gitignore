@@ -15,3 +15,8 @@ $RECYCLE.BIN/
 
 # IDE config.
 .idea
+
+# SemWeb
+schema_CriticReview.html
+schema_Global.html
+docs/
