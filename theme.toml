@@ -7,13 +7,13 @@ licenselink = "https://github.com/YourOnly-One/hugo-semantic-web/blob/master/LIC
 description = "Add structured data (Schema.org JSON-LD) to your website to improve SEO."
 
 # The home page of the theme, where the source can be found.
-homepage = "https://github.com/techmagus/hugo-structured-data"
+homepage = "https://github.com/YourOnly-One/hugo-semantic-web"
 
 # If you have a running demo of the theme.
 #demosite = "https://gohugo.io"
 
 tags = ["SEO", "JSON-LD", "Schema.org", "Structured Data", "Linked Data", "SemWeb", "YourOnly.One"]
-features = ["Organization", "WebSite", "WebPage", "Article", "BlogPosting", "Person", "ImageObject", "VideObject"]
+features = ["Organization", "WebSite", "WebPage", "WebContent", "Article", "BlogPosting", "Person", "ImageObject", "VideObject"]
 
 # If the theme has multiple authors
 #authors = [

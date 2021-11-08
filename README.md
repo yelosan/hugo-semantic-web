@@ -1,8 +1,8 @@
 # Semantic Web for Hugo
-By using JSON-LD and [Schema.org](https://schema.org) vocabulary, **Semantic Web for Hugo** adds *structured data* and *linked data* into a [Hugo](https://gohugo.io)-powered website. Through it, search engines can easily read the data and establish relationships between objects enabling them to intelligently store information about a website and use it for showing a better search result.
+By using JSON-LD and [Schema.org](https://schema.org) vocabulary, **Semantic Web for Hugo** adds *structured data* and *linked data* into a [Hugo](https://gohugo.io)-powered website. Through it, search engines can easily read the data and establish relationships between objects enabling them to intelligently store information about a website and use it to help display the website in search results.
 
 ## Usage
-You can download the latest release or add this as a Hugo Module. Instructions for both methods can be found in our [wiki](https://github.com/YourOnly-One/hugo-semantic-web/wiki).
+You can download the latest release or add this as a Hugo Module. More information is available in the official [website](https://semweb.youronly.one).
 
 ## Features
 These are the supported types:
@@ -20,17 +20,13 @@ These are the supported types:
 	* Thing > CreativeWork > Article
 * BlogPosting ([Schema.org Type](https://schema.org/BlogPosting))
 	* Thing > CreativeWork > Article > SocialMediaPosting > BlogPosting
+* ImageObject ([Schema.org Type](https://schema.org/ImageObject))
+	* Thing > CreativeWork > MediaObject > ImageObject
+* VideoObject ([Schema.org Type](https://schema.org/VideoObject))
+	* Thing > CreativeWork > MediaObject > VideoObject
 
 ### ToDo
 The following are on the table:
-
-#### Media types
-* ImageObject ([Schema.org Type](https://schema.org/ImageObject))
-	* Thing > CreativeWork > MediaObject > ImageObject
-* Photograph ([Schema.org Type](https://schema.org/Photograph))
-	* Thing > CreativeWork > Photograph
-* VideoObject ([Schema.org Type](https://schema.org/VideoObject))
-	* Thing > CreativeWork > MediaObject > VideoObject
 
 #### HowTo
 * HowTo - [Schema.org Type](https://schema.org/HowTo))
