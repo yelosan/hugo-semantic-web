@@ -52,8 +52,8 @@
 				}{{ end }}
 			],{{ end }}
 			{{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
-			"legalName": "{{ $org.legalname }}",
 			{{ with $org.knowslanguages }}"knowsLanguage": [ {{ range $i, $knowslanguage := . }}{{ if $i }}, {{ end }}"{{ $knowslanguage }}"{{ end }} ],{{ end }}
+			"legalName": "{{ $org.legalname }}",
 			"logo": [ {{ $countislogo := 0 }}{{ range $i, $image := $org.images }}{{ with .islogo }}{{ $countislogo = add $countislogo 1 }}{{ if gt $countislogo 1 }}, {{ end }}
 				{ 
 					"@id": "{{ $.Site.BaseURL }}#logo",
