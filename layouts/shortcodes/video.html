@@ -1,15 +1,20 @@
 {{- /* HOW TO USE
 {{< video
-  platform="youtube"
-  isplaylist=false
-  isloop=false
+  height=""
+  width=""
+  class=""
+  style=""
+  platform=""
 
   id=""
+  linkrel=""
+  isplaylist=false
+  isloop=false
   starttime=""
   endtime=""
 
-  title="formal title"
-  caption="description"
+  title=""
+  caption=""
   inlanguage=""
 
   datecreated=""
@@ -18,47 +23,59 @@
   director=""
   musicby=""
 
-  vidframesize=""
-  vidquality=""
-  vidheight=""
-  vidwidth=""
+  objframesize=""
+  objquality=""
+  objheight=""
+  objwidth=""
 
-  licensecode="any OR cc0 OR publicdomain OR allrightsreserved"
+  infoalign=""
+
+  licensecode=""
   licenseurl=""
   licensename=""
-
-  attribto=""
-  attriburl=""
-  attribrel="noopener external nofollow"
-  attribalign=""
-
-  cc0country=""
-  cc0countrycode=""
-  cc0countryurl=""
 
   acquirelicensepage=""
   copyrightnotice=""
   credittext=""
 
+  attribto=""
+  attriburl=""
+  attribrel=""
+
+  cc0country=""
+  cc0countrycode=""
+  cc0countryurl=""
+
   contentloc=""
   contentlocurl=""
-  contentlocrel="me noopner external"
+  contentlocrel=""
   contentreferencetime=""
 >}}
 */ -}}
-{{- $platform := .Get "platform" -}}
+{{- $height := .Get "height" -}}
+{{- $width := .Get "width" -}}
+{{- $class := .Get "class" | default "obj_center" -}}
+{{- $style := .Get "style" | safeCSS -}}
+{{- $platform := .Get "platform" | default "youtube" -}}
+{{- $id := .Get "id" -}}
+{{- $link := "" -}}
+{{- if eq $platform "youtube" -}}
+  {{- $link = printf "%s%s" "https://www.youtube.com/watch?v=" $id -}}
+{{- else if eq $platform "vimeo" -}}
+  {{- $link = printf "%s%s" "https://vimeo.com/" $id -}}
+{{- end -}}
+{{- $linkrel := .Get "linkrel" | default "noopener external nofollow" -}}
 {{- $isplaylist := .Get "isplaylist" | default false -}}
 {{- $isloop := .Get "isloop" | default false -}}
-  {{- $height := .Get "height" -}} {{- /* note: not used, code is responsive based on embedresponsively.com */ -}}
-  {{- $width := .Get "width" -}} {{- /* note: not used, code is responsive based on embedresponsively.com */ -}}
-{{- $id := .Get "id" -}}
 {{- $starttime := .Get "starttime" -}}
 {{- $endtime := .Get "endtime" -}}
-{{- $link := printf "%s%s" "https://www.youtube.com/watch?v=" $id -}}
-{{- $linkrel := .Get "linkrel" | default "noopener external nofollow" -}}
 {{- $title := .Get "title" -}}
 {{- $caption := .Get "caption" -}}
-{{- $attribalign := .Get "attribalign" | default "txt_center" -}}
+{{- $inlanguage := .Get "inlanguage" -}}
+{{- $datecreated := .Get "datecreated" -}}
+{{- $director := .Get "director" -}}
+{{- $musicby := .Get "musicby" -}}
+{{- $infoalign := .Get "infoalign" | default "txt_center" -}}
 {{- $licensecode := .Get "licensecode" | default "allrightsreserved" -}}
 {{- $licenseurl := .Get "licenseurl" -}}
 {{- $licensename := .Get "licensename" | default "All Rights Reserved" -}}
@@ -68,23 +85,35 @@
 {{- $cc0country := .Get "cc0country" -}}
 {{- $cc0countrycode := .Get "cc0countrycode" -}}
 {{- $cc0countryurl := .Get "cc0countryurl" -}}
-{{- $datecreated := .Get "datecreated" -}}
-{{- $inlanguage := .Get "inlanguage" -}}
-{{- $director := .Get "director" -}}
-{{- $musicby := .Get "musicby" -}}
 {{- $contentloc := .Get "contentloc" -}}
 {{- $contentlocurl := .Get "contentlocurl" -}}
 {{- $contentlocrel := .Get "contentlocrel" | default "noopener external nofollow" -}}
 {{- $contentreferencetime := .Get "contentreferencetime" -}}
-{{ if eq $platform "youtube" }}
+<div{{ with $class }} class="{{ . }}"{{ end }}{{ with or $style $width $height }} style="{{ with $width }}width: {{ . }};{{ end }}{{ with $height }}height: {{ . }};{{ end }}{{ with $style }}{{ . }}{{ end }}"{{ end }}>
   <figure class="figure_box txt_center">
-    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin-bottom: 10px;">
-      <iframe id="ytplayer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube-nocookie.com/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" frameborder="0" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>
+    <div class="responsive_embedframe">
+      {{ if eq $platform "youtube" }}
+        {{- $pc := .Page.Site.Config.Privacy.YouTube -}}
+        {{- if not $pc.Disable -}}
+          {{- $ytHost := cond $pc.PrivacyEnhanced  "www.youtube-nocookie.com" "www.youtube.com" -}}
+          <iframe id="ytplayer" src="https://{{ $ytHost }}/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+        {{- end -}}
+      {{ else if eq $platform "vimeo" }}
+        {{- $pc := .Page.Site.Config.Privacy.Vimeo -}}
+        {{- if not $pc.Disable -}}
+          <iframe id="vimeoplayer" src="https://player.vimeo.com/video/{{ $id }}{{ with $pc.EnableDNT }}?dnt=1{{ end }}{{ with $isloop }}&loop=1{{ end }}&byline=0&portrait=0" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+        {{- end -}}
+      {{- /*
+        {{ else if eq $platform "custom" }}
+        <iframe id="customplayer" src="URL-here{{ with $isloop }}?loop=1{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      */ -}}
+      {{ else }}
+      <p>Platform "{{ $platform }}" currently not supported, either check if it is correct or file a feature request [here]().</p>
+      {{ end }}
     </div>
-    <figcaption class="attribution_caption {{ with $attribalign }}{{ . }}{{ end }}">
+    <figcaption class="attribution_caption {{ with $infoalign }}{{ . }}{{ end }}">
       {{ with $title }}<p>「<b>{{ . | markdownify }}</b>」</p>{{ end }}
       {{ with $caption }}<p><i>{{ . | markdownify }}</i></p>{{ end }}
-
       <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
         {{- if eq $licensecode "allrightsreserved" }}
           {{/* ALL RIGHTS RESERVED */}}
@@ -97,7 +126,7 @@
             「{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}」{{ with $attribto }} {{ i18n "attribution_by" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ $attribto | markdownify }}{{ with $attriburl }}</a>{{ end }} {{ i18n "word_is" }}
               {{ if ne $licensecode "publicdomain" }}
                 {{/* ANY LICENSE */}}
-                {{ i18n "attribution_licensedunder" }} <a href="{{ $licenseurl }}" rel="license noopener external nofollow">{{ if eq $licensecode "ccbysa4" }}{{ i18n "attribution_ccbysa4" }}{{ else }}{{ with $licensename }}{{ . }}{{ end }}{{ end }}</a>{{ i18n "punctuation_fullstop" }}
+                {{ i18n "attribution_licensedunder" }} <a href="{{ $licenseurl }}" rel="license noopener external nofollow">{{ with $licensename }}{{ . }}{{ end }}</a>{{ i18n "punctuation_fullstop" }}
               {{ else }}
                 {{/* PUBLIC DOMAIN */}}
                 <a href="https://creativecommons.org/publicdomain/mark/1.0/" rel="license noopener external nofollow">{{ i18n "attribution_publicdomain" }}</a>{{ i18n "punctuation_fullstop" }}
@@ -128,8 +157,7 @@
           </small>
         {{ end }}
       </p>
-
     </figcaption>
   </figure>
-{{ end }}
+</div>
 {{- if and (templates.Exists "partials/schemas/schema_VideoObject.html") (ne $isplaylist true) }}{{ partial "schemas/schema_VideoObject.html" . }}{{ end -}}
