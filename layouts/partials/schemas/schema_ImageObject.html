@@ -89,8 +89,8 @@
 	{{ with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
 	"contentUrl": {{ $url }},
 	{{- /* note: Different from html height and width; this refers to the actual dimension of the image */}}
-	{{ with (.Get "imgheight") }}"height": {{ . }},{{ end }}
-	{{ with (.Get "imgwidth") }}"width": {{ . }},{{ end }}
+	{{ with (.Get "objheight") }}"height": {{ . }},{{ end }}
+	{{ with (.Get "objwidth") }}"width": {{ . }},{{ end }}
 
 	{{- /* Properties from CreativeWork */}}
 	"about": {{ $about }},
