@@ -1,0 +1,263 @@
+@charset "UTF-8";
+/***
+  * semweb-style.css Copyright © 2021 YourOnly.One
+  *
+  * Licenses: [1] MIT/Expat License; [2] MPL v2.0; [3] LGPLv3
+  * 
+  * LICENSE: MIT License / Expat License
+  *   Permission is hereby granted, free of charge, to any person obtaining a copy
+  *   of this software and associated documentation files (the "Software"), to deal
+  *   in the Software without restriction, including without limitation the rights
+  *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  *   copies of the Software, and to permit persons to whom the Software is
+  *   furnished to do so, subject to the following conditions:
+  * 
+  *   The above copyright notice and this permission notice shall be included in all
+  *   copies or substantial portions of the Software.
+  * 
+  *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  *   SOFTWARE.
+  *
+  * LICENSE: Mozilla Public License Version 2.0 ("MPL 2.0")
+  *   This Source Code Form is subject to the terms of the Mozilla Public
+  *   License, v. 2.0. If a copy of the MPL was not distributed with this
+  *   file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  *
+  * LICENSE: GNU LESSER GENERAL PUBLIC LICENSE Version 3 ("LGPLv3")
+  *   This program is free software: you can redistribute it and/or modify
+  *   it under the terms of the Lesser GNU General Public License as published by
+  *   the Free Software Foundation, either version 3 of the License, or
+  *   (at your option) any later version.
+  *
+  *   This program is distributed in the hope that it will be useful,
+  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  *   Lesser GNU General Public License for more details.
+  *
+  *   You should have received a copy of the Lesser GNU General Public License
+  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+***/
+
+/***
+  * Other Attributions
+  *
+  * Embed Responsively: embedresponsively.com
+***/
+
+/************************
+** BGN: COMMON CLASSES **
+************************/
+  /*** BGN: Alignments ***/
+    html body .obj_center {
+      margin-left: auto;
+      margin-right: auto;
+      -webkit-margin-start: auto;
+              margin-inline-start: auto;
+      -webkit-margin-end: auto;
+              margin-inline-end: auto;
+    }
+    html body .obj_left {
+      margin-right: auto;
+      -webkit-margin-end: auto;
+              margin-inline-end: auto;
+    }
+    html body .obj_right {
+      margin-left: auto;
+      -webkit-margin-start: auto;
+              margin-inline-start: auto;
+    }
+    html body .obj_floatleft {
+      float: left;
+    }
+    html body .obj_floatright {
+      float: right;
+    }
+    .floatclear {
+      clear: both;
+    }
+    html body .txt_center {
+      text-align: center;
+    }
+    html body .txt_justify {
+      text-align: justify;
+    }
+    html body .txt_left {
+      text-align: left;
+    }
+    html body .txt_right {
+      text-align: right;
+    }
+  /*** END: Alignments ***/
+
+  /*** BGN: Positional ***/
+    html body .display_table-cell {
+      display: table-cell;
+    }
+  /*** END: Positional ***/
+/************************
+** END: COMMON CLASSES **
+************************/
+
+/*******************************
+** BGN: embedresponsively.com **
+*******************************/
+  .responsive_embedframe {
+    position: relative;
+    padding-bottom: 56.25%; /* YouTube, Vimeo, Dailymotion, Google Maps, Generic */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    margin-bottom: 10px;
+  }
+  .responsive_embedframe.instagram {
+    padding-bottom: 120%; /* Instagram */
+  }
+  .responsive_embedframe.vine {
+    padding-bottom: 100%; /* Vine */
+  }
+  .responsive_embedframe.gettyimages {
+    padding-bottom: 79.96632996632997%; /* Getty Images */
+  }
+  .responsive_embedframe.generic2 {
+    position: relative;
+    padding-bottom: initial; /* Generic2 */
+    /* height: 0; */
+    overflow: hidden;
+    max-width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .responsive_embedframe iframe,
+  .responsive_embedframe ojbect,
+  .responsive_embedframe embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+/*******************************
+** END: embedresponsively.com **
+*******************************/
+
+/******************************************************************************/
+/******************************************************************************/
+
+/*********************
+** BGN: Attribution **
+*********************/
+  /* BGN: Remove browser style */
+    html body figure.quote_box,
+    html body aside.quote_box,
+    html body div.quote_box,
+    html body aside.figure_box,
+    html body div.figure_box,
+    html body .caption_txt > p {
+      margin: 0;
+        -webkit-margin-before: 0;
+                margin-block-start: 0;
+        -webkit-margin-after: 0;
+                margin-block-end: 0;
+        -webkit-margin-start: 0;
+                margin-inline-start: 0;
+        -webkit-margin-end: 0;
+                margin-inline-end: 0;
+    }
+  /* END: Remove browser style */
+
+  /* BGN: Add margins */
+    html body figure.quote_box,
+    html body aside.quote_box,
+    html body div.quote_box,
+    html body aside.figure_box,
+    html body div.figure_box {
+      margin: 1rem 0;
+        -webkit-margin-before: 1rem;
+                margin-block-start: 1rem;
+        -webkit-margin-after: 1rem;
+                margin-block-end: 1rem;
+        -webkit-margin-start: 0;
+                margin-inline-start: 0;
+        -webkit-margin-end: 0;
+                margin-inline-end: 0;
+    }
+  /* END: Add margins */
+
+  /** BGN: Remove theme style
+    *   - useful for Blogspot and Tumblr themes with embedded CSS
+    *
+    *   - IMPT: Do not change the chaining.
+    *       We need to increase the specifity to override embedded CSS
+  **/
+    html body figure.quote_box,
+    html body aside.quote_box,
+    html body div.quote_box,
+    html body aside.figure_box,
+    html body div.figure_box,
+    html body .caption_txt > p {
+      text-align: revert;
+    }
+    html body figure.quote_box > blockquote,
+    html body aside.quote_box > blockquote,
+    html body div.quote_box > blockquote {
+      background-color: transparent;
+      border: revert;
+      color: revert;
+      font-size: revert;
+      font-style: revert;
+      /* font-weight: revert; */
+      line-height: revert;
+      width: revert;
+    }
+    html body figure.quote_box > blockquote::before,
+    html body figure.quote_box > blockquote::after,
+    html body aside.quote_box > blockquote::before,
+    html body aside.quote_box > blockquote::after,
+    html body div.quote_box > blockquote::before,
+    html body div.quote_box > blockquote::after {
+      content: revert;
+    }
+  /* END: Remove theme style */
+
+  /* .figure_box > div, */
+  html body .quote_box > blockquote {
+    margin: 1rem;
+      -webkit-margin-before: 1rem;
+              margin-block-start: 1rem;
+      -webkit-margin-after: 1rem;
+              margin-block-end: 1rem;
+      -webkit-margin-start: 1rem;
+              margin-inline-start: 1rem;
+      -webkit-margin-end: 1rem;
+              margin-inline-end: 1rem;
+    padding: 0;
+      -webkit-padding-before: 0;
+              padding-block-start: 0;
+      -webkit-padding-after: 0;
+              padding-block-end: 0;
+      -webkit-padding-start: 0;
+              padding-inline-start: 0;
+      -webkit-padding-end: 0;
+              padding-inline-end: 0;
+  }
+
+  html body .attribution_name > p::before {
+    content: "\2015"; /* horizontal bar; quotation dash as per https://unicode.org/charts/PDF/U2000.pdf */
+  }
+  html body .caption_txt {
+    line-height: normal;
+    margin-bottom: 23px;
+      -webkit-margin-after: 23px;
+              margin-block-end: 23px;
+  }
+  html body .caption_txt > p > small {
+    font-size: 0.73em;
+  }
+/*********************
+** END: Attribution **
+*********************/
