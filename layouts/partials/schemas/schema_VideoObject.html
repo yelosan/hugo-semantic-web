@@ -27,7 +27,13 @@
 {{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
 {{- $iso8601y := "2006" -}}
 {{- $vidID := .Get "id" -}}
-{{- $url := printf "%s%s" "https://www.youtube.com/watch?v=" $vidID -}}
+{{- $platform := .Get "platform" -}}
+{{- $url := "" -}}
+{{- if eq $platform "youtube" -}}
+	{{- $url = printf "%s%s" "https://www.youtube.com/watch?v=" $vidID -}}
+{{- else if eq $platform "vimeo" -}}
+	{{- $url = printf "%s%s" "https://vimeo.com/" $vidID -}}
+{{- end -}}
 {{- $mainID := printf "%s#video" $url -}}
 {{- $acquireLicensePage := or (.Get "acquirelicensepage") (.Page.Param "semweb.acquirelicensepage") (.Page.Param "acquirelicensepage") -}}
 {{- $title := .Get "title" -}}
@@ -55,9 +61,15 @@
 {{- $hashArticle := printf "%s#article" (.Page.Permalink) -}}
 {{- $hashWebPage := printf "%s#webpage" (.Page.Permalink) -}}
 {{- $hashWebContent := printf "%s#webcontent" (.Page.Permalink) -}}
-{{- $thumbnailURL := printf "%s%s%s" "https://img.youtube.com/vi/" $vidID "/hqdefault.jpg" -}}
+{{- $thumbnailURL := "" -}}
+{{- if eq $platform "youtube" -}}
+	{{- $thumbnailURL = printf "%s%s%s" "https://img.youtube.com/vi/" $vidID "/hqdefault.jpg" -}}
+{{- end -}}
 {{- $hashPlace := printf "%s#place" ($.Get "contentlocurl") -}}
-{{- $hashThumbnail := printf "%s%s" $thumbnailURL "#thumbnail" }}
+{{- $hashThumbnail := "" -}}
+{{- if eq $platform "youtube" -}}
+	{{- $hashThumbnail = printf "%s%s" $thumbnailURL "#thumbnail" -}}
+{{- end }}
 <script type="application/ld+json">
 {
 	"@context": "https://schema.org",
@@ -71,14 +83,16 @@
 	{{ with $caption }}"caption": {{ . | plainify }},{{ end }}
 	{{ with (.Get "director") }}"director": {{ . }},{{ end }}
 	{{ with (.Get "musicby") }}"musicBy": {{ . }},{{ end }}
+	{{ if eq $platform "youtube" }}
 	"thumbnail": {
 		"@id": {{ $hashThumbnail }},
 		"contentUrl": {{ $thumbnailURL }},
 		"url": {{ $thumbnailURL }},
 		"@type": "ImageObject"
 	},
-	{{ with (.Get "vidframesize") }}"videoFrameSize": {{ . }},{{ end }}
-	{{ with (.Get "vidquality") }}"videoQuality": {{ . }},{{ end }}
+	{{ end }}
+	{{ with (.Get "objframesize") }}"videoFrameSize": {{ . }},{{ end }}
+	{{ with (.Get "objquality") }}"videoQuality": {{ . }},{{ end }}
 
 	{{- /* Properties from MediaObject */}}
 	{{ with (.Get "contentloc") }}"contentLocation": {
@@ -89,9 +103,9 @@
 	},{{ end }}
 	{{ with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
 	"contentUrl": {{ $url }},
-	{{ with (.Get "vidheight") }}"height": {{ . }},{{ end }}
+	{{ with (.Get "objheight") }}"height": {{ . }},{{ end }}
 	{{ with $datePublished }}"uploadDate": {{ . }},{{ end }}
-	{{ with (.Get "vidwidth") }}"width": {{ . }},{{ end }}
+	{{ with (.Get "objwidth") }}"width": {{ . }},{{ end }}
 
 	{{- /* Properties from CreativeWork */}}
 	"about": {{ $about }},
@@ -130,7 +144,7 @@
 	{{- /* note: similar to copyrightHolder
 		"publisher": {{ $publisher }},
 	*/}}
-	"thumbnailUrl": {{ $thumbnailURL }},
+	{{ if eq $platform "youtube" }}"thumbnailUrl": {{ $thumbnailURL }},{{ end }}
 	{{ with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
 
 	{{- /* Properties from Thing */}}
