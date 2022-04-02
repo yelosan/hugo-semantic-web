@@ -7,7 +7,7 @@
   platform=""
 
   id=""
-  linkrel=""
+  linkrel="noopener external"
   isplaylist=false
   isloop=false
   starttime=""
@@ -40,7 +40,7 @@
 
   attribto=""
   attriburl=""
-  attribrel=""
+  attribrel="noopener external"
 
   cc0country=""
   cc0countrycode=""
@@ -48,7 +48,7 @@
 
   contentloc=""
   contentlocurl=""
-  contentlocrel=""
+  contentlocrel="noopener external"
   contentreferencetime=""
 >}}
 */ -}}
@@ -64,7 +64,7 @@
 {{- else if eq $platform "vimeo" -}}
   {{- $link = printf "%s%s" "https://vimeo.com/" $id -}}
 {{- end -}}
-{{- $linkrel := .Get "linkrel" | default "noopener external nofollow" -}}
+{{- $linkrel := .Get "linkrel" -}}
 {{- $isplaylist := .Get "isplaylist" | default false -}}
 {{- $isloop := .Get "isloop" | default false -}}
 {{- $starttime := .Get "starttime" -}}
@@ -81,38 +81,38 @@
 {{- $licensename := .Get "licensename" | default "All Rights Reserved" -}}
 {{- $attribto := .Get "attribto" -}}
 {{- $attriburl := .Get "attriburl" -}}
-{{- $attribrel := .Get "attribrel" | default "noopener external nofollow" -}}
+{{- $attribrel := .Get "attribrel" -}}
 {{- $cc0country := .Get "cc0country" -}}
 {{- $cc0countrycode := .Get "cc0countrycode" -}}
 {{- $cc0countryurl := .Get "cc0countryurl" -}}
 {{- $contentloc := .Get "contentloc" -}}
 {{- $contentlocurl := .Get "contentlocurl" -}}
-{{- $contentlocrel := .Get "contentlocrel" | default "noopener external nofollow" -}}
+{{- $contentlocrel := .Get "contentlocrel" -}}
 {{- $contentreferencetime := .Get "contentreferencetime" -}}
 <div{{ with $class }} class="{{ . }}"{{ end }}{{ with or $style $width $height }} style="{{ with $width }}width: {{ . }};{{ end }}{{ with $height }}height: {{ . }};{{ end }}{{ with $style }}{{ . }}{{ end }}"{{ end }}>
-  <figure class="figure_box txt_center">
+  <figure class="figure_box txt_center" style="width: auto;">
     <div class="responsive_embedframe">
       {{ if eq $platform "youtube" }}
         {{- $pc := .Page.Site.Config.Privacy.YouTube -}}
         {{- if not $pc.Disable -}}
           {{- $ytHost := cond $pc.PrivacyEnhanced  "www.youtube-nocookie.com" "www.youtube.com" -}}
-          <iframe id="ytplayer" src="https://{{ $ytHost }}/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          <iframe loading="lazy" id="ytplayer" src="https://{{ $ytHost }}/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
         {{- end -}}
       {{ else if eq $platform "vimeo" }}
         {{- $pc := .Page.Site.Config.Privacy.Vimeo -}}
         {{- if not $pc.Disable -}}
-          <iframe id="vimeoplayer" src="https://player.vimeo.com/video/{{ $id }}{{ with $pc.EnableDNT }}?dnt=1{{ end }}{{ with $isloop }}&loop=1{{ end }}&byline=0&portrait=0" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          <iframe loading="lazy" id="vimeoplayer" src="https://player.vimeo.com/video/{{ $id }}{{ with $pc.EnableDNT }}?dnt=1{{ end }}{{ with $isloop }}&loop=1{{ end }}&byline=0&portrait=0" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
         {{- end -}}
       {{- /*
         {{ else if eq $platform "custom" }}
-        <iframe id="customplayer" src="URL-here{{ with $isloop }}?loop=1{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+        <iframe loading="lazy" id="customplayer" src="URL-here{{ with $isloop }}?loop=1{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
       */ -}}
       {{ else }}
       <p>Platform "{{ $platform }}" currently not supported, either check if it is correct or file a feature request [here]().</p>
       {{ end }}
     </div>
     <figcaption class="attribution_caption {{ with $infoalign }}{{ . }}{{ end }}">
-      {{ with $title }}<p>「<b>{{ . | markdownify }}</b>」</p>{{ end }}
+      {{ with $title }}<p><cite><b>{{ . | markdownify }}</b></cite></p>{{ end }}
       {{ with $caption }}<p><i>{{ . | markdownify }}</i></p>{{ end }}
       <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
         {{- if eq $licensecode "allrightsreserved" }}
@@ -120,16 +120,16 @@
           <small>{{ i18n "attribution_allrightsreserved" }}{{ with $attribto }} {{ i18n "word_to" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ . | markdownify }}{{ end }}{{ with $attriburl }}</a>{{ end }}{{ i18n "punctuation_fullstop" }}</small>
         {{ else if eq $licensecode "cc0" }}
           {{/* CC0 DEDICATION */}}
-          <small>{{ i18n "attribution_cc0_extent" }}{{ i18n "punctuation_pause" }} <a href="{{ $attriburl }}" rel="dct:publisher {{ with $attribrel }}{{ . }}{{ end }}">{{ $attribto }}</a> {{ i18n "word_has" }} <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license noopener external nofollow">{{ i18n "attribution_cc0_waived" }}</a> {{ i18n "word_to" }} 「{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}」{{ i18n "punctuation_fullstop" }} {{ i18n "attribution_cc0_publishedfrom" }} <span property="vcard:Country" datatype="dct:ISO3166" content="{{ $cc0countrycode }}" about="{{ $cc0countryurl }}">{{ $cc0country }}</span>{{ i18n "punctuation_fullstop" }}</small>
+          <small>{{ i18n "attribution_cc0_extent" }}{{ i18n "punctuation_pause" }} <a href="{{ $attriburl }}" rel="dct:publisher {{ with $attribrel }}{{ . }}{{ end }}">{{ $attribto }}</a> {{ i18n "word_has" }} <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license noopener external">{{ i18n "attribution_cc0_waived" }}</a> {{ i18n "word_to" }} <cite>{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ i18n "punctuation_fullstop" }} {{ i18n "attribution_cc0_publishedfrom" }} <span property="vcard:Country" datatype="dct:ISO3166" content="{{ $cc0countrycode }}" about="{{ $cc0countryurl }}"><a href="{{ $cc0countryurl }}" rel="noopener external">{{ $cc0country }}</a></span>{{ i18n "punctuation_fullstop" }}</small>
         {{ else }}
           <small>
-            「{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}」{{ with $attribto }} {{ i18n "attribution_by" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ $attribto | markdownify }}{{ with $attriburl }}</a>{{ end }} {{ i18n "word_is" }}
+            <cite>{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ with $attribto }} {{ i18n "attribution_by" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ $attribto | markdownify }}{{ with $attriburl }}</a>{{ end }} {{ i18n "word_is" }}
               {{ if ne $licensecode "publicdomain" }}
                 {{/* ANY LICENSE */}}
-                {{ i18n "attribution_licensedunder" }} <a href="{{ $licenseurl }}" rel="license noopener external nofollow">{{ with $licensename }}{{ . }}{{ end }}</a>{{ i18n "punctuation_fullstop" }}
+                {{ i18n "attribution_licensedunder" }} <a href="{{ $licenseurl }}" rel="license noopener external">{{ with $licensename }}{{ . }}{{ end }}</a>{{ i18n "punctuation_fullstop" }}
               {{ else }}
                 {{/* PUBLIC DOMAIN */}}
-                <a href="https://creativecommons.org/publicdomain/mark/1.0/" rel="license noopener external nofollow">{{ i18n "attribution_publicdomain" }}</a>{{ i18n "punctuation_fullstop" }}
+                <a href="https://creativecommons.org/publicdomain/mark/1.0/" rel="license noopener external">{{ i18n "attribution_publicdomain" }}</a>{{ i18n "punctuation_fullstop" }}
               {{ end }}
             {{ end }}
             {{ with or $director $musicby }}<br/>

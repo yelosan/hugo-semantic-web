@@ -10,7 +10,7 @@
 
   src=""
   link=""
-  linkrel=""
+  linkrel="noopener"
   thumbnailurl=""
 
   title=""
@@ -37,7 +37,7 @@
 
   attribto=""
   attriburl=""
-  attribrel=""
+  attribrel="noopener"
 
   cc0country=""
   cc0countrycode=""
@@ -45,7 +45,7 @@
 
   contentloc=""
   contentlocurl=""
-  contentlocrel=""
+  contentlocrel="noopener external"
   contentreferencetime=""
 >}}
 */ -}}
@@ -57,7 +57,7 @@
 {{- $type := .Get "type" | default "image" -}}
 {{- $src := .Get "src" -}}
 {{- $link := .Get "link" -}}
-{{- $linkrel := .Get "linkrel" | default "noopener external nofollow" -}}
+{{- $linkrel := .Get "linkrel" -}}
 {{- $title := .Get "title" -}}
 {{- $caption := .Get "caption" -}}
 {{- $alt := .Get "alt" -}}
@@ -68,19 +68,20 @@
 {{- $licensename := .Get "licensename" | default "All Rights Reserved" -}}
 {{- $attribto := or (.Get "attr") (.Get "attribto") -}}
 {{- $attriburl := or (.Get "attriburl") (.Get "attrlink") -}}
-{{- $attribrel := .Get "attribrel" | default "noopener external nofollow" -}}
+{{- $attribrel := .Get "attribrel" -}}
 {{- $cc0country := .Get "cc0country" -}}
 {{- $cc0countrycode := .Get "cc0countrycode" -}}
 {{- $cc0countryurl := .Get "cc0countryurl" -}}
 {{- $contentloc := .Get "contentloc" -}}
 {{- $contentlocurl := .Get "contentlocurl" -}}
-{{- $contentlocrel := .Get "contentlocrel" | default "noopener external nofollow" -}}
+{{- $contentlocrel := .Get "contentlocrel" -}}
 {{- $contentreferencetime := .Get "contentreferencetime" -}}
-<div{{ with $class }} class="{{ . }}"{{ end }}{{ with or $style $width $height }} style="{{ with $width }}width: {{ . }};{{ end }}{{ with $height }}height: {{ . }};{{ end }}{{ with $style }}{{ . }}{{ end }}"{{ end }}>
-  {{- if eq $type "imagecoverattrib" }}
+{{- if eq $type "imagecoverattrib" }}
+<div role="cover-image-attributions">
   <div class="header_attribution">
     <footer class="attribution_copyright">
-  {{ else }}
+{{ else }}
+<div{{ with $class }} class="{{ . }}"{{ end }}{{ with or $style $width $height }} style="{{ with $width }}width: {{ . }};{{ end }}{{ with $height }}height: {{ . }};{{ end }}{{ with $style }}{{ . }}{{ end }}"{{ end }}>
   {{- /* keep <figure> centered, if we want to change the image alignment itself, it should be done inside figure */ -}}
   <figure class="figure_box txt_center">
     <div>
@@ -88,25 +89,25 @@
       <img loading="lazy" src="{{ $src }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} />{{ with $link }}</a>{{ end }}
     </div>
     <figcaption class="attribution_caption {{ with $infoalign }}{{ . }}{{ end }}">
-      {{ with $title }}<p>「<b>{{ . | markdownify }}</b>」</p>{{ end }}
+      {{ with $title }}<p><cite><b>{{ . | markdownify }}</b></cite></p>{{ end }}
       {{ with $caption }}<p><i>{{ . | markdownify }}</i></p>{{ end }}
-  {{ end -}}
+{{ end -}}
       <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
         {{- if eq $licensecode "allrightsreserved" }}
           {{/* ALL RIGHTS RESERVED */}}
           <small>{{ if eq $type "imagecoverattrib" }}{{ i18n "word_coverimage" }} {{ i18n "attribution_allrightsreservedcover" }}{{ else }}{{ i18n "attribution_allrightsreserved" }}{{ end }}{{ with $attribto }} {{ i18n "word_to" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ . | markdownify }}{{ end }}{{ with $attriburl }}</a>{{ end }}{{ i18n "punctuation_fullstop" }}</small>
         {{ else if eq $licensecode "cc0" }}
           {{/* CC0 DEDICATION */}}
-          <small>{{ if eq $type "imagecoverattrib" }}{{ i18n "word_coverimage" }} {{ end }}{{ i18n "attribution_cc0_extent" }}{{ i18n "punctuation_pause" }} <a href="{{ $attriburl }}" rel="dct:publisher {{ with $attribrel }}{{ . }}{{ end }}">{{ $attribto }}</a> {{ i18n "word_has" }} <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license noopener external nofollow">{{ i18n "attribution_cc0_waived" }}</a> {{ i18n "word_to" }} 「{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $alt $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}」{{ i18n "punctuation_fullstop" }} {{ i18n "attribution_cc0_publishedfrom" }} <span property="vcard:Country" datatype="dct:ISO3166" content="{{ $cc0countrycode }}" about="{{ $cc0countryurl }}">{{ $cc0country }}</span>{{ i18n "punctuation_fullstop" }}</small>
+          <small>{{ if eq $type "imagecoverattrib" }}{{ i18n "word_coverimage" }} {{ end }}{{ i18n "attribution_cc0_extent" }}{{ i18n "punctuation_pause" }} <a href="{{ $attriburl }}" rel="dct:publisher {{ with $attribrel }}{{ . }}{{ end }}">{{ $attribto }}</a> {{ i18n "word_has" }} <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license noopener external">{{ i18n "attribution_cc0_waived" }}</a> {{ i18n "word_to" }} <cite>{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $alt $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ i18n "punctuation_fullstop" }} {{ i18n "attribution_cc0_publishedfrom" }} <span property="vcard:Country" datatype="dct:ISO3166" content="{{ $cc0countrycode }}" about="{{ $cc0countryurl }}"><a href="{{ $cc0countryurl }}" rel="noopener external">{{ $cc0country }}</a></span>{{ i18n "punctuation_fullstop" }}</small>
         {{ else }}
           <small>
-            {{ if eq $type "imagecoverattrib" }}{{ i18n "word_coverimage" }} {{ end }}「{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $alt $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}」{{ with $attribto }} {{ i18n "attribution_by" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ $attribto | markdownify }}{{ with $attriburl }}</a>{{ end }} {{ i18n "word_is" }}
+            {{ if eq $type "imagecoverattrib" }}{{ i18n "word_coverimage" }} {{ end }}<cite>{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $alt $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ with $attribto }} {{ i18n "attribution_by" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ $attribto | markdownify }}{{ with $attriburl }}</a>{{ end }} {{ i18n "word_is" }}
               {{ if ne $licensecode "publicdomain" }}
                 {{/* ANY LICENSE */}}
-                {{ i18n "attribution_licensedunder" }} <a href="{{ $licenseurl }}" rel="license noopener external nofollow">{{ with $licensename }}{{ . }}{{ end }}</a>{{ i18n "punctuation_fullstop" }}
+                {{ i18n "attribution_licensedunder" }} <a href="{{ $licenseurl }}" rel="license noopener external">{{ with $licensename }}{{ . }}{{ end }}</a>{{ i18n "punctuation_fullstop" }}
               {{ else }}
                 {{/* PUBLIC DOMAIN */}}
-                <a href="https://creativecommons.org/publicdomain/mark/1.0/" rel="license noopener external nofollow">{{ i18n "attribution_publicdomain" }}</a>{{ i18n "punctuation_fullstop" }}
+                <a href="https://creativecommons.org/publicdomain/mark/1.0/" rel="license noopener external">{{ i18n "attribution_publicdomain" }}</a>{{ i18n "punctuation_fullstop" }}
               {{ end }}
             {{ end }}
             {{ with or $contentloc $datecreated $contentreferencetime }}<br/>
