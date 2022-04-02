@@ -1,3 +1,3 @@
-module github.com/YourOnly-One/hugo-semantic-web
+module gitlab.com/yelosan/hugo-semantic-web
 
-go 1.17
+go 1.18

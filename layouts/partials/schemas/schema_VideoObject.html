@@ -27,7 +27,7 @@
 {{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
 {{- $iso8601y := "2006" -}}
 {{- $vidID := .Get "id" -}}
-{{- $platform := .Get "platform" -}}
+{{- $platform := .Get "platform" | default "youtube" -}}
 {{- $url := "" -}}
 {{- if eq $platform "youtube" -}}
 	{{- $url = printf "%s%s" "https://www.youtube.com/watch?v=" $vidID -}}
@@ -38,8 +38,7 @@
 {{- $acquireLicensePage := or (.Get "acquirelicensepage") (.Page.Param "semweb.acquirelicensepage") (.Page.Param "acquirelicensepage") -}}
 {{- $title := .Get "title" -}}
 {{- $caption := .Get "caption" -}}
-{{- $about := or $caption $title -}}
-{{- $description := $caption -}}
+{{- $description := or $caption $title -}}
 {{- $name := or $title $caption -}}
 {{- $attribto := or (.Get "attr") (.Get "attribto") }}
 {{- $publisher := or (.Get "publisher") $attribto -}}
@@ -108,7 +107,7 @@
 	{{ with (.Get "objwidth") }}"width": {{ . }},{{ end }}
 
 	{{- /* Properties from CreativeWork */}}
-	"about": {{ $about }},
+	"about": {{ $description }},
 	{{ with $acquireLicensePage }}"acquireLicensePage": {{ . }},{{ end }}
 	{{- /* ToDo: @id
 		{{ with $attribto }}"copyrightHolder": [

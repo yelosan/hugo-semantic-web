@@ -71,7 +71,7 @@
 	{{ with $caption }}"caption": {{ . | plainify }},{{ end }}
 	{{ with (.Get "embeddedtextcaption") }}"embeddedTextCaption": {{ . }},{{ end }}
 	{{- /* "exifData": "", */ -}}
-	{{ with (.Get "isrepresentativeofpage") }}"representativeOfPage": {{ with . }}true{{ else }}false{{ end }},{{ end }}
+	"representativeOfPage": {{ with (.Get "isrepresentativeofpage") }}true{{ else }}false{{ end }},
 	{{ with $thumbnailURL }}"thumbnail": {
 		"@id": {{ $hashThumbnail }},
 		"contentUrl": {{ . }},
