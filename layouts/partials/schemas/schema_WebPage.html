@@ -1,0 +1,120 @@
+{{- /*
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+	****************************
+	** Syntax: JSON-LD        **
+	** Vocab: schema.org      **
+	**                        **
+	** Schema: WebPage        **
+	****************************
+
+	Links:
+		- https://www.w3.org/standards/semanticweb/
+		- https://schema.org/WebPage
+
+	About SemWeb:
+	  - https://im.youronly.one/techmagus/
+
+	How-To:
+	  - https://github.com/
+
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/}}
+{{- $title := or (.LinkTitle) (.Site.Title) -}}
+{{- $permalink := .Permalink -}}
+{{- $datapersons := .Site.Data.persons -}}
+{{- $semwebpersons := .Site.Params.semweb.persons -}}
+{{- $frontmatterpersons := .Params.authors }}
+		{
+			"@type": "WebPage",
+			"@id": "{{ $permalink }}#webpage",
+
+			{{- /* Properties from WebPage */}}
+			{{- /* {{ with $breadcrumb }}"breadcrumb": "{{ . }}",{{ end }} */}}
+			"mainContentOfPage": "{{ $permalink }}",
+			{{ with and (.IsPage) (.Params.images) }}"primaryImageOfPage": {
+				"contentUrl": "{{ index . 0 | absURL }}",
+				"url": "{{ index . 0 | absURL }}",
+				"@type": "ImageObject"
+			},{{ end }}
+
+			{{- /* Properties from CreativeWork */}}
+			{{ if .IsPage }}
+			{{ if $frontmatterpersons }}"author": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($frontmatterperson.id) ($dataperson.id) }}"{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }},{{ end }}
+					{{ with $frontmatterperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $frontmatterperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with or ($frontmatterperson.name) ($frontmatterperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if $semwebpersons }}"author": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $semwebperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"author": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
+				}
+			],{{ end }}
+			{{ end }}
+			{{ if .IsPage }}"hasPart": {
+				"@id": "{{ $permalink }}#article"
+			},{{ end }}
+			{{ if .IsPage }}"headline": "{{ $title }}",{{ end }}
+			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
+			"isPartOf": [
+				{
+					"@id": "{{ .Site.BaseURL }}#website"
+				},
+				{
+					"@id": "{{ $permalink }}#webcontent"
+				}
+			],
+			"mainEntity": [ {{ if .IsPage }}
+				{
+					"@id": "{{ $permalink }}#article"
+				},{{ end }}
+				{
+					"@id": "{{ $permalink }}#webpage"
+				}
+			],
+			{{ with and (.IsPage) (.Params.videos) }}"video": [ {{ range $i, $video := . }}{{ if $i }}, {{ end }}
+				{
+					"@id": "{{ . }}#video",
+					"contentUrl": "{{ . }}",
+					"url": "{{ . }}",
+					"@type": "VideoObject"
+				}{{ end }}
+			],{{ end }}
+
+			{{- /* Properties from Thing */}}
+			{{ with or (.Description) (.Summary) (.Site.Params.description) }}"description": "{{ . | plainify }}",{{ end }}
+			{{ with (.Param "images") }}"image": [ {{ range $i, $image := . }}{{ if $i }}, {{ end }}
+				{
+					"@id": "{{ . }}#image",
+					"contentUrl": "{{ . }}",
+					"url": "{{ . }}",
+					"@type": "ImageObject"
+				}{{ end }}
+			],{{ end }}
+			"mainEntityOfPage": [
+				{
+					"@id": "{{ $permalink }}#webpage"
+				},
+				{
+					"@id": "{{ $permalink }}#webcontent"
+				}
+			],
+			"name": "{{ $title }}",
+			"url": "{{ $permalink }}"
+		}

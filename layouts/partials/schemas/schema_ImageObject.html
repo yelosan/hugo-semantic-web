@@ -1,0 +1,137 @@
+{{- /*
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+	****************************
+	** Syntax: JSON-LD        **
+	** Vocab: schema.org      **
+	**                        **
+	** Schema: ImageObject    **
+	****************************
+
+	Links:
+		- https://www.w3.org/standards/semanticweb/
+		- https://schema.org/ImageObject
+
+	Google specific:
+		- https://developers.google.com/search/docs/advanced/structured-data/image-license-metadata
+
+	About SemWeb:
+	  - https://im.youronly.one/techmagus/
+
+	How-To:
+	  - https://github.com/
+
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/ -}}
+{{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
+{{- $iso8601y := "2006" -}}
+{{- $mainID := printf "%s#image" (.Get "src") -}}
+{{- $acquireLicensePage := or (.Get "acquirelicensepage") (.Page.Param "semweb.acquirelicensepage") (.Page.Param "acquirelicensepage") -}}
+{{- $alt := .Get "alt" -}}
+{{- $thumbnailURL := .Get "thumbnailurl" -}}
+{{- $title := .Get "title" -}}
+{{- $url := .Get "src" -}}
+{{- $caption := or (.Get "caption") $alt -}}
+{{- $about := or $caption $alt $title -}}
+{{- $description := or $caption $alt -}}
+{{- $name := or $title $caption $alt -}}
+{{- $attribto := or (.Get "attr") (.Get "attribto") }}
+{{- $publisher := or (.Get "publisher") $attribto -}}
+{{- $copyrightYear := "" -}}
+{{- $dateCreated := .Get "datecreated" -}}
+{{- $datePublished := .Get "datepublished" -}}
+{{- if $datePublished -}}
+	{{- $datePublished = dateFormat $iso8601 $datePublished -}}
+{{ else if $dateCreated -}}
+  {{- $datePublished = dateFormat $iso8601 $dateCreated -}}
+{{- end -}}
+{{- if $dateCreated -}}
+	{{- $copyrightYear = dateFormat $iso8601y $dateCreated -}}
+	{{- $dateCreated = dateFormat $iso8601 $dateCreated -}}
+{{- else if $datePublished -}}
+  {{- $copyrightYear = dateFormat $iso8601y $datePublished -}}
+  {{- $dateCreated = dateFormat $iso8601 $datePublished -}}
+{{- end -}}
+{{- $hashArticle := printf "%s#article" (.Page.Permalink) -}}
+{{- $hashWebPage := printf "%s#webpage" (.Page.Permalink) -}}
+{{- $hashWebContent := printf "%s#webcontent" (.Page.Permalink) -}}
+{{- $hashThumbnail := printf "%s#thumbnail" $thumbnailURL -}}
+{{- $hashPlace := printf "%s#place" (.Get "contentlocurl") -}}
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "ImageObject",
+	"@id": {{ $mainID }},
+
+	{{- /* Properties from ImageObject */}}
+	{{ with $caption }}"caption": {{ . | plainify }},{{ end }}
+	{{ with (.Get "embeddedtextcaption") }}"embeddedTextCaption": {{ . }},{{ end }}
+	{{- /* "exifData": "", */ -}}
+	{{ with (.Get "isrepresentativeofpage") }}"representativeOfPage": {{ with . }}true{{ else }}false{{ end }},{{ end }}
+	{{ with $thumbnailURL }}"thumbnail": {
+		"@id": {{ $hashThumbnail }},
+		"contentUrl": {{ . }},
+		"url": {{ . }},
+		"@type": "ImageObject"
+	},{{ end }}
+
+	{{- /* Properties from MediaObject */}}
+	{{ with (.Get "contentloc") }}"contentLocation": {
+		{{ with ($.Get "contentlocurl") }}"@id": {{ $hashPlace }},{{ end }}
+		"address": {{ . }},
+		"name": {{ . }},
+		"@type": "Place"
+	},{{ end }}
+	{{ with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
+	"contentUrl": {{ $url }},
+	{{- /* note: Different from html height and width; this refers to the actual dimension of the image */}}
+	{{ with (.Get "objheight") }}"height": {{ . }},{{ end }}
+	{{ with (.Get "objwidth") }}"width": {{ . }},{{ end }}
+
+	{{- /* Properties from CreativeWork */}}
+	"about": {{ $about }},
+	{{ with $acquireLicensePage }}"acquireLicensePage": {{ . }},{{ end }}
+	{{- /* ToDo: @id
+		{{ with $attribto }}"copyrightHolder": [
+			{
+				"@id": "",
+				"name": {{ . }},
+				"@type": "{{ with (.Get "copyrightholderisorg") }}Organization{{ else }}Person{{ end }}"
+			}
+		],{{ end }}
+	*/}}
+	{{ with (.Get "copyrightnotice") }}"copyrightNotice": {{ . }},{{ end }}
+	{{ with $copyrightYear }}"copyrightYear": {{ . }},{{ end }}
+	"creativeWorkStatus": "Published",
+	{{- /* note: similar to copyrightHolder
+		"creator": {{ $attribto }},
+	*/}}
+	{{ with (.Get "credittext") }}"creditText": {{ . }},{{ end }}
+	{{ with $dateCreated }}"dateCreated": {{ . }},{{ end }}
+	{{ with $datePublished }}"datePublished": {{ . }},{{ end }}
+	{{ with (.Get "inlanguage") }}"inLanguage": {{ . }},{{ end }}
+	"isPartOf": [
+		{
+			"@id": {{ $hashArticle }}
+		},
+		{
+			"@id": {{ $hashWebPage }}
+		},
+		{
+			"@id": {{ $hashWebContent }}
+		}
+	],
+	{{ with (.Get "licenseurl") }}"license": {{ . }},{{ end }}
+	{{ with $thumbnailURL }}"thumbnailUrl": {{ . }},{{ end }}
+	{{ with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
+
+	{{- /* Properties from Thing */}}
+	{{ with $description }}"description": {{ . | plainify }},{{ end }}
+	"name": {{ $name | plainify }},
+	"url": {{ $url }}
+}
+</script>

@@ -1,0 +1,46 @@
+{{- /*
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+	****************************
+	** Syntax: JSON-LD        **
+	** Vocab: schema.org      **
+	**                        **
+	** Schema: WebContent     **
+	****************************
+
+	Links:
+		- https://www.w3.org/standards/semanticweb/
+		- https://schema.org/WebContent
+
+	About SemWeb:
+	  - https://im.youronly.one/techmagus/
+
+	How-To:
+	  - https://github.com/
+
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/}}
+{{- $title := or (.LinkTitle) (.Site.Title) -}}
+{{- $permalink := .Permalink }}
+		{
+			"@type": "WebContent",
+			"@id": "{{ $permalink }}#webcontent",
+
+			"hasPart": [
+				{
+					"@id": "{{ .Site.BaseURL }}#website"
+				},
+				{
+					"@id": "{{ $permalink }}#webpage"
+				}{{ if .IsPage }},
+				{
+					"@id": "{{ $permalink }}#article"
+				}{{ end }}
+			],
+			"name": "{{ $title }}",
+			"url": "{{ .Site.BaseURL }}"
+		}

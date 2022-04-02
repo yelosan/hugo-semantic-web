@@ -1,0 +1,128 @@
+{{- /*
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	BGN: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+
+	****************************
+	** Syntax: JSON-LD        **
+	** Vocab: schema.org      **
+	**                        **
+	** Schema: WebSite        **
+	****************************
+
+	Links:
+		- https://www.w3.org/standards/semanticweb/
+		- https://schema.org/WebSite
+
+	About SemWeb:
+	  - https://im.youronly.one/techmagus/
+
+	How-To:
+	  - https://github.com/
+
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+	END: SEMANTIC WEB
+	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+*/}}
+{{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
+{{- $iso8601y := "2006" -}}
+{{- $permalink := .Permalink -}}
+{{- $acquireLicensePage := or (.Site.Params.semweb.acquirelicensepage) (.Site.Params.acquirelicensepage) -}}
+{{- $copyrightYear := "" -}}
+{{- $dateCreated := .Date -}}
+{{- $datePublished := or (.Site.Params.semweb.datefirstpublished) (.Site.Params.datefirstpublished) (.PublishDate) ($dateCreated) -}}
+{{- $dateModified := .Lastmod.Format $iso8601 -}}
+{{- $dateModifiedYear := .Lastmod.Format $iso8601y -}}
+{{- $dateExpiry := "" -}}
+{{- if not .ExpiryDate.IsZero -}}
+	{{- $dateExpiry = .ExpiryDate.Format $iso8601 -}}
+{{- end -}}
+{{- if $datePublished -}}
+	{{- $datePublished = dateFormat $iso8601 $datePublished -}}
+{{- else if $dateCreated -}}
+  {{- $datePublished = $dateCreated -}}
+{{- end -}}
+{{- if $dateCreated -}}
+	{{- $copyrightYear = dateFormat $iso8601y $dateCreated -}}
+	{{- $dateCreated = dateFormat $iso8601 $dateCreated -}}
+{{- else if $datePublished -}}
+  {{- $copyrightYear = dateFormat $iso8601y $datePublished -}}
+  {{- $dateCreated = $datePublished -}}
+{{- end -}}
+{{- if ne $copyrightYear $dateModifiedYear -}}
+  {{- $copyrightYear = $dateModifiedYear -}}
+{{- end -}}
+{{- $datapersons := .Site.Data.persons -}}
+{{- $semwebpersons := .Site.Params.semweb.persons }}
+		{
+			"@type": "WebSite",
+			"@id": "{{ .Site.BaseURL }}#website",
+
+			{{- /* Properties from WebSite */}}
+			{{ with .Site.Params.semweb.issn }}"issn": "{{ . }}",{{ end }}
+
+			{{- /* Properties from CreativeWork */ -}}
+			{{ with $acquireLicensePage }}"acquireLicensePage": "{{ . }}",{{ end }}
+			{{ if $semwebpersons }}"copyrightHolder": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $semwebperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"copyrightHolder": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
+				}
+			],{{ end }}
+			{{ with .Site.Params.semweb.copyrightnotice }}"copyrightNotice": "{{ . }}",{{ end }}
+			"copyrightYear": "{{ $copyrightYear }}",
+			"creativeWorkStatus": "Published",
+			{{ if $semwebpersons }}"creator": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+				{{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
+				{
+					"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}"{{ with or ($semwebperson.name) ($semwebperson.url) }},{{ end }}
+					{{ with $semwebperson.name }}"name": "{{ . }}",{{ end }}
+					{{ with $semwebperson.url }}"url": "{{ . }}",{{ end }}
+					{{ with or ($semwebperson.name) ($semwebperson.url) }}"@type": "Person"{{ end }}
+				}{{ end }}
+			],{{ else if .Param "author" }}"creator": [
+				{{- /* note: else if default Hugo 'author' param is used in frontmatter or config, display generic */}}
+				{
+					"name": "{{ .Param "author" }}"
+				}
+			],{{ end }}
+			{{ with .Site.Params.semweb.credittext }}"creditText": "{{ . }}",{{ end }}
+			"dateCreated": "{{ $dateCreated | safeHTML }}",
+			"dateModified": "{{ $dateModified | safeHTML }}",
+			"datePublished": "{{ $datePublished | safeHTML }}",
+			"hasPart": {
+				"@id": "{{ $permalink }}#webpage"
+			},
+			"inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
+			"isPartOf": {
+				"@id": "{{ $permalink }}#webcontent"
+			},
+			{{ with .Site.Params.keywords }}"keywords": [ {{ range $i, $keyword := . }}{{ if $i }}, {{ end }}"{{ $keyword }}"{{ end }} ],{{ end }}
+			{{ with or (.Site.Params.semweb.license) (.Site.Params.license) }}"license": "{{ . }}",{{ end }}
+			{{ with .Site.Params.semweb.publisher }}"publisher": {
+				"@id": "{{ . }}#organization"
+			},{{ end }}
+			{{ with $acquireLicensePage }}"usageInfo": "{{ . }}",{{ end }}
+
+			{{- /* Properties from Thing */ -}}
+			"description": "{{ .Site.Params.description }}",
+			{{ with .Site.Params.images }}"image": [ {{ range $i, $image := . }}{{ if $i }}, {{ end }}
+				{
+					"@id": "{{ . }}#image",
+					"contentUrl": "{{ . }}",
+					"url": "{{ . }}",
+					"@type": "ImageObject"
+				}{{ end }}
+			],{{ end }}
+			"name": "{{ .Site.Title }}",
+			{{ with .Site.Params.semweb.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
+			"url": "{{ .Site.BaseURL }}"
+		}

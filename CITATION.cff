@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: Semantic Web for Hugo
+version: 1.1.1
+date-released: 2021-12-10
+url: "https://github.com/YourOnly-One/hugo-semantic-web"
+doi: 10.5281/zenodo.5771170
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: Sese Cuneta
+    given-names: JC John
+    affiliation: Yelosan Publishing
+    orcid: 'https://orcid.org/0000-0003-4755-4548'
