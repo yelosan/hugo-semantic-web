@@ -90,74 +90,74 @@
 {{- $contentlocrel := .Get "contentlocrel" -}}
 {{- $contentreferencetime := .Get "contentreferencetime" -}}
 <div{{ with $class }} class="{{ . }}"{{ end }}{{ with or $style $width $height }} style="{{ with $width }}width: {{ . }};{{ end }}{{ with $height }}height: {{ . }};{{ end }}{{ with $style }}{{ . }}{{ end }}"{{ end }}>
-  <figure class="figure_box txt_center" style="width: auto;">
-    <div class="responsive_embedframe">
-      {{ if eq $platform "youtube" }}
-        {{- $pc := .Page.Site.Config.Privacy.YouTube -}}
-        {{- if not $pc.Disable -}}
-          {{- $ytHost := cond $pc.PrivacyEnhanced  "www.youtube-nocookie.com" "www.youtube.com" -}}
-          <iframe loading="lazy" id="ytplayer" src="https://{{ $ytHost }}/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
-        {{- end -}}
-      {{ else if eq $platform "vimeo" }}
-        {{- $pc := .Page.Site.Config.Privacy.Vimeo -}}
-        {{- if not $pc.Disable -}}
-          <iframe loading="lazy" id="vimeoplayer" src="https://player.vimeo.com/video/{{ $id }}{{ with $pc.EnableDNT }}?dnt=1{{ end }}{{ with $isloop }}&loop=1{{ end }}&byline=0&portrait=0" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
-        {{- end -}}
-      {{- /*
-        {{ else if eq $platform "custom" }}
-        <iframe loading="lazy" id="customplayer" src="URL-here{{ with $isloop }}?loop=1{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
-      */ -}}
-      {{ else }}
-      <p>Platform "{{ $platform }}" currently not supported, either check if it is correct or file a feature request [here]().</p>
-      {{ end }}
-    </div>
-    <figcaption class="attribution_caption {{ with $infoalign }}{{ . }}{{ end }}">
-      {{ with $title }}<p><cite><b>{{ . | markdownify }}</b></cite></p>{{ end }}
-      {{ with $caption }}<p><i>{{ . | markdownify }}</i></p>{{ end }}
-      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
-        {{- if eq $licensecode "allrightsreserved" }}
-          {{/* ALL RIGHTS RESERVED */}}
-          <small>{{ i18n "attribution_allrightsreserved" }}{{ with $attribto }} {{ i18n "word_to" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ . | markdownify }}{{ end }}{{ with $attriburl }}</a>{{ end }}{{ i18n "punctuation_fullstop" }}</small>
-        {{ else if eq $licensecode "cc0" }}
-          {{/* CC0 DEDICATION */}}
-          <small>{{ i18n "attribution_cc0_extent" }}{{ i18n "punctuation_pause" }} <a href="{{ $attriburl }}" rel="dct:publisher {{ with $attribrel }}{{ . }}{{ end }}">{{ $attribto }}</a> {{ i18n "word_has" }} <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license noopener external">{{ i18n "attribution_cc0_waived" }}</a> {{ i18n "word_to" }} <cite>{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ i18n "punctuation_fullstop" }} {{ i18n "attribution_cc0_publishedfrom" }} <span property="vcard:Country" datatype="dct:ISO3166" content="{{ $cc0countrycode }}" about="{{ $cc0countryurl }}"><a href="{{ $cc0countryurl }}" rel="noopener external">{{ $cc0country }}</a></span>{{ i18n "punctuation_fullstop" }}</small>
-        {{ else }}
-          <small>
-            <cite>{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ with $attribto }} {{ i18n "attribution_by" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ $attribto | markdownify }}{{ with $attriburl }}</a>{{ end }} {{ i18n "word_is" }}
-              {{ if ne $licensecode "publicdomain" }}
-                {{/* ANY LICENSE */}}
-                {{ i18n "attribution_licensedunder" }} <a href="{{ $licenseurl }}" rel="license noopener external">{{ with $licensename }}{{ . }}{{ end }}</a>{{ i18n "punctuation_fullstop" }}
-              {{ else }}
-                {{/* PUBLIC DOMAIN */}}
-                <a href="https://creativecommons.org/publicdomain/mark/1.0/" rel="license noopener external">{{ i18n "attribution_publicdomain" }}</a>{{ i18n "punctuation_fullstop" }}
-              {{ end }}
-            {{ end }}
-            {{ with or $director $musicby }}<br/>
-              {{ with $director }}
-                {{ i18n "attibution_directedby" }}{{ i18n "punctuation_colon" }} {{ . }}
-                {{ with $musicby }} | {{ end }}
-              {{ end }}
-              {{ with $musicby }}
-                {{ i18n "attribution_musicby" }}{{ i18n "punctuation_colon" }} {{ . }}
-              {{ end }}
-            {{ end }}
-            {{ with or $contentloc $datecreated $contentreferencetime }}<br/>
-              {{ with $contentloc }}
-                {{ i18n "word_location" }}{{ i18n "punctuation_colon" }} {{ with $contentlocurl }}<a href="{{ . }}" rel="{{ with $contentlocrel }}{{ . }}{{ end }}">{{ end }}{{ . }}{{ with $contentlocurl }}</a>{{ end }}
-                {{ with or $datecreated $contentreferencetime }} | {{ end }}
-              {{ end }}
-              {{ with $datecreated }}
-                {{ i18n "word_date" }}{{ i18n "punctuation_colon" }} {{ . }}
-                {{ with and (ne $datecreated $contentreferencetime) ($contentreferencetime) }} | {{ end }}
-              {{ end }}
-              {{ with and (ne $datecreated $contentreferencetime) ($contentreferencetime) }}
-                {{ i18n "word_time" }}{{ i18n "punctuation_colon" }} {{ . }}
-              {{ end }}
-            {{ end }}
-          </small>
-        {{ end }}
-      </p>
-    </figcaption>
-  </figure>
+<figure class="figure_box txt_center" style="width: auto;">
+<div class="responsive_embedframe">
+{{ if eq $platform "youtube" }}
+{{- $pc := .Page.Site.Config.Privacy.YouTube -}}
+{{- if not $pc.Disable -}}
+{{- $ytHost := cond $pc.PrivacyEnhanced  "www.youtube-nocookie.com" "www.youtube.com" -}}
+<iframe loading="lazy" id="ytplayer" src="https://{{ $ytHost }}/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+{{- end -}}
+{{ else if eq $platform "vimeo" }}
+{{- $pc := .Page.Site.Config.Privacy.Vimeo -}}
+{{- if not $pc.Disable -}}
+<iframe loading="lazy" id="vimeoplayer" src="https://player.vimeo.com/video/{{ $id }}{{ with $pc.EnableDNT }}?dnt=1{{ end }}{{ with $isloop }}&loop=1{{ end }}&byline=0&portrait=0" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+{{- end -}}
+{{- /*
+{{ else if eq $platform "custom" }}
+<iframe loading="lazy" id="customplayer" src="URL-here{{ with $isloop }}?loop=1{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+*/ -}}
+{{ else }}
+<p>Platform "{{ $platform }}" currently not supported, either check if it is correct or file a feature request [here]().</p>
+{{ end }}
+</div>
+<figcaption class="attribution_caption {{ with $infoalign }}{{ . }}{{ end }}">
+{{ with $title }}<p><cite><b>{{ . | markdownify }}</b></cite></p>{{ end }}
+{{ with $caption }}<p><i>{{ . | markdownify }}</i></p>{{ end }}
+<p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#">
+{{- if eq $licensecode "allrightsreserved" }}
+{{/* ALL RIGHTS RESERVED */}}
+<small>{{ i18n "attribution_allrightsreserved" }}{{ with $attribto }} {{ i18n "word_to" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ . | markdownify }}{{ end }}{{ with $attriburl }}</a>{{ end }}{{ i18n "punctuation_fullstop" }}</small>
+{{ else if eq $licensecode "cc0" }}
+{{/* CC0 DEDICATION */}}
+<small>{{ i18n "attribution_cc0_extent" }}{{ i18n "punctuation_pause" }} <a href="{{ $attriburl }}" rel="dct:publisher {{ with $attribrel }}{{ . }}{{ end }}">{{ $attribto }}</a> {{ i18n "word_has" }} <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license noopener external">{{ i18n "attribution_cc0_waived" }}</a> {{ i18n "word_to" }} <cite>{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ i18n "punctuation_fullstop" }} {{ i18n "attribution_cc0_publishedfrom" }} <span property="vcard:Country" datatype="dct:ISO3166" content="{{ $cc0countrycode }}" about="{{ $cc0countryurl }}"><a href="{{ $cc0countryurl }}" rel="noopener external">{{ $cc0country }}</a></span>{{ i18n "punctuation_fullstop" }}</small>
+{{ else }}
+<small>
+<cite>{{ with $link }}<a href="{{ . }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ with $attribto }} {{ i18n "attribution_by" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ $attribto | markdownify }}{{ with $attriburl }}</a>{{ end }} {{ i18n "word_is" }}
+{{ if ne $licensecode "publicdomain" }}
+{{/* ANY LICENSE */}}
+{{ i18n "attribution_licensedunder" }} <a href="{{ $licenseurl }}" rel="license noopener external">{{ with $licensename }}{{ . }}{{ end }}</a>{{ i18n "punctuation_fullstop" }}
+{{ else }}
+{{/* PUBLIC DOMAIN */}}
+<a href="https://creativecommons.org/publicdomain/mark/1.0/" rel="license noopener external">{{ i18n "attribution_publicdomain" }}</a>{{ i18n "punctuation_fullstop" }}
+{{ end }}
+{{ end }}
+{{ with or $director $musicby }}<br/>
+{{ with $director }}
+{{ i18n "attibution_directedby" }}{{ i18n "punctuation_colon" }} {{ . }}
+{{ with $musicby }} | {{ end }}
+{{ end }}
+{{ with $musicby }}
+{{ i18n "attribution_musicby" }}{{ i18n "punctuation_colon" }} {{ . }}
+{{ end }}
+{{ end }}
+{{ with or $contentloc $datecreated $contentreferencetime }}<br/>
+{{ with $contentloc }}
+{{ i18n "word_location" }}{{ i18n "punctuation_colon" }} {{ with $contentlocurl }}<a href="{{ . }}" rel="{{ with $contentlocrel }}{{ . }}{{ end }}">{{ end }}{{ . }}{{ with $contentlocurl }}</a>{{ end }}
+{{ with or $datecreated $contentreferencetime }} | {{ end }}
+{{ end }}
+{{ with $datecreated }}
+{{ i18n "word_date" }}{{ i18n "punctuation_colon" }} {{ . }}
+{{ with and (ne $datecreated $contentreferencetime) ($contentreferencetime) }} | {{ end }}
+{{ end }}
+{{ with and (ne $datecreated $contentreferencetime) ($contentreferencetime) }}
+{{ i18n "word_time" }}{{ i18n "punctuation_colon" }} {{ . }}
+{{ end }}
+{{ end }}
+</small>
+{{ end }}
+</p>
+</figcaption>
+</figure>
 </div>
 {{- if and (templates.Exists "partials/schemas/schema_VideoObject.html") (ne $isplaylist true) }}{{ partial "schemas/schema_VideoObject.html" . }}{{ end -}}
