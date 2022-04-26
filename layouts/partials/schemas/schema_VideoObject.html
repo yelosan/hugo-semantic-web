@@ -79,9 +79,9 @@
 	{{- /* note: Has to be an array but it is not possible using shortcodes
 	"actor": "",
 	*/}}
-	{{ with $caption }}"caption": {{ . | plainify }},{{ end }}
-	{{ with (.Get "director") }}"director": {{ . }},{{ end }}
-	{{ with (.Get "musicby") }}"musicBy": {{ . }},{{ end }}
+	{{- with $caption }}"caption": {{ . | plainify }},{{ end }}
+	{{- with (.Get "director") }}"director": {{ . }},{{ end }}
+	{{- with (.Get "musicby") }}"musicBy": {{ . }},{{ end }}
 	{{ if eq $platform "youtube" }}
 	"thumbnail": {
 		"@id": {{ $hashThumbnail }},
@@ -90,27 +90,27 @@
 		"@type": "ImageObject"
 	},
 	{{ end }}
-	{{ with (.Get "objframesize") }}"videoFrameSize": {{ . }},{{ end }}
-	{{ with (.Get "objquality") }}"videoQuality": {{ . }},{{ end }}
+	{{- with (.Get "objframesize") }}"videoFrameSize": {{ . }},{{ end }}
+	{{- with (.Get "objquality") }}"videoQuality": {{ . }},{{ end }}
 
 	{{- /* Properties from MediaObject */}}
-	{{ with (.Get "contentloc") }}"contentLocation": {
-		{{ with ($.Get "contentlocurl") }}"@id": {{ $hashPlace }},{{ end }}
+	{{- with (.Get "contentloc") }}"contentLocation": {
+		{{- with ($.Get "contentlocurl") }}"@id": {{ $hashPlace }},{{ end }}
 		"address": {{ . }},
 		"name": {{ . }},
 		"@type": "Place"
 	},{{ end }}
-	{{ with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
+	{{- with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
 	"contentUrl": {{ $url }},
-	{{ with (.Get "objheight") }}"height": {{ . }},{{ end }}
-	{{ with $datePublished }}"uploadDate": {{ . }},{{ end }}
-	{{ with (.Get "objwidth") }}"width": {{ . }},{{ end }}
+	{{- with (.Get "objheight") }}"height": {{ . }},{{ end }}
+	{{- with $datePublished }}"uploadDate": {{ . }},{{ end }}
+	{{- with (.Get "objwidth") }}"width": {{ . }},{{ end }}
 
 	{{- /* Properties from CreativeWork */}}
 	"about": {{ $description }},
-	{{ with $acquireLicensePage }}"acquireLicensePage": {{ . }},{{ end }}
+	{{- with $acquireLicensePage }}"acquireLicensePage": {{ . }},{{ end }}
 	{{- /* ToDo: @id
-		{{ with $attribto }}"copyrightHolder": [
+		{{- with $attribto }}"copyrightHolder": [
 			{
 				"@id": "",
 				"name": {{ . }},
@@ -118,16 +118,16 @@
 			}
 		],{{ end }}
 	*/}}
-	{{ with (.Get "copyrightnotice") }}"copyrightNotice": {{ . }},{{ end }}
-	{{ with $copyrightYear }}"copyrightYear": {{ . }},{{ end }}
+	{{- with (.Get "copyrightnotice") }}"copyrightNotice": {{ . }},{{ end }}
+	{{- with $copyrightYear }}"copyrightYear": {{ . }},{{ end }}
 	"creativeWorkStatus": "Published",
 	{{- /* note: similar to copyrightHolder
 		"creator": "{{ $attribto }}",
 	*/}}
-	{{ with (.Get "credittext") }}"creditText": {{ . }},{{ end }}
-	{{ with $dateCreated }}"dateCreated": {{ . }},{{ end }}
-	{{ with $datePublished }}"datePublished": {{ . }},{{ end }}
-	{{ with (.Get "inlanguage") }}"inLanguage": {{ . }},{{ end }}
+	{{- with (.Get "credittext") }}"creditText": {{ . }},{{ end }}
+	{{- with $dateCreated }}"dateCreated": {{ . }},{{ end }}
+	{{- with $datePublished }}"datePublished": {{ . }},{{ end }}
+	{{- with (.Get "inlanguage") }}"inLanguage": {{ . }},{{ end }}
 	"isPartOf": [
 		{
 			"@id": {{ $hashArticle }}
@@ -139,15 +139,15 @@
 			"@id": {{ $hashWebContent }}
 		}
 	],
-	{{ with (.Get "licenseurl") }}"license": {{ . }},{{ end }}
+	{{- with (.Get "licenseurl") }}"license": {{ . }},{{ end }}
 	{{- /* note: similar to copyrightHolder
 		"publisher": {{ $publisher }},
 	*/}}
 	{{ if eq $platform "youtube" }}"thumbnailUrl": {{ $thumbnailURL }},{{ end }}
-	{{ with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
+	{{- with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
 
 	{{- /* Properties from Thing */}}
-	{{ with $description }}"description": {{ . | plainify }},{{ end }}
+	{{- with $description }}"description": {{ . | plainify }},{{ end }}
 	"name": {{ $name | plainify }},
 	"url": {{ $url }}
 }

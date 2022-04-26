@@ -68,11 +68,11 @@
 	"@id": {{ $mainID }},
 
 	{{- /* Properties from ImageObject */}}
-	{{ with $caption }}"caption": {{ . | plainify }},{{ end }}
-	{{ with (.Get "embeddedtextcaption") }}"embeddedTextCaption": {{ . }},{{ end }}
+	{{- with $caption }}"caption": {{ . | plainify }},{{ end }}
+	{{- with (.Get "embeddedtextcaption") }}"embeddedTextCaption": {{ . }},{{ end }}
 	{{- /* "exifData": "", */ -}}
 	"representativeOfPage": {{ with (.Get "isrepresentativeofpage") }}true{{ else }}false{{ end }},
-	{{ with $thumbnailURL }}"thumbnail": {
+	{{- with $thumbnailURL }}"thumbnail": {
 		"@id": {{ $hashThumbnail }},
 		"contentUrl": {{ . }},
 		"url": {{ . }},
@@ -80,23 +80,23 @@
 	},{{ end }}
 
 	{{- /* Properties from MediaObject */}}
-	{{ with (.Get "contentloc") }}"contentLocation": {
-		{{ with ($.Get "contentlocurl") }}"@id": {{ $hashPlace }},{{ end }}
+	{{- with (.Get "contentloc") }}"contentLocation": {
+		{{- with ($.Get "contentlocurl") }}"@id": {{ $hashPlace }},{{ end }}
 		"address": {{ . }},
 		"name": {{ . }},
 		"@type": "Place"
 	},{{ end }}
-	{{ with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
+	{{- with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
 	"contentUrl": {{ $url }},
 	{{- /* note: Different from html height and width; this refers to the actual dimension of the image */}}
-	{{ with (.Get "objheight") }}"height": {{ . }},{{ end }}
-	{{ with (.Get "objwidth") }}"width": {{ . }},{{ end }}
+	{{- with (.Get "objheight") }}"height": {{ . }},{{ end }}
+	{{- with (.Get "objwidth") }}"width": {{ . }},{{ end }}
 
 	{{- /* Properties from CreativeWork */}}
 	"about": {{ $about }},
-	{{ with $acquireLicensePage }}"acquireLicensePage": {{ . }},{{ end }}
+	{{- with $acquireLicensePage }}"acquireLicensePage": {{ . }},{{ end }}
 	{{- /* ToDo: @id
-		{{ with $attribto }}"copyrightHolder": [
+		{{- with $attribto }}"copyrightHolder": [
 			{
 				"@id": "",
 				"name": {{ . }},
@@ -104,16 +104,16 @@
 			}
 		],{{ end }}
 	*/}}
-	{{ with (.Get "copyrightnotice") }}"copyrightNotice": {{ . }},{{ end }}
-	{{ with $copyrightYear }}"copyrightYear": {{ . }},{{ end }}
+	{{- with (.Get "copyrightnotice") }}"copyrightNotice": {{ . }},{{ end }}
+	{{- with $copyrightYear }}"copyrightYear": {{ . }},{{ end }}
 	"creativeWorkStatus": "Published",
 	{{- /* note: similar to copyrightHolder
 		"creator": {{ $attribto }},
 	*/}}
-	{{ with (.Get "credittext") }}"creditText": {{ . }},{{ end }}
-	{{ with $dateCreated }}"dateCreated": {{ . }},{{ end }}
-	{{ with $datePublished }}"datePublished": {{ . }},{{ end }}
-	{{ with (.Get "inlanguage") }}"inLanguage": {{ . }},{{ end }}
+	{{- with (.Get "credittext") }}"creditText": {{ . }},{{ end }}
+	{{- with $dateCreated }}"dateCreated": {{ . }},{{ end }}
+	{{- with $datePublished }}"datePublished": {{ . }},{{ end }}
+	{{- with (.Get "inlanguage") }}"inLanguage": {{ . }},{{ end }}
 	"isPartOf": [
 		{
 			"@id": {{ $hashArticle }}
@@ -125,12 +125,12 @@
 			"@id": {{ $hashWebContent }}
 		}
 	],
-	{{ with (.Get "licenseurl") }}"license": {{ . }},{{ end }}
-	{{ with $thumbnailURL }}"thumbnailUrl": {{ . }},{{ end }}
-	{{ with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
+	{{- with (.Get "licenseurl") }}"license": {{ . }},{{ end }}
+	{{- with $thumbnailURL }}"thumbnailUrl": {{ . }},{{ end }}
+	{{- with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
 
 	{{- /* Properties from Thing */}}
-	{{ with $description }}"description": {{ . | plainify }},{{ end }}
+	{{- with $description }}"description": {{ . | plainify }},{{ end }}
 	"name": {{ $name | plainify }},
 	"url": {{ $url }}
 }
