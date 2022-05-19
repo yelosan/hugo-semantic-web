@@ -1,28 +1,28 @@
 {{- /*
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-	BGN: SEMANTIC WEB
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  BGN: SEMANTIC WEB
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-	****************************
-	** Syntax: JSON-LD        **
-	** Vocab: schema.org      **
-	**                        **
-	** Schema: VideoObject    **
-	****************************
+  ****************************
+  ** Syntax: JSON-LD        **
+  ** Vocab: schema.org      **
+  **                        **
+  ** Schema: VideoObject    **
+  ****************************
 
-	Links:
-		- https://www.w3.org/standards/semanticweb/
-		- https://schema.org/VideoObject
+  Links:
+    - https://www.w3.org/standards/semanticweb/
+    - https://schema.org/VideoObject
 
-	About SemWeb:
-	  - https://im.youronly.one/techmagus/
+  About SemWeb:
+    - https://im.youronly.one/techmagus/
 
-	How-To:
-	  - https://github.com/
+  How-To:
+    - https://github.com/
 
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-	END: SEMANTIC WEB
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  END: SEMANTIC WEB
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */ -}}
 {{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
 {{- $iso8601y := "2006" -}}
@@ -30,9 +30,9 @@
 {{- $platform := .Get "platform" | default "youtube" -}}
 {{- $url := "" -}}
 {{- if eq $platform "youtube" -}}
-	{{- $url = printf "%s%s" "https://www.youtube.com/watch?v=" $vidID -}}
+  {{- $url = printf "%s%s" "https://www.youtube.com/watch?v=" $vidID -}}
 {{- else if eq $platform "vimeo" -}}
-	{{- $url = printf "%s%s" "https://vimeo.com/" $vidID -}}
+  {{- $url = printf "%s%s" "https://vimeo.com/" $vidID -}}
 {{- end -}}
 {{- $mainID := printf "%s#video" $url -}}
 {{- $acquireLicensePage := or (.Get "acquirelicensepage") (.Page.Param "semweb.acquirelicensepage") (.Page.Param "acquirelicensepage") -}}
@@ -46,13 +46,13 @@
 {{- $dateCreated := .Get "datecreated" -}}
 {{- $datePublished := .Get "datepublished" -}}
 {{- if $datePublished -}}
-	{{- $datePublished = dateFormat $iso8601 $datePublished -}}
+  {{- $datePublished = dateFormat $iso8601 $datePublished -}}
 {{- else if $dateCreated -}}
   {{- $datePublished = dateFormat $iso8601 $dateCreated -}}
 {{- end -}}
 {{- if $dateCreated -}}
-	{{- $copyrightYear = dateFormat $iso8601y $dateCreated -}}
-	{{- $dateCreated = dateFormat $iso8601 $dateCreated -}}
+  {{- $copyrightYear = dateFormat $iso8601y $dateCreated -}}
+  {{- $dateCreated = dateFormat $iso8601 $dateCreated -}}
 {{- else if $datePublished -}}
   {{- $copyrightYear = dateFormat $iso8601y $datePublished -}}
   {{- $dateCreated = dateFormat $iso8601 $datePublished -}}
@@ -62,93 +62,93 @@
 {{- $hashWebContent := printf "%s#webcontent" (.Page.Permalink) -}}
 {{- $thumbnailURL := "" -}}
 {{- if eq $platform "youtube" -}}
-	{{- $thumbnailURL = printf "%s%s%s" "https://img.youtube.com/vi/" $vidID "/hqdefault.jpg" -}}
+  {{- $thumbnailURL = printf "%s%s%s" "https://img.youtube.com/vi/" $vidID "/hqdefault.jpg" -}}
 {{- end -}}
 {{- $hashPlace := printf "%s#place" ($.Get "contentlocurl") -}}
 {{- $hashThumbnail := "" -}}
 {{- if eq $platform "youtube" -}}
-	{{- $hashThumbnail = printf "%s%s" $thumbnailURL "#thumbnail" -}}
+  {{- $hashThumbnail = printf "%s%s" $thumbnailURL "#thumbnail" -}}
 {{- end }}
 <script type="application/ld+json">
 {
-	"@context": "https://schema.org",
-	"@type": "VideoObject",
-	"@id": {{ $mainID }},
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "@id": {{ $mainID }},
 
-	{{- /* Properties from VideoObject */}}
-	{{- /* note: Has to be an array but it is not possible using shortcodes
-	"actor": "",
-	*/}}
-	{{- with $caption }}"caption": {{ . | plainify }},{{ end }}
-	{{- with (.Get "director") }}"director": {{ . }},{{ end }}
-	{{- with (.Get "musicby") }}"musicBy": {{ . }},{{ end }}
-	{{ if eq $platform "youtube" }}
-	"thumbnail": {
-		"@id": {{ $hashThumbnail }},
-		"contentUrl": {{ $thumbnailURL }},
-		"url": {{ $thumbnailURL }},
-		"@type": "ImageObject"
-	},
-	{{ end }}
-	{{- with (.Get "objframesize") }}"videoFrameSize": {{ . }},{{ end }}
-	{{- with (.Get "objquality") }}"videoQuality": {{ . }},{{ end }}
+  {{- /* Properties from VideoObject */}}
+  {{- /* note: Has to be an array but it is not possible using shortcodes
+  "actor": "",
+  */}}
+  {{- with $caption }}"caption": {{ . | plainify }},{{ end }}
+  {{- with (.Get "director") }}"director": {{ . }},{{ end }}
+  {{- with (.Get "musicby") }}"musicBy": {{ . }},{{ end }}
+  {{ if eq $platform "youtube" }}
+  "thumbnail": {
+    "@id": {{ $hashThumbnail }},
+    "contentUrl": {{ $thumbnailURL }},
+    "url": {{ $thumbnailURL }},
+    "@type": "ImageObject"
+  },
+  {{ end }}
+  {{- with (.Get "objframesize") }}"videoFrameSize": {{ . }},{{ end }}
+  {{- with (.Get "objquality") }}"videoQuality": {{ . }},{{ end }}
 
-	{{- /* Properties from MediaObject */}}
-	{{- with (.Get "contentloc") }}"contentLocation": {
-		{{- with ($.Get "contentlocurl") }}"@id": {{ $hashPlace }},{{ end }}
-		"address": {{ . }},
-		"name": {{ . }},
-		"@type": "Place"
-	},{{ end }}
-	{{- with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
-	"contentUrl": {{ $url }},
-	{{- with (.Get "objheight") }}"height": {{ . }},{{ end }}
-	{{- with $datePublished }}"uploadDate": {{ . }},{{ end }}
-	{{- with (.Get "objwidth") }}"width": {{ . }},{{ end }}
+  {{- /* Properties from MediaObject */}}
+  {{- with (.Get "contentloc") }}"contentLocation": {
+    {{- with ($.Get "contentlocurl") }}"@id": {{ $hashPlace }},{{ end }}
+    "address": {{ . }},
+    "name": {{ . }},
+    "@type": "Place"
+  },{{ end }}
+  {{- with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
+  "contentUrl": {{ $url }},
+  {{- with (.Get "objheight") }}"height": {{ . }},{{ end }}
+  {{- with $datePublished }}"uploadDate": {{ . }},{{ end }}
+  {{- with (.Get "objwidth") }}"width": {{ . }},{{ end }}
 
-	{{- /* Properties from CreativeWork */}}
-	"about": {{ $description }},
-	{{- with $acquireLicensePage }}"acquireLicensePage": {{ . }},{{ end }}
-	{{- /* ToDo: @id
-		{{- with $attribto }}"copyrightHolder": [
-			{
-				"@id": "",
-				"name": {{ . }},
-				"@type": "{{ with ($.Get "copyrightholderisorg") }}Organization{{ else }}Person{{ end }}"
-			}
-		],{{ end }}
-	*/}}
-	{{- with (.Get "copyrightnotice") }}"copyrightNotice": {{ . }},{{ end }}
-	{{- with $copyrightYear }}"copyrightYear": {{ . }},{{ end }}
-	"creativeWorkStatus": "Published",
-	{{- /* note: similar to copyrightHolder
-		"creator": "{{ $attribto }}",
-	*/}}
-	{{- with (.Get "credittext") }}"creditText": {{ . }},{{ end }}
-	{{- with $dateCreated }}"dateCreated": {{ . }},{{ end }}
-	{{- with $datePublished }}"datePublished": {{ . }},{{ end }}
-	{{- with (.Get "inlanguage") }}"inLanguage": {{ . }},{{ end }}
-	"isPartOf": [
-		{
-			"@id": {{ $hashArticle }}
-		},
-		{
-			"@id": {{ $hashWebPage }}
-		},
-		{
-			"@id": {{ $hashWebContent }}
-		}
-	],
-	{{- with (.Get "licenseurl") }}"license": {{ . }},{{ end }}
-	{{- /* note: similar to copyrightHolder
-		"publisher": {{ $publisher }},
-	*/}}
-	{{ if eq $platform "youtube" }}"thumbnailUrl": {{ $thumbnailURL }},{{ end }}
-	{{- with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
+  {{- /* Properties from CreativeWork */}}
+  "about": {{ $description }},
+  {{- with $acquireLicensePage }}"acquireLicensePage": {{ . }},{{ end }}
+  {{- /* ToDo: @id
+    {{- with $attribto }}"copyrightHolder": [
+      {
+        "@id": "",
+        "name": {{ . }},
+        "@type": "{{ with ($.Get "copyrightholderisorg") }}Organization{{ else }}Person{{ end }}"
+      }
+    ],{{ end }}
+  */}}
+  {{- with (.Get "copyrightnotice") }}"copyrightNotice": {{ . }},{{ end }}
+  {{- with $copyrightYear }}"copyrightYear": {{ . }},{{ end }}
+  "creativeWorkStatus": "Published",
+  {{- /* note: similar to copyrightHolder
+    "creator": "{{ $attribto }}",
+  */}}
+  {{- with (.Get "credittext") }}"creditText": {{ . }},{{ end }}
+  {{- with $dateCreated }}"dateCreated": {{ . }},{{ end }}
+  {{- with $datePublished }}"datePublished": {{ . }},{{ end }}
+  {{- with (.Get "inlanguage") }}"inLanguage": {{ . }},{{ end }}
+  "isPartOf": [
+    {
+      "@id": {{ $hashArticle }}
+    },
+    {
+      "@id": {{ $hashWebPage }}
+    },
+    {
+      "@id": {{ $hashWebContent }}
+    }
+  ],
+  {{- with (.Get "licenseurl") }}"license": {{ . }},{{ end }}
+  {{- /* note: similar to copyrightHolder
+    "publisher": {{ $publisher }},
+  */}}
+  {{ if eq $platform "youtube" }}"thumbnailUrl": {{ $thumbnailURL }},{{ end }}
+  {{- with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
 
-	{{- /* Properties from Thing */}}
-	{{- with $description }}"description": {{ . | plainify }},{{ end }}
-	"name": {{ $name | plainify }},
-	"url": {{ $url }}
+  {{- /* Properties from Thing */}}
+  {{- with $description }}"description": {{ . | plainify }},{{ end }}
+  "name": {{ $name | plainify }},
+  "url": {{ $url }}
 }
 </script>
