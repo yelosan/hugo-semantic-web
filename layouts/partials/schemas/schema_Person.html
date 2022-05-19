@@ -1,87 +1,87 @@
 {{- /*
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-	BGN: SEMANTIC WEB
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  BGN: SEMANTIC WEB
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-	****************************
-	** Syntax: JSON-LD        **
-	** Vocab: schema.org      **
-	**                        **
-	** Schema: Person         **
-	****************************
+  ****************************
+  ** Syntax: JSON-LD        **
+  ** Vocab: schema.org      **
+  **                        **
+  ** Schema: Person         **
+  ****************************
 
-	Links:
-		- https://www.w3.org/standards/semanticweb/
-		- https://schema.org/Person
+  Links:
+    - https://www.w3.org/standards/semanticweb/
+    - https://schema.org/Person
 
-	About SemWeb:
-	  - https://im.youronly.one/techmagus/
+  About SemWeb:
+    - https://im.youronly.one/techmagus/
 
-	How-To:
-	  - https://github.com/
+  How-To:
+    - https://github.com/
 
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-	END: SEMANTIC WEB
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  END: SEMANTIC WEB
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
 {{- $datapersons := .Site.Data.persons -}}
 {{- $semwebpersons := .Site.Params.semweb.persons -}}
 {{- $frontmatterpersons := .Params.authors -}}
-		{{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
-		{
-			"@type": "Person",
-			"@id": "{{ or ($semwebperson.id) ($dataperson.id) }}",
+    {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
+    {
+      "@type": "Person",
+      "@id": "{{ or ($semwebperson.id) ($dataperson.id) }}",
 
-			{{- /* Properties from Person */}}
-			{{ with or ($semwebperson.additionalnames) ($dataperson.additionalnames) }}"additionalName": [ {{ range $i, $additionalname := . }}{{ if $i }}, {{ end }}"{{ $additionalname }}"{{ end }} ],{{ end }}
-			{{ with or ($semwebperson.affiliations) ($dataperson.affiliations) }}"affiliation": [ {{ range $i, $affiliation := . }}{{ if $i }}, {{ end }}
-				{ 
-					"@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
-					{{ with .name }}"name": "{{ . }}",{{ end }}
-					{{ with .url }}"url": "{{ . }}",{{ end }}
-					{{ with or (.name) (.url) }}"@type": "Organization"{{ end }}
-				}{{ end }}
-			],{{ end }}
-			{{ with or ($semwebperson.brands) ($dataperson.brands) }}"brand": [ {{ range $i, $brand := . }}{{ if $i }}, {{ end }}
-				{ 
-					"@id": "{{ .id }}#website",
-					{{ with .logo }}"logo": "{{ . }}",{{ end }}
-					{{ with .name }}"name": "{{ . }}",{{ end }}
-					{{ with .url }}"url": "{{ . }}",{{ end }}
-					"@type": [ "Brand"{{ with .iswebsite }}, "WebSite"{{ end }} ]
-				}{{ end }}
-			],{{ end }}
-			{{ with or ($semwebperson.jobtitles) ($dataperson.jobtitles) }}"jobTitle": [ {{ range $i, $jobtitle := . }}{{ if $i }}, {{ end }}"{{ $jobtitle }}"{{ end }} ],{{ end }}
-			{{ with or ($semwebperson.knowslanguages) ($dataperson.knowslanguages) }}"knowsLanguage": [ {{ range $i, $knowslanguage := . }}{{ if $i }}, {{ end }}"{{ $knowslanguage }}"{{ end }} ],{{ end }}
-			{{ with or ($semwebperson.spouse) ($dataperson.spouse) }}"spouse": {
-				"@id": "{{ .id }}",
-				{{ with .name }}"name": "{{ . }}",{{ end }}
-				{{ with .url }}"url": "{{ . }}"{{ end }}
-			},{{ end }}
-			{{ with or ($semwebperson.taxid) ($dataperson.taxid) }}"taxID": "{{ . }}",{{ end }}
-			{{ with or ($semwebperson.vatid) ($dataperson.vatid) }}"vatID": "{{ . }}",{{ end }}
-			{{ with or ($semwebperson.worksfor) ($dataperson.worksfor) }}"worksFor": [ {{ range $i, $worksfor := . }}{{ if $i }}, {{ end }}
-				{
-					"@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
-					{{ with .name }}"name": "{{ . }}",{{ end }}
-					{{ with .url }}"url": "{{ . }}",{{ end }}
-					{{ with or (.name) (.url) }}"@type": "Organization"{{ end }}
-				}{{ end }}
-			],{{ end }}
+      {{- /* Properties from Person */}}
+      {{ with or ($semwebperson.additionalnames) ($dataperson.additionalnames) }}"additionalName": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with or ($semwebperson.affiliations) ($dataperson.affiliations) }}"affiliation": [ {{ range $i, $affiliation := . }}{{ if $i }}, {{ end }}
+        {
+          "@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
+          {{ with .name }}"name": "{{ . }}",{{ end }}
+          {{ with .url }}"url": "{{ . }}",{{ end }}
+          {{ with or (.name) (.url) }}"@type": "Organization"{{ end }}
+        }{{ end }}
+      ],{{ end }}
+      {{ with or ($semwebperson.brands) ($dataperson.brands) }}"brand": [ {{ range $i, $brand := . }}{{ if $i }}, {{ end }}
+        {
+          "@id": "{{ .id }}#website",
+          {{ with .logo }}"logo": "{{ . }}",{{ end }}
+          {{ with .name }}"name": "{{ . }}",{{ end }}
+          {{ with .url }}"url": "{{ . }}",{{ end }}
+          "@type": [ "Brand"{{ with .iswebsite }}, "WebSite"{{ end }} ]
+        }{{ end }}
+      ],{{ end }}
+      {{ with or ($semwebperson.jobtitles) ($dataperson.jobtitles) }}"jobTitle": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with or ($semwebperson.knowslanguages) ($dataperson.knowslanguages) }}"knowsLanguage": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with or ($semwebperson.spouse) ($dataperson.spouse) }}"spouse": {
+        "@id": "{{ .id }}",
+        {{ with .name }}"name": "{{ . }}",{{ end }}
+        {{ with .url }}"url": "{{ . }}"{{ end }}
+      },{{ end }}
+      {{ with or ($semwebperson.taxid) ($dataperson.taxid) }}"taxID": "{{ . }}",{{ end }}
+      {{ with or ($semwebperson.vatid) ($dataperson.vatid) }}"vatID": "{{ . }}",{{ end }}
+      {{ with or ($semwebperson.worksfor) ($dataperson.worksfor) }}"worksFor": [ {{ range $i, $worksfor := . }}{{ if $i }}, {{ end }}
+        {
+          "@id": "{{ .id }}#organization"{{ with or (.name) (.url) }},{{ end }}
+          {{ with .name }}"name": "{{ . }}",{{ end }}
+          {{ with .url }}"url": "{{ . }}",{{ end }}
+          {{ with or (.name) (.url) }}"@type": "Organization"{{ end }}
+        }{{ end }}
+      ],{{ end }}
 
-			{{- /* Properties from Thing */}}
-			{{ with or ($semwebperson.description) ($dataperson.description) }}"description": "{{ . }}",{{ end }}
-			"image": [ {{ range $i, $image := or ($semwebperson.images) ($dataperson.images) }}{{ if $i }}, {{ end }}
-				{
-					"@id": "{{ .url }}{{ with .isphoto | default false }}#photo{{ end }}",
-					{{ with .caption }}"caption": "{{ . }}",{{ end }}
-					"contentUrl": "{{ .url }}",
-					"url": "{{ .url }}",
-					"@type": "ImageObject"
-				}{{ end }}
-			],
-			{{ with or ($semwebperson.mainentityofpage) ($dataperson.mainentityofpage) }}"mainEntityOfPage": "{{ . }}",{{ end }}
-			{{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
-			{{ with or ($semwebperson.sameas) ($dataperson.sameas) }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
-			{{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}"{{ end }}
-		}{{ end }}
+      {{- /* Properties from Thing */}}
+      {{ with or ($semwebperson.description) ($dataperson.description) }}"description": "{{ . }}",{{ end }}
+      "image": [ {{ range $i, $image := or ($semwebperson.images) ($dataperson.images) }}{{ if $i }}, {{ end }}
+        {
+          "@id": "{{ .url }}{{ with .isphoto | default false }}#photo{{ end }}",
+          {{ with .caption }}"caption": "{{ . }}",{{ end }}
+          "contentUrl": "{{ .url }}",
+          "url": "{{ .url }}",
+          "@type": "ImageObject"
+        }{{ end }}
+      ],
+      {{ with or ($semwebperson.mainentityofpage) ($dataperson.mainentityofpage) }}"mainEntityOfPage": "{{ . }}",{{ end }}
+      {{ with or ($semwebperson.name) ($dataperson.name) }}"name": "{{ . }}",{{ end }}
+      {{ with or ($semwebperson.sameas) ($dataperson.sameas) }}"sameAs": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with or ($semwebperson.url) ($dataperson.url) }}"url": "{{ . }}"{{ end }}
+    }{{ end }}

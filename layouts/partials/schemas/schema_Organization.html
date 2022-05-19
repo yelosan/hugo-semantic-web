@@ -1,87 +1,87 @@
 {{- /*
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-	BGN: SEMANTIC WEB
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  BGN: SEMANTIC WEB
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-	****************************
-	** Syntax: JSON-LD        **
-	** Vocab: schema.org      **
-	**                        **
-	** Schema: Organization   **
-	****************************
+  ****************************
+  ** Syntax: JSON-LD        **
+  ** Vocab: schema.org      **
+  **                        **
+  ** Schema: Organization   **
+  ****************************
 
-	Special uses:
-		- Site logo: https://developers.google.com/search/docs/advanced/structured-data/logo
+  Special uses:
+    - Site logo: https://developers.google.com/search/docs/advanced/structured-data/logo
 
-	Links:
-		- https://www.w3.org/standards/semanticweb/
-		- https://schema.org/Organization
+  Links:
+    - https://www.w3.org/standards/semanticweb/
+    - https://schema.org/Organization
 
-	About SemWeb:
-	  - https://im.youronly.one/techmagus/
+  About SemWeb:
+    - https://im.youronly.one/techmagus/
 
-	How-To:
-	  - https://github.com/
+  How-To:
+    - https://github.com/
 
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-	END: SEMANTIC WEB
-	―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+  END: SEMANTIC WEB
+  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
 {{- $org := index .Site.Data.orgs .Site.Params.semweb.org }}
-		{
-			"@type": "Organization",
-			"@id": "{{ $org.id }}#organization",
+    {
+      "@type": "Organization",
+      "@id": "{{ $org.id }}#organization",
 
-			{{- /* Properties from Organization */}}
-			{{ with $org.brands }}"brand": [ {{ range $i, $brand := . }}{{ if $i }}, {{ end }}
-				{ 
-					"@id": "{{ .id }}#website",
-					{{ with .logo }}"logo": "{{ . }}",{{ end }}
-					{{ with .name }}"name": "{{ . }}",{{ end }}
-					{{ with .url }}"url": "{{ . }}",{{ end }}
-					"@type": [ "Brand"{{ with .iswebsite }}, "WebSite"{{ end }} ]
-				}{{ end }}
-			],{{ end }}
-			{{ if $org.founders }}"founder": [ {{ range $i, $orgfounder := index $org.founders }}{{ if $i }}, {{ end }}
-				{
-					"@id": "{{ $orgfounder.id }}"{{ with or ($orgfounder.name) ($orgfounder.url) }},{{ end }}
-					{{ with $orgfounder.name }}"name": "{{ . }}",{{ end }}
-					{{ with $orgfounder.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
-					{{ with $orgfounder.url }}"url": "{{ . }}",{{ end }}
-					{{ with or ($orgfounder.name) ($orgfounder.url) }}"@type": "Person"{{ end }}
-				}{{ end }}
-			],{{ end }}
-			{{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
-			{{ with $org.knowslanguages }}"knowsLanguage": [ {{ range $i, $knowslanguage := . }}{{ if $i }}, {{ end }}"{{ $knowslanguage }}"{{ end }} ],{{ end }}
-			"legalName": "{{ $org.legalname }}",
-			"logo": [ {{ $countislogo := 0 }}{{ range $i, $image := $org.images }}{{ with .islogo }}{{ $countislogo = add $countislogo 1 }}{{ if gt $countislogo 1 }}, {{ end }}
-				{ 
-					"@id": "{{ $.Site.BaseURL }}#logo",
-					{{ with $image.caption }}"caption": "{{ . }}",{{ end }}
-					"contentUrl": "{{ $image.url }}",
-					"url": "{{ $image.url }}",
-					"@type": "ImageObject"
-				}{{ end }}{{ end }}
-			],
-			{{ with $org.slogan }}"slogan": "{{ . }}",{{ end }}
-			{{ with $org.taxid }}"taxID": "{{ . }}",{{ end }}
-			{{ with $org.vatid }}"vatID": "{{ . }}",{{ end }}
+      {{- /* Properties from Organization */}}
+      {{ with $org.brands }}"brand": [ {{ range $i, $brand := . }}{{ if $i }}, {{ end }}
+        {
+          "@id": "{{ .id }}#website",
+          {{ with .logo }}"logo": "{{ . }}",{{ end }}
+          {{ with .name }}"name": "{{ . }}",{{ end }}
+          {{ with .url }}"url": "{{ . }}",{{ end }}
+          "@type": [ "Brand"{{ with .iswebsite }}, "WebSite"{{ end }} ]
+        }{{ end }}
+      ],{{ end }}
+      {{ if $org.founders }}"founder": [ {{ range $i, $orgfounder := index $org.founders }}{{ if $i }}, {{ end }}
+        {
+          "@id": "{{ $orgfounder.id }}"{{ with or ($orgfounder.name) ($orgfounder.url) }},{{ end }}
+          {{ with $orgfounder.name }}"name": "{{ . }}",{{ end }}
+          {{ with $orgfounder.sameas }}"sameAs": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+          {{ with $orgfounder.url }}"url": "{{ . }}",{{ end }}
+          {{ with or ($orgfounder.name) ($orgfounder.url) }}"@type": "Person"{{ end }}
+        }{{ end }}
+      ],{{ end }}
+      {{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
+      {{ with $org.knowslanguages }}"knowsLanguage": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      "legalName": "{{ $org.legalname }}",
+      "logo": [ {{ $countislogo := 0 }}{{ range $i, $image := $org.images }}{{ with .islogo }}{{ $countislogo = add $countislogo 1 }}{{ if gt $countislogo 1 }}, {{ end }}
+        {
+          "@id": "{{ $.Site.BaseURL }}#logo",
+          {{ with $image.caption }}"caption": "{{ . }}",{{ end }}
+          "contentUrl": "{{ $image.url }}",
+          "url": "{{ $image.url }}",
+          "@type": "ImageObject"
+        }{{ end }}{{ end }}
+      ],
+      {{ with $org.slogan }}"slogan": "{{ . }}",{{ end }}
+      {{ with $org.taxid }}"taxID": "{{ . }}",{{ end }}
+      {{ with $org.vatid }}"vatID": "{{ . }}",{{ end }}
 
-			{{- /* Properties from Thing */ -}}
-			{{ with $org.alternatenames }}"alternateName": [ {{ range $i, $alternatename := . }}{{ if $i }}, {{ end }}"{{ $alternatename }}"{{ end }} ],{{ end }}
-			"description": "{{ $org.description }}",
-			"image": [ {{ range $i, $image := $org.images }}{{ if $i }}, {{ end }}
-				{ 
-					{{ with .islogo | default false }}"@id": "{{ $.Site.BaseURL }}#logo"
-					{{- else }}"@id": "{{ .url }}",
-					{{ with .caption }}"caption": "{{ . }}",{{ end }}
-					"contentUrl": "{{ .url }}",
-					"url": "{{ .url }}",
-					"@type": "ImageObject"
-					{{- end }}
-				}{{ end }}
-			],
-			"name": "{{ $org.name }}",
-			{{ with $org.sameas }}"sameAs": [ {{ range $i, $sameas := . }}{{ if $i }}, {{ end }}"{{ $sameas }}"{{ end }} ],{{ end }}
-			"url": "{{ $org.url }}"
-		}
+      {{- /* Properties from Thing */ -}}
+      {{ with $org.alternatenames }}"alternateName": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      "description": "{{ $org.description }}",
+      "image": [ {{ range $i, $image := $org.images }}{{ if $i }}, {{ end }}
+        {
+          {{ with .islogo | default false }}"@id": "{{ $.Site.BaseURL }}#logo"
+          {{- else }}"@id": "{{ .url }}",
+          {{ with .caption }}"caption": "{{ . }}",{{ end }}
+          "contentUrl": "{{ .url }}",
+          "url": "{{ .url }}",
+          "@type": "ImageObject"
+          {{- end }}
+        }{{ end }}
+      ],
+      "name": "{{ $org.name }}",
+      {{ with $org.sameas }}"sameAsT": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      "url": "{{ $org.url }}"
+    }
