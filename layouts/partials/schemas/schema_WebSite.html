@@ -28,30 +28,24 @@
 {{- $iso8601y := "2006" -}}
 {{- $permalink := .Permalink -}}
 {{- $acquireLicensePage := or (.Site.Params.semweb.acquirelicensepage) (.Site.Params.acquirelicensepage) -}}
-{{- $copyrightYear := "" -}}
-{{- $dateCreated := .Date -}}
-{{- $datePublished := or (.Site.Params.semweb.datefirstpublished) (.Site.Params.datefirstpublished) (.PublishDate) ($dateCreated) -}}
-{{- $dateModified := .Lastmod.Format $iso8601 -}}
-{{- $dateModifiedYear := .Lastmod.Format $iso8601y -}}
+{{- $dateofcreation := "" -}}
+{{- $datefirstpublished := "" -}}
+{{- if .Site.Params.semweb.datecreated -}}
+  {{ $dateofcreation = time .Site.Params.semweb.datecreated }}
+{{- else if .Site.Params.datecreated -}}
+  {{ $dateofcreation = time .Site.Params.datecreated }}
+{{- end -}}
+{{- if .Site.Params.semweb.datefirstpublished -}}
+  {{ $datefirstpublished = time .Site.Params.semweb.datefirstpublished }}
+{{- else if .Site.Params.datefirstpublished -}}
+  {{ $datefirstpublished = time .Site.Params.datefirstpublished }}
+{{- end -}}
+{{- $dateCreated := (or $dateofcreation .Date .PublishDate .Lastmod).UTC | time.Format $iso8601 -}}
+{{- $datePublished := (or $datefirstpublished .PublishDate .Date .Lastmod $dateofcreation).UTC | time.Format $iso8601 -}}
+{{- $dateModified := (or .Lastmod .PublishDate .Date $datefirstpublished $dateofcreation).UTC | time.Format $iso8601 -}}
+{{- $dateModifiedYear := $dateModified | time.Format $iso8601y -}}
 {{- $dateExpiry := "" -}}
-{{- if not .ExpiryDate.IsZero -}}
-  {{- $dateExpiry = .ExpiryDate.Format $iso8601 -}}
-{{- end -}}
-{{- if $datePublished -}}
-  {{- $datePublished = dateFormat $iso8601 $datePublished -}}
-{{- else if $dateCreated -}}
-  {{- $datePublished = $dateCreated -}}
-{{- end -}}
-{{- if $dateCreated -}}
-  {{- $copyrightYear = dateFormat $iso8601y $dateCreated -}}
-  {{- $dateCreated = dateFormat $iso8601 $dateCreated -}}
-{{- else if $datePublished -}}
-  {{- $copyrightYear = dateFormat $iso8601y $datePublished -}}
-  {{- $dateCreated = $datePublished -}}
-{{- end -}}
-{{- if ne $copyrightYear $dateModifiedYear -}}
-  {{- $copyrightYear = $dateModifiedYear -}}
-{{- end -}}
+{{- with .ExpiryDate -}}{{ $dateExpiry = .UTC | time.Format $iso8601 }}{{- end -}}
 {{- $datapersons := .Site.Data.persons -}}
 {{- $semwebpersons := .Site.Params.semweb.persons }}
     {
@@ -78,7 +72,7 @@
         }
       ],{{ end }}
       {{ with .Site.Params.semweb.copyrightnotice }}"copyrightNotice": "{{ . }}",{{ end }}
-      "copyrightYear": "{{ $copyrightYear }}",
+      "copyrightYear": "{{ $dateModifiedYear | safeHTML }}",
       "creativeWorkStatus": "Published",
       {{ if $semwebpersons }}"creator": [ {{ range $i, $semwebperson := index $semwebpersons }}{{ $dataperson := index $datapersons $semwebperson.person }}{{ if $i }}, {{ end }}
         {{- /* note: else if [[semweb.persons]] is set in config file, use it to display a list of persons with fallback to /data/persons/ if present */}}
@@ -95,9 +89,10 @@
         }
       ],{{ end }}
       {{ with .Site.Params.semweb.credittext }}"creditText": "{{ . }}",{{ end }}
-      "dateCreated": "{{ $dateCreated | safeHTML }}",
+      "dateCreated": "{{ or $dateCreated $datePublished | safeHTML }}",
       "dateModified": "{{ $dateModified | safeHTML }}",
       "datePublished": "{{ $datePublished | safeHTML }}",
+      {{ with $dateExpiry }}"expires": "{{ . | safeHTML }}",{{ end }}
       "hasPart": {
         "@id": "{{ $permalink }}#webpage"
       },

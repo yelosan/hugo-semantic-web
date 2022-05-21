@@ -29,30 +29,12 @@
 {{- $acquireLicensePage := or (.Param "semweb.acquirelicensepage") (.Param "acquirelicensepage") -}}
 {{- $title := .LinkTitle -}}
 {{- $permalink := .Permalink -}}
-{{- $copyrightYear := "" -}}
-{{- $dateCreated := .Date -}}
-{{- $datePublished := or (.PublishDate) ($dateCreated) -}}
-{{- $dateModified := .Lastmod.Format $iso8601 -}}
-{{- $dateModifiedYear := .Lastmod.Format $iso8601y -}}
+{{- $dateCreated := (or .Date .PublishDate .Lastmod).UTC | time.Format $iso8601 -}}
+{{- $datePublished := (or .PublishDate .Date .Lastmod).UTC | time.Format $iso8601 -}}
+{{- $dateModified := (or .Lastmod .PublishDate .Date).UTC | time.Format $iso8601 -}}
+{{- $dateModifiedYear := $dateModified | time.Format $iso8601y -}}
 {{- $dateExpiry := "" -}}
-{{- if not .ExpiryDate.IsZero -}}
-  {{- $dateExpiry = .ExpiryDate.Format $iso8601 -}}
-{{- end -}}
-{{- if $datePublished -}}
-  {{- $datePublished = dateFormat $iso8601 $datePublished -}}
-{{- else if $dateCreated -}}
-  {{- $datePublished = $dateCreated -}}
-{{- end -}}
-{{- if $dateCreated -}}
-  {{- $copyrightYear = dateFormat $iso8601y $dateCreated -}}
-  {{- $dateCreated = dateFormat $iso8601 $dateCreated -}}
-{{- else if $datePublished -}}
-  {{- $copyrightYear = dateFormat $iso8601y $datePublished -}}
-  {{- $dateCreated = $datePublished -}}
-{{- end -}}
-{{- if ne $copyrightYear $dateModifiedYear -}}
-  {{- $copyrightYear = $dateModifiedYear -}}
-{{- end -}}
+{{- with .ExpiryDate -}}{{ $dateExpiry = .UTC | time.Format $iso8601 }}{{- end -}}
 {{- $datapersons := .Site.Data.persons -}}
 {{- $semwebpersons := .Site.Params.semweb.persons -}}
 {{- $frontmatterpersons := .Params.authors }}
@@ -114,7 +96,7 @@
           "name": "{{ .Param "author" }}"
         }
       ],{{ end }}
-      "copyrightYear": "{{ $copyrightYear }}",
+      "copyrightYear": "{{ $dateModifiedYear | safeHTML }}",
       "creativeWorkStatus": "Published",
       {{ if $frontmatterpersons }}"creator": [ {{ range $i, $frontmatterperson := index $frontmatterpersons }}{{ $dataperson := index $datapersons $frontmatterperson.person }}{{ if $i }}, {{ end }}
         {{- /* note: if [[authors]] is set in frontmatter, use this to display a list of persons with fallback to /data/persons/ if present */}}
@@ -140,7 +122,7 @@
           "name": "{{ .Param "author" }}"
         }
       ],{{ end }}
-      "dateCreated": "{{ $dateCreated | safeHTML }}",
+      "dateCreated": "{{ or $dateCreated $datePublished | safeHTML }}",
       "dateModified": "{{ $dateModified | safeHTML }}",
       "datePublished": "{{ $datePublished | safeHTML }}",
       {{ with $dateExpiry }}"expires": "{{ . | safeHTML }}",{{ end }}

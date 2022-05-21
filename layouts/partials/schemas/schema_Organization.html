@@ -27,6 +27,7 @@
   END: SEMANTIC WEB
   ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 */}}
+{{- $iso8601d := "2006-01-02" -}}
 {{- $org := index .Site.Data.orgs .Site.Params.semweb.org }}
     {
       "@type": "Organization",
@@ -51,7 +52,7 @@
           {{ with or ($orgfounder.name) ($orgfounder.url) }}"@type": "Person"{{ end }}
         }{{ end }}
       ],{{ end }}
-      {{ with $org.foundingdate }}"foundingDate": "{{ . }}",{{ end }}
+      {{ with $org.foundingdate }}"foundingDate": "{{ (time .).UTC | time.Format $iso8601d | safeHTML }}",{{ end }}
       {{ with $org.knowslanguages }}"knowsLanguage": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
       "legalName": "{{ $org.legalname }}",
       "logo": [ {{ $countislogo := 0 }}{{ range $i, $image := $org.images }}{{ with .islogo }}{{ $countislogo = add $countislogo 1 }}{{ if gt $countislogo 1 }}, {{ end }}
