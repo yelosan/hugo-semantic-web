@@ -53,10 +53,12 @@
 {{- $thumbnailURL := "" -}}
 {{- if eq $platform "youtube" -}}
   {{- $thumbnailURL = printf "%s%s%s" "https://img.youtube.com/vi/" $vidID "/hqdefault.jpg" -}}
+{{- else if eq $platform "vimeo" -}}
+  {{- $thumbnailURL = printf "%s%s%s" "https://vumbnail.com/" $vidID ".png" -}}
 {{- end -}}
 {{- $hashPlace := printf "%s#place" ($.Get "contentlocurl") -}}
 {{- $hashThumbnail := "" -}}
-{{- if eq $platform "youtube" -}}
+{{- if or (eq $platform "youtube") (eq $platform "vimeo") -}}
   {{- $hashThumbnail = printf "%s%s" $thumbnailURL "#thumbnail" -}}
 {{- end }}
 <script type="application/ld+json">
@@ -72,7 +74,7 @@
   {{- with $caption }}"caption": {{ . | plainify }},{{ end }}
   {{- with (.Get "director") }}"director": {{ . }},{{ end }}
   {{- with (.Get "musicby") }}"musicBy": {{ . }},{{ end }}
-  {{ if eq $platform "youtube" }}
+  {{ if or (eq $platform "youtube") (eq $platform "vimeo") }}
   "thumbnail": {
     "@id": {{ $hashThumbnail }},
     "contentUrl": {{ $thumbnailURL }},
@@ -133,7 +135,7 @@
   {{- /* note: similar to copyrightHolder
     "publisher": {{ $publisher }},
   */}}
-  {{ if eq $platform "youtube" }}"thumbnailUrl": {{ $thumbnailURL }},{{ end }}
+  {{ if or (eq $platform "youtube") (eq $platform "vimeo") }}"thumbnailUrl": {{ $thumbnailURL }},{{ end }}
   {{- with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
 
   {{- /* Properties from Thing */}}
