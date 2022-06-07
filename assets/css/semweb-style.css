@@ -143,31 +143,27 @@
 /*********************
 ** BGN: Attribution **
 *********************/
-  /* BGN: Remove browser style */
-    html body aside.figure_box,
-    html body div.figure_box {
+  figure.figure_box {
+    content-visibility: auto;
+    contain-intrinsic-size: auto;
+  }
+
+  /* BGN: Remove browser and theme styles */
+    .attribution_caption > p {
       margin: 0;
+      padding: 0;
+      text-align: unset;
     }
-  /* END: Remove browser style */
+  /* END: Remove browser and theme styles */
 
-  /* BGN: Add margins */
-    html body aside.figure_box,
-    html body div.figure_box {
-      margin: 1rem 0;
-    }
-  /* END: Add margins */
-
-  /** BGN: Remove theme style
-    *   - useful for Blogspot and Tumblr themes with embedded CSS
-    *
-    *   - IMPT: Do not change the chaining.
-    *       We need to increase the specifity to override embedded CSS
-  **/
-    html body aside.figure_box,
-    html body div.figure_box {
-      text-align: revert;
-    }
-  /* END: Remove theme style */
+  .attribution_caption {
+    color: unset;
+    line-height: normal;
+    /* margin-bottom: 23px; */
+  }
+  .attribution_caption > p > small {
+    font-size: 0.73em;
+  }
 /*********************
 ** END: Attribution **
 *********************/
