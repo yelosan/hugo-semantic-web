@@ -74,14 +74,13 @@
   {{- with $caption }}"caption": {{ . | plainify }},{{ end }}
   {{- with (.Get "director") }}"director": {{ . }},{{ end }}
   {{- with (.Get "musicby") }}"musicBy": {{ . }},{{ end }}
-  {{ if or (eq $platform "youtube") (eq $platform "vimeo") }}
+  {{- if or (eq $platform "youtube") (eq $platform "vimeo") }}
   "thumbnail": {
     "@id": {{ $hashThumbnail }},
     "contentUrl": {{ $thumbnailURL }},
     "url": {{ $thumbnailURL }},
     "@type": "ImageObject"
-  },
-  {{ end }}
+  },{{ end }}
   {{- with (.Get "objframesize") }}"videoFrameSize": {{ . }},{{ end }}
   {{- with (.Get "objquality") }}"videoQuality": {{ . }},{{ end }}
 
@@ -135,7 +134,7 @@
   {{- /* note: similar to copyrightHolder
     "publisher": {{ $publisher }},
   */}}
-  {{ if or (eq $platform "youtube") (eq $platform "vimeo") }}"thumbnailUrl": {{ $thumbnailURL }},{{ end }}
+  {{- if or (eq $platform "youtube") (eq $platform "vimeo") }}"thumbnailUrl": {{ $thumbnailURL }},{{ end }}
   {{- with $acquireLicensePage }}"usageInfo": {{ . }},{{ end }}
 
   {{- /* Properties from Thing */}}
