@@ -1,20 +1,40 @@
-# Hugo default output directory
-/public
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-## OS Files
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
+# Test binary, built with `go test -c`
+*.test
 
-# OSX
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+vendor
+
+# Hugo
+config/development
+config/staging
+public
+resources
+_vendor
+.hugo_build.lock
+#go.mod
+go.sum
+
+# OS files
 .DS_Store
+thumbs.db
+desktop.ini
 
+# Caches
+cache
 .sass-cache
 
-# IDE config.
-.idea
+# npm
+node_modules
 
 # SemWeb
 schema_CriticReview.html
