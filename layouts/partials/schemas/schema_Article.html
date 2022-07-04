@@ -158,9 +158,9 @@
       {{ with or (.Description) (.Summary) }}"description": "{{ . | plainify }}",{{ end }}
       {{ with (.Param "images") }}"image": [ {{ range $i, $image := . }}{{ if $i }}, {{ end }}
         {
-          "@id": "{{ . }}#image",
-          "contentUrl": "{{ . }}",
-          "url": "{{ . }}",
+          "@id": "{{ . | absURL }}#image",
+          "contentUrl": "{{ . | absURL }}",
+          "url": "{{ . | absURL }}",
           "@type": "ImageObject"
         }{{ end }}
       ],{{ end }}

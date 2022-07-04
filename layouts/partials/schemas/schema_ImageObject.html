@@ -30,12 +30,12 @@
 {{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
 {{- $iso8601d := "2006-01-02" -}}
 {{- $iso8601y := "2006" -}}
-{{- $mainID := printf "%s#image" (.Get "src") -}}
+{{- $mainID := printf "%s#image" (.Get "src" | absURL) -}}
 {{- $acquireLicensePage := or (.Get "acquirelicensepage") (.Page.Param "semweb.acquirelicensepage") (.Page.Param "acquirelicensepage") -}}
 {{- $alt := .Get "alt" -}}
 {{- $thumbnailURL := .Get "thumbnailurl" -}}
 {{- $title := .Get "title" -}}
-{{- $url := .Get "src" -}}
+{{- $url := .Get "src" | absURL -}}
 {{- $caption := or (.Get "caption") $alt -}}
 {{- $about := or $caption $alt $title -}}
 {{- $description := or $caption $alt -}}
@@ -49,7 +49,7 @@
 {{- $hashArticle := printf "%s#article" (.Page.Permalink) -}}
 {{- $hashWebPage := printf "%s#webpage" (.Page.Permalink) -}}
 {{- $hashWebContent := printf "%s#webcontent" (.Page.Permalink) -}}
-{{- $hashThumbnail := printf "%s#thumbnail" $thumbnailURL -}}
+{{- $hashThumbnail := printf "%s#thumbnail" ($thumbnailURL | absURL) -}}
 {{- $hashPlace := printf "%s#place" (.Get "contentlocurl") -}}
 <script type="application/ld+json">
 {
@@ -64,8 +64,8 @@
   "representativeOfPage": {{ with (.Get "isrepresentativeofpage") }}true{{ else }}false{{ end }},
   {{- with $thumbnailURL }}"thumbnail": {
     "@id": {{ $hashThumbnail }},
-    "contentUrl": {{ . }},
-    "url": {{ . }},
+    "contentUrl": {{ . | absURL }},
+    "url": {{ . | absURL }},
     "@type": "ImageObject"
   },{{ end }}
 
@@ -79,6 +79,7 @@
   {{- with (.Get "contentreferencetime") }}"contentReferenceTime": {{ . }},{{ end }}
   "contentUrl": {{ $url }},
   {{- /* note: Different from html height and width; this refers to the actual dimension of the image */}}
+  {{- /* TODO: if image was processed by Hugo, add object WxH automatically */}}
   {{- with (.Get "objheight") }}"height": {{ . }},{{ end }}
   {{- with (.Get "objwidth") }}"width": {{ . }},{{ end }}
 
