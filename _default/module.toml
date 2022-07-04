@@ -1,0 +1,4 @@
+#[hugoVersion]
+#  extended = true
+#  #max = ""
+#  min = "0.101.0"
