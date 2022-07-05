@@ -21,7 +21,6 @@ public
 resources
 _vendor
 .hugo_build.lock
-#go.mod
 go.sum
 
 # OS files
