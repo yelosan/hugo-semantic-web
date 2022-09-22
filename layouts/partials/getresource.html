@@ -1,0 +1,12 @@
+{{- $rsc := "" -}}
+{{- with . -}}
+  {{- if (urls.Parse .).Scheme -}}
+    {{/* remote */}}
+    {{- /* NOTE: localise the remote resource */ -}}
+    {{- $rsc = resources.GetRemote . -}}
+  {{- else -}}
+    {{/* /assets/ and bundles */}}
+    {{- $rsc = resources.GetMatch . -}}
+  {{- end -}}
+{{- end -}}
+{{- return $rsc -}}
