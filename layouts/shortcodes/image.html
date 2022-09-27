@@ -100,12 +100,14 @@
       <div>
         {{- with and (ne $type "imagecoverattrib") $image -}}
           {{ with $link }}<a href="{{ $linkimage }}" rel="{{ with $linkrel }}{{ . }}{{ end }}">{{ end }}
-          <picture>
+          <picture>{{/* TODO: make this simpler */}}
             {{- if and (ne .MediaType.SubType "svg") (ne .MediaType.SubType "gif") (ne (path.Ext $src) ".apng") (ne (path.Ext $src) ".awebp") -}}
               {{- $imagewebp = .Resize (printf "%dx%d webp" .Width .Height) -}}
               {{- $imagepng = .Resize (printf "%dx%d png" .Width .Height) -}}
               <source srcset="{{ $imagewebp.RelPermalink }}" type="image/webp" />
               <img src="{{ if eq (path.Ext $src) ".webp" }}{{ $imagepng.RelPermalink }}{{ else }}{{ $image.RelPermalink }}{{ end }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} loading="lazy" decoding="async" />
+            {{- else if (eq .MediaType.SubType "gif") -}}
+              <img src="{{ $linkimage.RelPermalink }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} loading="lazy" decoding="async" />
             {{- else -}}
               <img src="{{ $linkimage }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} loading="lazy" decoding="async" />
             {{- end -}}
