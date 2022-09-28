@@ -1,0 +1,11 @@
+_merge = "deep"
+[png]
+  mediaType = "image/apng"
+[apng]
+  mediaType = "image/apng"
+[webp]
+  mediaType = "image/webp"
+[awebp]
+  mediaType = "image/webp"
+[avif]
+  mediaType = "image/avif"

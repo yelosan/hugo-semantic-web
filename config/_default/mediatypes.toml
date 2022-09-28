@@ -1,0 +1,15 @@
+# https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+_merge = "deep"
+["image/jpeg"]
+  suffixes = ["jpeg", "jpg", "jpe", "jif", "jfif", "jfi"]
+["image/gif"]
+  suffixes = ["gif"]
+["image/svg+xml"]
+  suffixes = ["svgz", "svg"]
+["image/apng"]
+  suffixes = ["apng", "png"]
+["image/webp"]
+  suffixes = ["webp", "awebp"]
+["image/avif"]
+  suffixes = ["avif", "heif", "heifs", "hif"]
