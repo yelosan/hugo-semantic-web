@@ -56,19 +56,31 @@
 {{- $style := .Get "style" | safeCSS -}}
 {{- $type := .Get "type" | default "image" -}}
 {{- $src := .Get "src" -}}
-{{- $rsc := "" -}}
-{{- $image := "" -}}
-{{- $imagewebp := "" -}}
-{{- $imagepng := "" -}}
+{{- $imgsrc := "" -}}
+{{- $avif := "" -}}
+{{- $webp := "" -}}
+{{- $apng := "" -}}
+{{- $jpeg := "" -}}
 {{- with $src -}}
-  {{- $image = partial "getresource.html" . -}}
+  {{- $imgsrc = partial "getresource.html" . -}}
 {{- end -}}
 {{- $link := .Get "link" -}}
 {{- $linkimage := "" -}}
 {{- $linkimageremote := "" -}}
 {{- $linkimagelocal := "" -}}
 {{- with $link -}}
-  {{- $linkimage = partial "getresource.html" . -}}
+  {{- if (urls.Parse .).Scheme -}}
+    {{/* remote */}}
+    {{- $linkimageremote = . -}}
+  {{- else -}}
+    {{- $linkimagelocal = partial "getresource.html" . -}}
+  {{- end -}}
+  {{/* Pass correct image URL */}}
+  {{- if $linkimageremote -}}
+    {{- $linkimage = $linkimageremote -}}
+  {{- else if $linkimagelocal -}}
+    {{- $linkimage = $linkimagelocal.RelPermalink -}}
+  {{- end -}}
 {{- end -}}
 {{- $linkrel := .Get "linkrel" -}}
 {{- $title := .Get "title" -}}
@@ -89,6 +101,12 @@
 {{- $contentlocurl := .Get "contentlocurl" -}}
 {{- $contentlocrel := .Get "contentlocrel" -}}
 {{- $contentreferencetime := .Get "contentreferencetime" -}}
+{{- $supportedformat := false -}}
+{{- with $imgsrc -}}
+  {{- if and (ne .MediaType.SubType "avif") (ne (path.Ext $src) ".awebp") (ne (path.Ext $src) ".apng") (ne .MediaType.SubType "svg") (ne .MediaType.SubType "gif") -}}
+    {{- $supportedformat = true -}}
+  {{- end -}}
+{{- end -}}
 {{- if eq $type "imagecoverattrib" -}}
   <div role="cover-image-attributions">
     <div class="header_attribution">
@@ -98,16 +116,14 @@
     {{- /* keep <figure> centered, if we want to change the image alignment itself, it should be done inside figure */ -}}
     <figure class="figure_box txt_center">
       <div>
-        {{- with and (ne $type "imagecoverattrib") $image -}}
+        {{- with and (ne $type "imagecoverattrib") $imgsrc -}}
           {{ with $link }}<a href="{{ $linkimage }}" rel="{{ with $linkrel }}{{ . }}{{ end }}">{{ end }}
           <picture>{{/* TODO: make this simpler */}}
-            {{- if and (ne .MediaType.SubType "svg") (ne .MediaType.SubType "gif") (ne (path.Ext $src) ".apng") (ne (path.Ext $src) ".awebp") -}}
-              {{- $imagewebp = .Resize (printf "%dx%d webp" .Width .Height) -}}
-              {{- $imagepng = .Resize (printf "%dx%d png" .Width .Height) -}}
-              <source srcset="{{ $imagewebp.RelPermalink }}" type="image/webp" />
-              <img src="{{ if eq (path.Ext $src) ".webp" }}{{ $imagepng.RelPermalink }}{{ else }}{{ $image.RelPermalink }}{{ end }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} loading="lazy" decoding="async" />
-            {{- else if (eq .MediaType.SubType "gif") -}}
-              <img src="{{ $linkimage.RelPermalink }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} loading="lazy" decoding="async" />
+            {{- if eq $supportedformat true -}}
+              {{- $webp = (.Resize (printf "%dx%d webp" .Width .Height)).RelPermalink -}}
+              {{- $apng = (.Resize (printf "%dx%d png" .Width .Height)).RelPermalink -}}
+              <source srcset="{{ $webp }}" type="image/webp" />
+              <img src="{{ if eq (path.Ext $src) ".webp" }}{{ $apng }}{{ else }}{{ $imgsrc.RelPermalink }}{{ end }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} loading="lazy" decoding="async" />
             {{- else -}}
               <img src="{{ $linkimage }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} loading="lazy" decoding="async" />
             {{- end -}}
