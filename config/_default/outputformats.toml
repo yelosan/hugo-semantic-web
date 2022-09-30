@@ -1,11 +1,36 @@
 _merge = "deep"
+
+[jfi]
+  mediaType = "image/jpeg"
+[jfif]
+  mediaType = "image/jpeg"
+[jif]
+  mediaType = "image/jpeg"
+[jpe]
+  mediaType = "image/jpeg"
+[jpg]
+  mediaType = "image/jpeg"
+[jpeg]
+  mediaType = "image/jpeg"
+[gif]
+  mediaType = "image/gif"
+[svg]
+  mediaType = "image/svg+xml"
+[svgz]
+  mediaType = "image/svg+xml"
 [png]
   mediaType = "image/apng"
 [apng]
   mediaType = "image/apng"
-[webp]
-  mediaType = "image/webp"
 [awebp]
   mediaType = "image/webp"
+[webp]
+  mediaType = "image/webp"
+[hif]
+  mediaType = "image/avif"
+[heifs]
+  mediaType = "image/avif"
+[heif]
+  mediaType = "image/avif"
 [avif]
   mediaType = "image/avif"
