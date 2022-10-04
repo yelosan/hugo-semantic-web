@@ -96,16 +96,16 @@
         {{- $pc := .Page.Site.Config.Privacy.YouTube -}}
         {{- if not $pc.Disable -}}
           {{- $ytHost := cond $pc.PrivacyEnhanced  "www.youtube-nocookie.com" "www.youtube.com" -}}
-          <iframe loading="lazy" id="ytplayer" src="https://{{ $ytHost }}/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          <iframe anonymous loading="lazy" id="ytplayer" src="https://{{ $ytHost }}/embed/{{ with $isplaylist }}videoseries{{ else }}{{ $id }}{{ end }}?modestbranding=1{{ with $isplaylist }}&list={{ $id }}{{ end }}&hl={{ or (.Site.LanguageCode) (.Site.Language.Lang) }}{{ with $isloop }}&loop=1{{ end }}{{ with $starttime }}&start={{ . }}{{ end }}{{ with $endtime }}&end={{ . }}{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
         {{- end -}}
       {{- else if eq $platform "vimeo" -}}
         {{- $pc := .Page.Site.Config.Privacy.Vimeo -}}
         {{- if not $pc.Disable -}}
-          <iframe id="vimeoplayer" src="https://player.vimeo.com/video/{{ $id }}{{ with $pc.EnableDNT }}?dnt=1{{ end }}{{ with $isloop }}&loop=1{{ end }}&byline=0&portrait=0" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
+          <iframe anonymous id="vimeoplayer" src="https://player.vimeo.com/video/{{ $id }}{{ with $pc.EnableDNT }}?dnt=1{{ end }}{{ with $isloop }}&loop=1{{ end }}&byline=0&portrait=0" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
         {{- end -}}
         {{- /*
         {{- else if eq $platform "custom" -}}
-        <iframe id="customplayer" src="URL-here{{ with $isloop }}?loop=1{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
+        <iframe anonymous id="customplayer" src="URL-here{{ with $isloop }}?loop=1{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
         */ -}}
       {{- else -}}
         <p>Platform "{{ $platform }}" currently not supported, either check if it is correct or file a feature request <a href="https://gitlab.com/yelosan/hugo-semantic-web/-/issues" rel="noopener external">here</a>.</p>
