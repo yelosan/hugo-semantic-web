@@ -7,8 +7,10 @@ _merge = "deep"
   suffixes = ["gif"]
 ["image/svg+xml"]
   suffixes = ["svgz", "svg"]
+["image/png"]                                                 # do not change to apng, Hugo's png parser is not compatible with animated png
+  suffixes = ["png"]
 ["image/apng"]
-  suffixes = ["apng", "png"]
+  suffixes = ["apng"]
 ["image/webp"]
   suffixes = ["webp", "awebp"]
 ["image/avif"]
