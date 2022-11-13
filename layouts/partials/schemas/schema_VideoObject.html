@@ -52,7 +52,36 @@
 {{- $hashWebContent := printf "%s#webcontent" (.Page.Permalink) -}}
 {{- $thumbnailURL := "" -}}
 {{- if eq $platform "youtube" -}}
-  {{- $thumbnailURL = printf "%s%s%s" "https://img.youtube.com/vi/" $vidID "/hqdefault.jpg" -}}
+  {{- /* NOTE: image filenames
+    - (1280x720 and up) limited
+      - maxresdefault
+      - maxres1; maxres2; maxres3
+    - (1280x720) limited
+      - hq720
+    - (640x480) limited
+      - sddefault
+      - sd1; sd2; sd3
+    - (480x360) guaranteed
+      - hqdefault.webp
+      - hq1.webp; hq2.webp; hq3.webp
+      - 0.webp
+    - (320x180) guaranteed
+      - mqdefault
+      - mq1; mq2; mq3
+    - (120x90) guaranteed
+      - default.webp
+      - 1.webp; 2.webp; 3.webp
+  */ -}}
+  {{- /* TODO
+    1. Add YouTube APIv3 query to check if "maxresdefault" is available
+    2. Add 'ytapikey' in config files
+    3. If 'ytapikey' is empty, revert to "hqdefault"
+    4. Add instructions in semweb docs
+  */ -}}
+  {{- /* $thumbnailURL = printf "%s%s%s" "https://img.youtube.com/vi_webp/" $vidID "/maxresdefault.webp" */ -}}
+  {{- /* $thumbnailURL = printf "%s%s%s" "https://img.youtube.com/vi/" $vidID "/maxresdefault.jpg" */ -}}
+  {{- $thumbnailURL = printf "%s%s%s" "https://img.youtube.com/vi_webp/" $vidID "/hqdefault.webp" -}}
+  {{- /* $thumbnailURL = printf "%s%s%s" "https://img.youtube.com/vi/" $vidID "/hqdefault.jpg" */ -}}
 {{- else if eq $platform "vimeo" -}}
   {{- $thumbnailURL = printf "%s%s%s" "https://vumbnail.com/" $vidID ".png" -}}
 {{- end -}}
