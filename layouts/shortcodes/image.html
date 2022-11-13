@@ -123,9 +123,9 @@
               {{- $webp = (.Resize (printf "%dx%d webp" .Width .Height)).RelPermalink -}}
               {{- $apng = (.Resize (printf "%dx%d png" .Width .Height)).RelPermalink -}}
               <source srcset="{{ $webp }}" type="image/webp" />
-              <img src="{{ if eq (path.Ext $src) ".webp" }}{{ $apng }}{{ else }}{{ $imgsrc.RelPermalink }}{{ end }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} loading="lazy" decoding="async" />
+              <img src="{{ if eq (path.Ext $src) ".webp" }}{{ $apng }}{{ else }}{{ $imgsrc.RelPermalink }}{{ end }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} style="width: 100%;" loading="lazy" decoding="async" />
             {{- else -}}
-              <img src="{{ $linkimage }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} loading="lazy" decoding="async" />
+              <img src="{{ $linkimage }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} style="width: 100%;" loading="lazy" decoding="async" />
             {{- end -}}
           </picture>
           {{ with $link }}</a>{{ end }}
