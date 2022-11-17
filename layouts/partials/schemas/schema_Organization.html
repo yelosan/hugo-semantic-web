@@ -83,6 +83,6 @@
         }{{ end }}
       ],
       "name": "{{ $org.name }}",
-      {{ with $org.sameas }}"sameAsT": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with $org.sameas }}"sameAs": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
       "url": "{{ $org.url }}"
     }
