@@ -4,6 +4,17 @@
 
 By using JSON-LD and [Schema.org](https://schema.org) vocabulary, **Semantic Web for Hugo** adds *structured data* and *linked data* into a [Hugo](https://gohugo.io)-powered website. Through it, search engines can easily read the data and establish relationships between objects enabling them to intelligently store information about a website and use it to help display the website in search results.
 
+## Repository, suggestions, issues, pull requests
+
+We use [Codeberg](https://codeberg.org/yelosan/hugo-semantic-web) for development, suggestions, issues, and pull requests.
+
+### Mirrors
+
+- [GitHub](https://github.com/yelosan/hugo-semantic-web), original home.
+- [GitLab](https://gitlab.com/yelosan/hugo-semantic-web), second home.
+
+> *Note:* These mirrors should not be used as a Hugo module as it will produce a GoLang module error. The `go.mod` ID is set to `codeberg.org/yelosan/hugo-semantic-web` which should match the URL Hugo/GoLang is fetching it from.
+
 ## Usage
 
 You can download the latest release or add this as a Hugo Module. More information is available in the official [website](https://semweb.youronly.one/).

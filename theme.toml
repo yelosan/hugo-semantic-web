@@ -3,11 +3,11 @@
 
 name = "Semantic Web for Hugo"
 license = "MIT"
-licenselink = "https://github.com/YourOnly-One/hugo-semantic-web/blob/master/LICENSE"
+licenselink = "https://codeberg.org/yelosan/hugo-semantic-web/src/branch/main/LICENSE"
 description = "Add structured data (Schema.org JSON-LD) to your website to improve SEO."
 
 # The home page of the theme, where the source can be found.
-homepage = "https://github.com/YourOnly-One/hugo-semantic-web"
+homepage = "https://codeberg.org/yelosan/hugo-semantic-web"
 
 # If you have a running demo of the theme.
 #demosite = "https://gohugo.io"
@@ -23,7 +23,7 @@ features = ["Organization", "WebSite", "WebPage", "WebContent", "Article", "Blog
 
 # If the theme has a single author
 [author]
-  name = "YourOnly.One"
+  name = "techmagus ― I'M YourOnly.One"
   homepage = "https://youronly.one"
 
 # If porting an existing theme

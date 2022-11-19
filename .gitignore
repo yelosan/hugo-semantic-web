@@ -1,41 +1,130 @@
-# Binaries for programs and plugins
+# Binaries
+*.app
+*.dll
+*.dylib
 *.exe
 *.exe~
-*.dll
-*.so
-*.dylib
-
-# Test binary, built with `go test -c`
-*.test
-
-# Output of the go coverage tool, specifically when used with LiteIDE
+*.hex
+*.i*86
 *.out
+*.so
+*.so.*
+*.test
+*.x86_64
 
-# Dependency directories (remove the comment below to include it)
-vendor
+# Libraries
+*.a
+*.def
+*.exp
+*.la
+*.lib
+*.lo
+
+# Object files
+*.elf
+*.ko
+*.o
+*.obj
+*.os
+
+# temp files when file is actively accessed/opened and other related situations
+.fuse_hidden*
+.nfs*
+
+# OS: Linux
+*~
+.Trash-*
+.directory
+
+# OS: Apple (macOS, AFP share, etc.)
+.apdisk
+.AppleDB
+.AppleDesktop
+.AppleDouble
+.DS_Store
+.LSOverride
+Network Trash Folder
+Temporary Items
+
+# OS: Windows
+*.lnk
+$RECYCLE.BIN/
+[Dd]esktop.ini
+ehthumbs.db
+ehthumbs_vista.db
+[Tt]humbs.db
+[Tt]humbs.db:encryptable
+
+# May appear
+.com.apple.timemachine.donotpresent
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# Thumbnails
+._*
+
+# Dump file
+*.stackdump
+
+# App: Syncthing
+*.stversions
+
+# App: VScode
+.vscode-test
 
 # Hugo
+.hugo_build.lock
+_vendor
 config/development
 config/staging
+go.sum
+hugo.darwin
+hugo.exe
+hugo.linux
+hugo_stats.json
+jsconfig.json
 public
 resources
-_vendor
-.hugo_build.lock
-go.sum
-
-# OS files
-.DS_Store
-thumbs.db
-desktop.ini
 
 # Caches
-cache
+.cache
+.docusaurus
+.eslintcache
+.fusebox
+.npm
+.parcel-cache
+.rpt2_cache
+.rts2_cache_*
 .sass-cache
+.stylelintcache
+.temp
+.tmp
+.tsbuildinfo
+.vuepress
+cache
 
-# npm
+# Dependency directories
+jspm_packages
+lib-cov
 node_modules
+vendor
+web_modules
 
-# SemWeb
-schema_CriticReview.html
-schema_Global.html
-docs/
+# Log files
+log
+logs
+*.log
+*.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
