@@ -108,7 +108,7 @@
         <iframe anonymous id="customplayer" src="URL-here{{ with $isloop }}?loop=1{{ end }}" frameborder="0" allow="encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
         */ -}}
       {{- else -}}
-        <p>Platform "{{ $platform }}" currently not supported, either check if it is correct or file a feature request <a href="https://gitlab.com/yelosan/hugo-semantic-web/-/issues" rel="noopener external">here</a>.</p>
+        <p>Platform "{{ $platform }}" currently not supported, either check if it is correct or file a feature request <a href="https://codeberg.org/yelosan/hugo-semantic-web/issues" rel="noopener external">here</a>.</p>
       {{- end -}}
     </div>
     <figcaption class="attribution_caption {{ with $infoalign }}{{ . }}{{ end }}">
