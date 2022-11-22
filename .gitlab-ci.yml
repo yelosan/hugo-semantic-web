@@ -5,14 +5,14 @@
 # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-stages:
-- test
-sast:
-  stage: test
-include:
-- template: Jobs/Code-Quality.gitlab-ci.yml
-#- template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
-#- template: Jobs/License-Scanning.latest.gitlab-ci.yml
-- template: Jobs/SAST.latest.gitlab-ci.yml
-- template: Jobs/Secret-Detection.latest.gitlab-ci.yml
-- template: Security/Secure-Binaries.gitlab-ci.yml
+#stages:
+#- test
+#sast:
+#  stage: test
+#include:
+#- template: Jobs/Code-Quality.gitlab-ci.yml
+##- template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
+##- template: Jobs/License-Scanning.latest.gitlab-ci.yml
+#- template: Jobs/SAST.latest.gitlab-ci.yml
+#- template: Jobs/Secret-Detection.latest.gitlab-ci.yml
+#- template: Security/Secure-Binaries.gitlab-ci.yml
