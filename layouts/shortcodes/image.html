@@ -117,15 +117,15 @@
     <figure class="figure_box txt_center">
       <div>
         {{- with and (ne $type "imagecoverattrib") $imgsrc -}}
-          {{ with $link }}<a href="{{ $linkimage }}" rel="{{ with $linkrel }}{{ . }}{{ end }}">{{ end }}
+          {{ with $link }}<a href="{{ $linkimage | absURL }}" rel="{{ with $linkrel }}{{ . }}{{ end }}">{{ end }}
           <picture>{{/* TODO: make this simpler */}}
             {{- if eq $supportedformat true -}}
-              {{- $webp = (.Resize (printf "%dx%d webp" .Width .Height)).RelPermalink -}}
-              {{- $apng = (.Resize (printf "%dx%d png" .Width .Height)).RelPermalink -}}
+              {{- $webp = (.Resize (printf "%dx%d webp" .Width .Height)).Permalink -}}
+              {{- $apng = (.Resize (printf "%dx%d png" .Width .Height)).Permalink -}}
               <source srcset="{{ $webp }}" type="image/webp" />
-              <img src="{{ if eq (path.Ext $src) ".webp" }}{{ $apng }}{{ else }}{{ $imgsrc.RelPermalink }}{{ end }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} style="width: 100%;" loading="lazy" decoding="async" />
+              <img src="{{ if eq (path.Ext $src) ".webp" }}{{ $apng }}{{ else }}{{ $imgsrc.Permalink }}{{ end }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} style="width: 100%;" loading="lazy" decoding="async" />
             {{- else -}}
-              <img src="{{ $imgsrc.RelPermalink }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} style="width: 100%;" loading="lazy" decoding="async" />
+              <img src="{{ $imgsrc.Permalink }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} style="width: 100%;" loading="lazy" decoding="async" />
             {{- end -}}
           </picture>
           {{ with $link }}</a>{{ end }}
@@ -141,10 +141,10 @@
             <small>{{ if eq $type "imagecoverattrib" }}{{ i18n "word_coverimage" }} {{ i18n "attribution_allrightsreservedcover" }}{{ else }}{{ i18n "attribution_allrightsreserved" }}{{ end }}{{ with $attribto }} {{ i18n "word_to" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ . | markdownify }}{{ end }}{{ with $attriburl }}</a>{{ end }}{{ i18n "punctuation_fullstop" }}</small>
           {{- else if eq $licensecode "cc0" -}}
             {{/* CC0 DEDICATION */}}
-            <small>{{ if eq $type "imagecoverattrib" }}{{ i18n "word_coverimage" }} {{ end }}{{ i18n "attribution_cc0_extent" }}{{ i18n "punctuation_pause" }} <a href="{{ $attriburl }}" rel="dct:publisher {{ with $attribrel }}{{ . }}{{ end }}">{{ $attribto }}</a> {{ i18n "word_has" }} <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license noopener external">{{ i18n "attribution_cc0_waived" }}</a> {{ i18n "word_to" }} <cite>{{ with $link }}<a href="{{ $linkimage }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $alt $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ i18n "punctuation_fullstop" }} {{ i18n "attribution_cc0_publishedfrom" }} <span property="vcard:Country" datatype="dct:ISO3166" content="{{ $cc0countrycode }}" about="{{ $cc0countryurl }}"><a href="{{ $cc0countryurl }}" rel="noopener external">{{ $cc0country }}</a></span>{{ i18n "punctuation_fullstop" }}</small>
+            <small>{{ if eq $type "imagecoverattrib" }}{{ i18n "word_coverimage" }} {{ end }}{{ i18n "attribution_cc0_extent" }}{{ i18n "punctuation_pause" }} <a href="{{ $attriburl }}" rel="dct:publisher {{ with $attribrel }}{{ . }}{{ end }}">{{ $attribto }}</a> {{ i18n "word_has" }} <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license noopener external">{{ i18n "attribution_cc0_waived" }}</a> {{ i18n "word_to" }} <cite>{{ with $link }}<a href="{{ $linkimage | absURL }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $alt $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ i18n "punctuation_fullstop" }} {{ i18n "attribution_cc0_publishedfrom" }} <span property="vcard:Country" datatype="dct:ISO3166" content="{{ $cc0countrycode }}" about="{{ $cc0countryurl }}"><a href="{{ $cc0countryurl }}" rel="noopener external">{{ $cc0country }}</a></span>{{ i18n "punctuation_fullstop" }}</small>
           {{- else -}}
             <small>
-              {{ if eq $type "imagecoverattrib" }}{{ i18n "word_coverimage" }} {{ end }}<cite>{{ with $link }}<a href="{{ $linkimage }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $alt $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ with $attribto }} {{ i18n "attribution_by" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ $attribto | markdownify }}{{ with $attriburl }}</a>{{ end }} {{ i18n "word_is" }}
+              {{ if eq $type "imagecoverattrib" }}{{ i18n "word_coverimage" }} {{ end }}<cite>{{ with $link }}<a href="{{ $linkimage | absURL }}" rel="dct:title {{ with $linkrel }}{{ . }}{{ end }}">{{ end }}{{ with or $title $alt $caption }}{{ . | markdownify }}{{ end }}{{ with $link }}</a>{{ end }}</cite>{{ with $attribto }} {{ i18n "attribution_by" }} {{ with $attriburl }}<a href="{{ . }}" rel="dct:creator {{ with $attribrel }}{{ . }}{{ end }}">{{ end }}{{ $attribto | markdownify }}{{ with $attriburl }}</a>{{ end }} {{ i18n "word_is" }}
                 {{- if ne $licensecode "publicdomain" -}}
                   {{/* ANY LICENSE */}}
                   {{ i18n "attribution_licensedunder" }} <a href="{{ $licenseurl }}" rel="license noopener external">{{ with $licensename }}{{ . }}{{ end }}</a>{{ i18n "punctuation_fullstop" }}
