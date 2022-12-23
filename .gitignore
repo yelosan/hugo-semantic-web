@@ -82,10 +82,12 @@ _vendor
 config/development
 config/staging
 go.sum
+go.work
 hugo.darwin
 hugo.exe
 hugo.linux
 hugo_stats.json
+hugo.work
 jsconfig.json
 public
 resources
