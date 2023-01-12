@@ -145,7 +145,7 @@
 *********************/
   figure.figure_box {
     content-visibility: auto;
-    contain-intrinsic-size: auto;
+    /* contain-intrinsic-size: auto; */
   }
 
   /* BGN: Remove browser and theme styles */
