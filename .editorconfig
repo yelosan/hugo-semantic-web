@@ -18,3 +18,7 @@ indent_style = tab
 indent_size = unset
 tab_width = unset
 end_of_line = crlf
+
+# More Microsoft files
+[{*.bat, *.cmd, *.ps1}]
+end_of_line = crlf
