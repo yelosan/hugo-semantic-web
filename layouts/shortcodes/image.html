@@ -120,13 +120,18 @@
           {{ with $link }}<a href="{{ $linkimage | absURL }}" rel="{{ with $linkrel }}{{ . }}{{ end }}">{{ end }}
           <picture>{{/* TODO: make this simpler */}}
             {{- if eq $supportedformat true -}}
-              {{- $webp = (.Resize (printf "%dx%d webp" .Width .Height)).Permalink -}}
-              {{- $apng = (.Resize (printf "%dx%d png" .Width .Height)).Permalink -}}
-              <source srcset="{{ $webp }}" type="image/webp" />
-              <img src="{{ if eq (path.Ext $src) ".webp" }}{{ $apng }}{{ else }}{{ $imgsrc.Permalink }}{{ end }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} style="width: 100%;" loading="lazy" decoding="async" />
-            {{- else -}}
-              <img src="{{ $imgsrc.Permalink }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} style="width: 100%;" loading="lazy" decoding="async" />
+              {{- $webp = (.Resize (printf "%dx%d webp" .Width .Height)) -}}
+              {{- $apng = (.Resize (printf "%dx%d png" .Width .Height)) -}}
+              <source srcset="{{ $webp.Permalink }}" type="{{ $webp.MediaType }}" />
+
+              {{- /* NOTE: WIP
+                <source srcset='{{ (.Resize "500x webp").Permalink }} 1x, {{ (.Resize "1000x webp").Permalink }} 2x' type="image/webp" />
+                <source srcset='{{ (.Resize "500x png").Permalink }} 1x, {{ (.Resize "1000x png").Permalink }} 2x' type="image/png" />
+                <img src='{{ (.Resize "800x jpeg").Permalink }}' alt="" type="image/jpeg" loading="lazy" decoding="async" />
+              */ -}}
             {{- end -}}
+            {{- if eq (path.Ext $src) ".webp" -}}{{- $imgsrc = $apng -}}{{- end -}}
+            <img src="{{ $imgsrc.Permalink }}"{{ with or $alt $caption $title }} alt="{{ . | plainify }}"{{ end }} type="{{ $imgsrc.MediaType }}" style="max-width: 100%;" loading="lazy" decoding="async" />
           </picture>
           {{ with $link }}</a>{{ end }}
         {{- end -}}
