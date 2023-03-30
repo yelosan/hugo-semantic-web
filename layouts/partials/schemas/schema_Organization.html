@@ -57,7 +57,7 @@
       "legalName": "{{ $org.legalname }}",
       "logo": [ {{ $countislogo := 0 }}{{ range $i, $image := $org.images }}{{ with .islogo }}{{ $countislogo = add $countislogo 1 }}{{ if gt $countislogo 1 }}, {{ end }}
         {
-          "@id": "{{ $.Site.BaseURL }}#logo",
+          "@id": "{{ site.BaseURL }}#logo",
           {{ with $image.caption }}"caption": "{{ . }}",{{ end }}
           "contentUrl": "{{ $image.url }}",
           "url": "{{ $image.url }}",
@@ -73,7 +73,7 @@
       "description": "{{ $org.description }}",
       "image": [ {{ range $i, $image := $org.images }}{{ if $i }}, {{ end }}
         {
-          {{ with .islogo | default false }}"@id": "{{ $.Site.BaseURL }}#logo"
+          {{ with .islogo | default false }}"@id": "{{ site.BaseURL }}#logo"
           {{- else }}"@id": "{{ .url }}",
           {{ with .caption }}"caption": "{{ . }}",{{ end }}
           "contentUrl": "{{ .url }}",

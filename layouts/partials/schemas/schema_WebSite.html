@@ -50,7 +50,7 @@
 {{- $semwebpersons := .Site.Params.semweb.persons }}
     {
       "@type": "WebSite",
-      "@id": "{{ .Site.BaseURL }}#website",
+      "@id": "{{ site.BaseURL }}#website",
 
       {{- /* Properties from WebSite */}}
       {{ with .Site.Params.semweb.issn }}"issn": "{{ . }}",{{ end }}
@@ -119,5 +119,5 @@
       ],{{ end }}
       "name": "{{ .Site.Title }}",
       {{ with .Site.Params.semweb.sameas }}"sameAs": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
-      "url": "{{ .Site.BaseURL }}"
+      "url": "{{ site.BaseURL }}"
     }

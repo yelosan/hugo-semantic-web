@@ -32,7 +32,7 @@
 
       "hasPart": [
         {
-          "@id": "{{ .Site.BaseURL }}#website"
+          "@id": "{{ site.BaseURL }}#website"
         },
         {
           "@id": "{{ $permalink }}#webpage"
@@ -42,5 +42,5 @@
         }{{ end }}
       ],
       "name": "{{ $title }}",
-      "url": "{{ .Site.BaseURL }}"
+      "url": "{{ site.BaseURL }}"
     }
