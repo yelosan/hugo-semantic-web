@@ -127,7 +127,7 @@
       "datePublished": "{{ $datePublished | safeHTML }}",
       {{ with $dateExpiry }}"expires": "{{ . | safeHTML }}",{{ end }}
       "headline": "{{ $title }}",
-      "inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
+      "inLanguage": "{{ or (.Site.Language.LanguageCode) (.Site.Language.Lang) }}",
       "isPartOf": [
         {
           "@id": "{{ $permalink }}#webpage"

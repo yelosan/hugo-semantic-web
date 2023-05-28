@@ -71,7 +71,7 @@
         "@id": "{{ $permalink }}#article"
       },{{ end }}
       {{ if .IsPage }}"headline": "{{ $title }}",{{ end }}
-      "inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
+      "inLanguage": "{{ or (.Site.Language.LanguageCode) (.Site.Language.Lang) }}",
       "isPartOf": [
         {
           "@id": "{{ site.BaseURL }}#website"

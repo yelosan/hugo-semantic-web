@@ -96,7 +96,7 @@
       "hasPart": {
         "@id": "{{ $permalink }}#webpage"
       },
-      "inLanguage": "{{ or (.Site.LanguageCode) (.Site.Language.Lang) }}",
+      "inLanguage": "{{ or (.Site.Language.LanguageCode) (.Site.Language.Lang) }}",
       "isPartOf": {
         "@id": "{{ $permalink }}#webcontent"
       },
