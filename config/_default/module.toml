@@ -1,4 +1,4 @@
-#[hugoVersion]
-#  extended = true
-#  #max = ""
-#  min = "0.107.0"
+[hugoVersion]
+  extended = true
+  #max = ""
+  min = "0.112.4"
