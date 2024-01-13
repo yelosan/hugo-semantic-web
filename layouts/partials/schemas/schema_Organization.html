@@ -47,13 +47,13 @@
         {
           "@id": "{{ $orgfounder.id }}"{{ with or ($orgfounder.name) ($orgfounder.url) }},{{ end }}
           {{ with $orgfounder.name }}"name": "{{ . }}",{{ end }}
-          {{ with $orgfounder.sameas }}"sameAs": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+          {{ with $orgfounder.sameas }}"sameAs": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " | safeHTML }} ],{{ end }}
           {{ with $orgfounder.url }}"url": "{{ . }}",{{ end }}
           {{ with or ($orgfounder.name) ($orgfounder.url) }}"@type": "Person"{{ end }}
         }{{ end }}
       ],{{ end }}
       {{ with $org.foundingdate }}"foundingDate": "{{ (time .).UTC | time.Format $iso8601d | safeHTML }}",{{ end }}
-      {{ with $org.knowslanguages }}"knowsLanguage": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with $org.knowslanguages }}"knowsLanguage": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " | safeHTML }} ],{{ end }}
       "legalName": "{{ $org.legalname }}",
       "logo": [ {{ $countislogo := 0 }}{{ range $i, $image := $org.images }}{{ with .islogo }}{{ $countislogo = add $countislogo 1 }}{{ if gt $countislogo 1 }}, {{ end }}
         {
@@ -69,7 +69,7 @@
       {{ with $org.vatid }}"vatID": "{{ . }}",{{ end }}
 
       {{- /* Properties from Thing */ -}}
-      {{ with $org.alternatenames }}"alternateName": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with $org.alternatenames }}"alternateName": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " | safeHTML }} ],{{ end }}
       "description": "{{ $org.description }}",
       "image": [ {{ range $i, $image := $org.images }}{{ if $i }}, {{ end }}
         {
@@ -83,6 +83,6 @@
         }{{ end }}
       ],
       "name": "{{ $org.name }}",
-      {{ with $org.sameas }}"sameAs": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with $org.sameas }}"sameAs": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " | safeHTML }} ],{{ end }}
       "url": "{{ $org.url }}"
     }
