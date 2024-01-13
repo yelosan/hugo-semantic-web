@@ -88,7 +88,7 @@
           "name": "{{ .Param "author" }}"
         }
       ],{{ end }}
-      {{ with .Site.Params.semweb.credittext }}"creditText": "{{ . }}",{{ end }}
+      {{ with .Site.Params.semweb.credittext }}"creditText": "{{ . | safeHTML }}",{{ end }}
       "dateCreated": "{{ or $dateCreated $datePublished | safeHTML }}",
       "dateModified": "{{ $dateModified | safeHTML }}",
       "datePublished": "{{ $datePublished | safeHTML }}",
@@ -100,7 +100,7 @@
       "isPartOf": {
         "@id": "{{ $permalink }}#webcontent"
       },
-      {{ with .Site.Params.keywords }}"keywords": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with .Site.Params.keywords }}"keywords": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " | safeHTML }} ],{{ end }}
       {{ with or (.Site.Params.semweb.license) (.Site.Params.license) }}"license": "{{ . }}",{{ end }}
       {{ with .Site.Params.semweb.publisher }}"publisher": {
         "@id": "{{ . }}#organization"
@@ -118,6 +118,6 @@
         }{{ end }}
       ],{{ end }}
       "name": "{{ .Site.Title }}",
-      {{ with .Site.Params.semweb.sameas }}"sameAs": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with .Site.Params.semweb.sameas }}"sameAs": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " | safeHTML }} ],{{ end }}
       "url": "{{ site.BaseURL }}"
     }

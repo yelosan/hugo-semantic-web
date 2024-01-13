@@ -43,7 +43,7 @@
       "@id": "{{ $permalink }}#article",
 
       {{- /* Properties from Article */}}
-      {{ with or (.Params.categories) (.Params.tags) }}"articleSection": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with or (.Params.categories) (.Params.tags) }}"articleSection": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " | safeHTML }} ],{{ end }}
       "wordCount": "{{ .Plain | countwords }}",
 
       {{- /* Properties from CreativeWork */}}
@@ -136,7 +136,7 @@
           "@id": "{{ $permalink }}#webcontent"
         }
       ],
-      {{ with .Keywords }}"keywords": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " }} ],{{ end }}
+      {{ with .Keywords }}"keywords": [ {{ delimit (apply (apply . "chomp" ".") "jsonify" ".") ", " | safeHTML }} ],{{ end }}
       {{ with or (.Param "semweb.license") (.Param "license") }}"license": "{{ . }}",{{ end }}
       {{ with .Site.Params.semweb.publisher }}"publisher": {
         "@id": "{{ . }}#organization"
