@@ -1,6 +1,9 @@
+# See: https://gohugo.io/templates/output-formats/#media-types
+_merge = "deep"
+
 # https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
-_merge = "deep"
+
 ["image/jpeg"]
   suffixes = ["jpeg", "jpg", "jpe", "jif", "jfif", "jfi"]
 ["image/gif"]
