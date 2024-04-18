@@ -1,3 +1,3 @@
 module codeberg.org/yelosan/hugo-semantic-web
 
-go 1.20
+go 1.22
